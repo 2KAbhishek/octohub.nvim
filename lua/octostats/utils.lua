@@ -16,11 +16,11 @@ M.show_notification = function(message, level)
     })
 end
 
-local function process_notification_queue()
+M.process_notification_queue = function()
     vim.schedule(function()
         while #notification_queue > 0 do
             local notification = table.remove(notification_queue, 1)
-            show_notification(notification.message, notification.level)
+            M.show_notification(notification.message, notification.level)
         end
     end)
 end
@@ -32,8 +32,8 @@ M.async_execute = function(command, callback)
         on_exit = function(j, return_val)
             local result = table.concat(j:result(), '\n')
             if return_val ~= 0 then
-                queue_notification('Error executing command: ' .. command, vim.log.levels.ERROR)
-                process_notification_queue()
+                M.queue_notification('Error executing command: ' .. command, vim.log.levels.ERROR)
+                M.process_notification_queue()
                 return
             end
             callback(result)
@@ -57,8 +57,8 @@ M.get_data_with_cache = function(cache_key, command, callback)
         return
     end
 
-    async_execute(command, function(result)
-        local data = safe_json_decode(result)
+    M.async_execute(command, function(result)
+        local data = M.safe_json_decode(result)
         if data then
             cache[cache_key] = { data = data, time = os.time() }
             callback(data)
