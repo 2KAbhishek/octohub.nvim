@@ -408,7 +408,7 @@ local function handle_selection(prompt_bufnr, selection)
     end
 end
 
-function M.search_repos(username)
+function M.show_repos(username)
     get_user_repos(username, function(repos)
         vim.schedule(function()
             pickers
@@ -437,17 +437,5 @@ function M.search_repos(username)
         end)
     end)
 end
-
-vim.api.nvim_create_user_command('GitHubStats', function(opts)
-    M.show_github_stats(opts.args)
-end, { nargs = '?' })
-
-vim.api.nvim_create_user_command('GitHubProfile', function(opts)
-    M.open_github_profile(opts.args)
-end, { nargs = '?' })
-
-vim.api.nvim_create_user_command('GitHubRepos', function(opts)
-    M.search_repos(opts.args)
-end, { nargs = '?' })
 
 return M
