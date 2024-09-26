@@ -1,36 +1,36 @@
 <div align = "center">
 
-<h1><a href="https://github.com/2kabhishek/repos.nvim">repos.nvim</a></h1>
+<h1><a href="https://github.com/2kabhishek/octorepos.nvim">octorepos.nvim</a></h1>
 
-<a href="https://github.com/2KAbhishek/repos.nvim/blob/main/LICENSE">
-<img alt="License" src="https://img.shields.io/github/license/2kabhishek/repos.nvim?style=flat&color=eee&label="> </a>
+<a href="https://github.com/2KAbhishek/octorepos.nvim/blob/main/LICENSE">
+<img alt="License" src="https://img.shields.io/github/license/2kabhishek/octorepos.nvim?style=flat&color=eee&label="> </a>
 
-<a href="https://github.com/2KAbhishek/repos.nvim/graphs/contributors">
-<img alt="People" src="https://img.shields.io/github/contributors/2kabhishek/repos.nvim?style=flat&color=ffaaf2&label=People"> </a>
+<a href="https://github.com/2KAbhishek/octorepos.nvim/graphs/contributors">
+<img alt="People" src="https://img.shields.io/github/contributors/2kabhishek/octorepos.nvim?style=flat&color=ffaaf2&label=People"> </a>
 
-<a href="https://github.com/2KAbhishek/repos.nvim/stargazers">
-<img alt="Stars" src="https://img.shields.io/github/stars/2kabhishek/repos.nvim?style=flat&color=98c379&label=Stars"></a>
+<a href="https://github.com/2KAbhishek/octorepos.nvim/stargazers">
+<img alt="Stars" src="https://img.shields.io/github/stars/2kabhishek/octorepos.nvim?style=flat&color=98c379&label=Stars"></a>
 
-<a href="https://github.com/2KAbhishek/repos.nvim/network/members">
-<img alt="Forks" src="https://img.shields.io/github/forks/2kabhishek/repos.nvim?style=flat&color=66a8e0&label=Forks"> </a>
+<a href="https://github.com/2KAbhishek/octorepos.nvim/network/members">
+<img alt="Forks" src="https://img.shields.io/github/forks/2kabhishek/octorepos.nvim?style=flat&color=66a8e0&label=Forks"> </a>
 
-<a href="https://github.com/2KAbhishek/repos.nvim/watchers">
-<img alt="Watches" src="https://img.shields.io/github/watchers/2kabhishek/repos.nvim?style=flat&color=f5d08b&label=Watches"> </a>
+<a href="https://github.com/2KAbhishek/octorepos.nvim/watchers">
+<img alt="Watches" src="https://img.shields.io/github/watchers/2kabhishek/octorepos.nvim?style=flat&color=f5d08b&label=Watches"> </a>
 
-<a href="https://github.com/2KAbhishek/repos.nvim/pulse">
-<img alt="Last Updated" src="https://img.shields.io/github/last-commit/2kabhishek/repos.nvim?style=flat&color=e06c75&label="> </a>
+<a href="https://github.com/2KAbhishek/octorepos.nvim/pulse">
+<img alt="Last Updated" src="https://img.shields.io/github/last-commit/2kabhishek/octorepos.nvim?style=flat&color=e06c75&label="> </a>
 
 <h3>Ready to go Neovim template 🏗️✈️</h3>
 
 <figure>
-  <img src="doc/images/screenshot.png" alt="repos.nvim in action">
+  <img src="doc/images/screenshot.png" alt="octorepos.nvim in action">
   <br/>
-  <figcaption>repos.nvim in action</figcaption>
+  <figcaption>octorepos.nvim in action</figcaption>
 </figure>
 
 </div>
 
-repos.nvim is a neovim plugin that allows neovim users to `<action>`.
+octorepos.nvim is a neovim plugin that allows neovim users to `<action>`.
 
 ## ✨ Features
 
@@ -51,7 +51,7 @@ repos.nvim is a neovim plugin that allows neovim users to `<action>`.
 ```lua
 -- Lazy
 {
-    '2kabhishek/repos.nvim',
+    '2kabhishek/octorepos.nvim',
     dependencies = {
         'nvim-lua/plenary.nvim'
     },
@@ -59,13 +59,13 @@ repos.nvim is a neovim plugin that allows neovim users to `<action>`.
 },
 
 -- Packer
-use '2kabhishek/repos.nvim'
+use '2kabhishek/octorepos.nvim'
 
 ```
 
 ## 🚀 Usage
 
-1. Fork the `repos.nvim` repo
+1. Fork the `octorepos.nvim` repo
 2. Update the plugin name, file names etc, change `template` to `your-plugin-name`
 3. Add the code required for your plugin,
 
@@ -80,17 +80,17 @@ use '2kabhishek/repos.nvim'
 
 ### Configuration
 
-repos.nvim can be configured using the following options:
+octorepos.nvim can be configured using the following options:
 
 ```lua
 template.setup({
-    name = 'repos.nvim', -- Name to be greeted, 'World' by default
+    name = 'octorepos.nvim', -- Name to be greeted, 'World' by default
 })
 ```
 
 ### Commands
 
-`repos.nvim` adds the following commands:
+`octorepos.nvim` adds the following commands:
 
 - `TemplateHello`: Shows a hello message with the confugred name.
 
@@ -120,7 +120,7 @@ Planning to add `<feature/module>`.
 
 ### 🌈 Inspiration
 
-repos.nvim was inspired by [nvim-plugin-template](https://github.com/ellisonleao/nvim-plugin-template), I added some changes on top to make setting up a new plugin faster.
+octorepos.nvim was inspired by [nvim-plugin-template](https://github.com/ellisonleao/nvim-plugin-template), I added some changes on top to make setting up a new plugin faster.
 
 ### 💡 Challenges/Learnings
 
@@ -146,7 +146,7 @@ repos.nvim was inspired by [nvim-plugin-template](https://github.com/ellisonleao
 
 <strong>⭐ hit the star button if you found this useful ⭐</strong><br>
 
-<a href="https://github.com/2KAbhishek/repos.nvim">Source</a>
+<a href="https://github.com/2KAbhishek/octorepos.nvim">Source</a>
 | <a href="https://2kabhishek.github.io/blog" target="_blank">Blog </a>
 | <a href="https://twitter.com/2kabhishek" target="_blank">Twitter </a>
 | <a href="https://linkedin.com/in/2kabhishek" target="_blank">LinkedIn </a>

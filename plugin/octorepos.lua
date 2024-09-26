@@ -1,4 +1,4 @@
-local repos = require('repos')
+local repos = require('octorepos')
 
 vim.api.nvim_create_user_command('GitHubStats', function(opts)
     repos.show_github_stats(opts.args)
