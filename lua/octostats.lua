@@ -3,6 +3,7 @@ local M = {}
 local top_lang_count = 5
 local activity_count = 5
 local octorepos_present, octorepos = pcall(require, 'octorepos')
+local utils = require('octostats.utils')
 
 local function select_emoji(contributionCount)
     if contributionCount == 0 then
@@ -24,22 +25,22 @@ end
 
 local function get_github_stats(username, callback)
     local command = username == '' and 'gh api user' or 'gh api users/' .. username
-    get_data_with_cache('user_' .. username, command, callback)
+    utils.get_data_with_cache('user_' .. username, command, callback)
 end
 
 local function get_user_events(username, callback)
     local command = 'gh api users/' .. username .. '/events?per_page=100'
-    get_data_with_cache('events_' .. username, command, callback)
+    utils.get_data_with_cache('events_' .. username, command, callback)
 end
 
 local function get_contribution_data(username, callback)
     local command = 'gh api graphql -f query=\'{user(login: "'
         .. username
         .. '") { contributionsCollection { contributionCalendar { weeks { contributionDays { contributionCount } } } } } }\''
-    get_data_with_cache('contrib_' .. username, command, callback)
+    utils.get_data_with_cache('contrib_' .. username, command, callback)
 end
 
-local function generate_contribution_graph(contrib_data)
+local function get_contribution_graph(contrib_data)
     local calendar = contrib_data.data.user.contributionsCollection.contributionCalendar
     local graph_parts = {}
     for _, week in ipairs(calendar.weeks) do
@@ -66,7 +67,7 @@ local function show_stats_window(content)
 
         if not stats_window_win or not vim.api.nvim_win_is_valid(stats_window_win) then
             local width = math.min(120, vim.o.columns - 4)
-            local height = math.min(30, vim.o.lines - 4)
+            local height = math.min(40, vim.o.lines - 4)
             stats_window_win = vim.api.nvim_open_win(stats_window_buf, true, {
                 relative = 'editor',
                 width = width,
@@ -84,6 +85,16 @@ local function show_stats_window(content)
             vim.api.nvim_win_set_buf(stats_window_win, stats_window_buf)
         end
     end)
+end
+
+local function get_recent_activity(events)
+    local activity = {}
+    for i = 1, math.min(activity_count, #events) do
+        local event = events[i]
+        local action = event.type:gsub('Event', ''):lower()
+        table.insert(activity, string.format('%s %s %s', event.created_at, action, event.repo.name))
+    end
+    return table.concat(activity, '\n')
 end
 
 local function calculate_language_stats(repos)
@@ -105,17 +116,7 @@ local function calculate_language_stats(repos)
     return lang_stats
 end
 
-local function format_recent_activity(events)
-    local activity = {}
-    for i = 1, math.min(activity_count, #events) do
-        local event = events[i]
-        local action = event.type:gsub('Event', ''):lower()
-        table.insert(activity, string.format('%s %s %s', event.created_at, action, event.repo.name))
-    end
-    return table.concat(activity, '\n')
-end
-
-local function format_message(stats, repos, events, contrib_data)
+local function get_repo_stats(repos)
     local total_stars = 0
     local most_starred_repo = { name = '', stars = 0 }
     for _, repo in ipairs(repos) do
@@ -131,55 +132,69 @@ local function format_message(stats, repos, events, contrib_data)
         top_langs = top_langs .. string.format('%s (%d), ', lang_stats[i].language, lang_stats[i].count)
     end
 
-    local recent_activity = format_recent_activity(events)
-    local contrib_graph = generate_contribution_graph(contrib_data)
-
     return string.format(
+        'Total Stars: %d\nMost Starred Repo: %s (%d stars)\n' .. 'Top Languages: %s',
+        total_stars,
+        most_starred_repo.name,
+        most_starred_repo.stars,
+        top_langs
+    )
+end
+
+local function format_message(stats, repos, events, contrib_data)
+    local message = string.format(
         'Username: %s\nName: %s\nFollowers: %d\nFollowing: %d\nPublic Repos: %d\n'
-            .. 'Total Stars: %d\nMost Starred Repo: %s (%d stars)\n'
-            .. 'Top Languages: %s\n'
             .. 'Bio: %s\nLocation: %s\nCompany: %s\nBlog: %s\n'
-            .. 'Created At: %s\nLast Updated: %s\n\n'
-            .. 'Recent Activity:\n%s\n\n'
-            .. 'Contribution Graph:\n%s',
+            .. 'Created At: %s\nLast Updated: %s\n',
         stats.login,
         stats.name or 'N/A',
         stats.followers,
         stats.following,
-        #repos,
-        total_stars,
-        most_starred_repo.name,
-        most_starred_repo.stars,
-        top_langs,
+        stats.public_repos,
         stats.bio or 'N/A',
         stats.location or 'N/A',
         stats.company or 'N/A',
         stats.blog or 'N/A',
         stats.created_at,
-        stats.updated_at,
-        recent_activity,
-        contrib_graph
+        stats.updated_at
     )
+
+    if repos and #repos > 0 then
+        message = message .. string.format('\nRepos:\n%s\n', get_repo_stats(repos))
+    end
+    message = message .. string.format('\nRecent Activity:\n%s\n', get_recent_activity(events))
+    message = message .. string.format('\nContribution Graph:\n%s\n', get_contribution_graph(contrib_data))
+    return message
 end
 
 function M.show_github_stats(username)
     username = username or ''
     get_github_stats(username, function(stats)
         if stats.message then
-            queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
-            process_notification_queue()
+            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
+            utils.process_notification_queue()
             return
         end
 
-        octorepos.get_user_repos(stats.login, function(repos)
-            get_user_events(stats.login, function(events)
-                get_contribution_data(stats.login, function(contrib_data)
-                    local message = format_message(stats, repos, events, contrib_data)
-                    show_stats_window(message)
-                    process_notification_queue()
+        if octorepos_present then
+            octorepos.get_user_repos(stats.login, function(repos)
+                get_user_events(stats.login, function(events)
+                    get_contribution_data(stats.login, function(contrib_data)
+                        local message = format_message(stats, repos, events, contrib_data)
+                        show_stats_window(message)
+                        utils.process_notification_queue()
+                    end)
                 end)
             end)
-        end)
+        else
+            get_user_events(stats.login, function(events)
+                get_contribution_data(stats.login, function(contrib_data)
+                    local message = format_message(stats, {}, events, contrib_data)
+                    show_stats_window(message)
+                    utils.process_notification_queue()
+                end)
+            end)
+        end
     end)
 end
 
@@ -187,8 +202,8 @@ function M.open_github_profile(username)
     username = username or ''
     get_github_stats(username, function(stats)
         if stats.message then
-            queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
-            process_notification_queue()
+            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
+            utils.process_notification_queue()
             return
         end
 
@@ -203,8 +218,8 @@ function M.open_github_profile(username)
         end
 
         os.execute(open_command .. ' ' .. url)
-        queue_notification('Opened GitHub profile: ' .. url, vim.log.levels.INFO)
-        process_notification_queue()
+        utils.queue_notification('Opened GitHub profile: ' .. url, vim.log.levels.INFO)
+        utils.process_notification_queue()
     end)
 end
 
