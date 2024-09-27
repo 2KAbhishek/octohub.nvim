@@ -34,6 +34,21 @@ local function language_to_filetype(language)
         ['Scala'] = 'scala',
         ['Groovy'] = 'groovy',
         ['Perl'] = 'perl',
+        ['R'] = 'r',
+        ['Julia'] = 'jl',
+        ['Haskell'] = 'hs',
+        ['Objective-C'] = 'm',
+        ['C#'] = 'cs',
+        ['F#'] = 'fs',
+        ['Visual Basic .NET'] = 'vb',
+        ['SQL'] = 'sql',
+        ['MATLAB'] = 'm',
+        ['Bash'] = 'sh',
+        ['Powershell'] = 'ps1',
+        ['Dart'] = 'dart',
+        ['Clojure'] = 'clj',
+        ['Elixir'] = 'ex',
+        ['Erlang'] = 'erl',
     }
 
     return map[language]
