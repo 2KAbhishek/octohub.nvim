@@ -7,21 +7,22 @@ local utils = require('octostats.utils')
 
 local function select_emoji(contributionCount)
     if contributionCount == 0 then
-        return '⚪️'
+        return ''
     elseif contributionCount <= 10 then
-        return '🟡'
+        return ''
     elseif contributionCount <= 20 then
-        return '🟠'
+        return ''
     elseif contributionCount <= 30 then
-        return '🟢'
+        return ''
     elseif contributionCount <= 40 then
-        return '🔵'
+        return ''
     elseif contributionCount <= 50 then
-        return '🟣'
+        return ''
     else
-        return '🔴'
+        return ''
     end
 end
+
 
 local function get_github_stats(username, callback)
     local command = username == '' and 'gh api user' or 'gh api users/' .. username
@@ -143,9 +144,9 @@ end
 
 local function format_message(stats, repos, events, contrib_data)
     local message = string.format(
-        'Username: %s\nName: %s\nFollowers: %d\nFollowing: %d\nPublic Repos: %d\n'
-            .. 'Bio: %s\nLocation: %s\nCompany: %s\nBlog: %s\n'
-            .. 'Created At: %s\nLast Updated: %s\n',
+        ' Username: %s\n Name: %s\n Followers: %d\n Following: %d\n Public Repos: %d\n'
+            .. ' Bio: %s\n Location: %s\n Company: %s\n󰖟 Blog: %s\n'
+            .. ' Created At: %s\n Last Updated: %s\n',
         stats.login,
         stats.name or 'N/A',
         stats.followers,
@@ -160,10 +161,10 @@ local function format_message(stats, repos, events, contrib_data)
     )
 
     if repos and #repos > 0 then
-        message = message .. string.format('\nRepos:\n%s\n', get_repo_stats(repos))
+        message = message .. string.format('\n Repos:\n%s\n', get_repo_stats(repos))
     end
-    message = message .. string.format('\nRecent Activity:\n%s\n', get_recent_activity(events))
-    message = message .. string.format('\nContribution Graph:\n%s\n', get_contribution_graph(contrib_data))
+    message = message .. string.format('\n Recent Activity:\n%s\n', get_recent_activity(events))
+    message = message .. string.format('\n Contribution Graph:\n%s\n', get_contribution_graph(contrib_data))
     return message
 end
 
