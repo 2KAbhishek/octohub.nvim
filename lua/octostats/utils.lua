@@ -58,8 +58,8 @@ end
 
 M.async_execute = function(command, callback)
     Job:new({
-        command = 'bash',
-        args = { '-c', command },
+        command = vim.fn.has('win32') == 1 and 'cmd' or 'sh',
+        args = vim.fn.has('win32') == 1 and { '/c', command } or { '-c', command },
         on_exit = function(j, return_val)
             local result = table.concat(j:result(), '\n')
             if return_val ~= 0 then
