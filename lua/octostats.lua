@@ -136,7 +136,7 @@ local function format_message(stats, repos, events, contrib_data)
     )
 
     if repos and #repos > 0 then
-        message = message .. octorepos.get_repo_stats(repos)
+        message = message .. '\n' .. octorepos.get_repo_stats(repos) .. '\n'
     end
     message = message .. string.format('\n Recent Activity\n%s\n', get_recent_activity(events))
     message = message .. string.format('\n Contributions\n%s\n', get_contribution_graph(contrib_data))
