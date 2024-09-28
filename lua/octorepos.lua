@@ -40,31 +40,56 @@ local function entry_maker(repo)
 end
 
 local function format_repo_info(repo)
-    return string.format(
-        ' Repo Info\n\n'
-            .. ' Name: %s\n Description: %s\n Language: %s\n'
-            .. ' Homepage: %s\n Link: %s\n\n'
-            .. ' Stars: %d\n Forks: %d\n Watchers: %d\n Open Issues: %d\n\n'
-            .. ' Owner: %s\n Created At: %s\n Last Updated: %s\n'
-            .. ' Size: %d KB\n Fork: %s\n Archive: %s\n\n'
-            .. ' Topics: %s\n',
-        repo.name,
-        repo.description,
-        repo.language,
-        repo.homepage,
-        repo.html_url,
-        repo.stargazers_count,
-        repo.forks_count,
-        repo.watchers_count,
-        repo.open_issues_count,
-        repo.owner.login,
-        repo.created_at,
-        repo.updated_at,
-        repo.size,
-        repo.fork and 'Yes' or 'No',
-        repo.archived and 'Yes' or 'No',
-        table.concat(repo.topics, ', ')
+    local repo_info = {
+        string.format(' Repo Info\n\n Name: %s\n Language: %s\n', repo.name, repo.language),
+    }
+
+    table.insert(
+        repo_info,
+        string.format(
+            ' Link: %s\n\n'
+                .. ' Stars: %d\n Forks: %d\n Watchers: %d\n Open Issues: %d\n\n'
+                .. ' Owner: %s\n Created At: %s\n Last Updated: %s\n Size: %d KB\n',
+            repo.html_url,
+            repo.stargazers_count,
+            repo.forks_count,
+            repo.watchers_count,
+            repo.open_issues_count,
+            repo.owner.login,
+            repo.created_at,
+            repo.updated_at,
+            repo.size
+        )
     )
+
+    local conditional_additions = {
+        {
+            repo.description ~= vim.NIL and #repo.description > 0,
+            string.format(' Description: %s\n', repo.description),
+            2,
+        },
+        { repo.homepage ~= vim.NIL and #repo.homepage > 0, string.format(' Homepage: %s\n', repo.homepage), 3 },
+        { repo.fork, '\n Forked\n' },
+        { repo.archived, '\n Archived\n' },
+        { repo.private, '\n Archived\n' },
+        { #repo.topics > 0, string.format('\n Topics: %s\n', table.concat(repo.topics, ', ')) },
+    }
+
+    for _, conditional_addition in ipairs(conditional_additions) do
+        local condition = conditional_addition[1]
+        local content = conditional_addition[2]
+        local content_position = conditional_addition[3]
+
+        if condition then
+            if content_position == nil then
+                table.insert(repo_info, content)
+            else
+                table.insert(repo_info, content_position, content)
+            end
+        end
+    end
+
+    return table.concat(repo_info)
 end
 
 local function open_repo(repo_dir)
