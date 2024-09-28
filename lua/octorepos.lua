@@ -39,16 +39,31 @@ local function entry_maker(repo)
     }
 end
 
-local function format_repo_info(entry_value)
+local function format_repo_info(repo)
     return string.format(
-        ' Name: %s\n Description: %s\n Stars: %d\n Forks: %d\n Language: %s\n Created At: %s\n Last Updated: %s',
-        entry_value.name,
-        entry_value.description or 'N/A',
-        entry_value.stargazers_count,
-        entry_value.forks_count,
-        entry_value.language or 'N/A',
-        entry_value.created_at,
-        entry_value.updated_at
+        ' Repo Info\n\n'
+            .. ' Name: %s\n Description: %s\n Language: %s\n'
+            .. ' Homepage: %s\n Link: %s\n\n'
+            .. ' Stars: %d\n Forks: %d\n Watchers: %d\n Open Issues: %d\n\n'
+            .. ' Owner: %s\n Created At: %s\n Last Updated: %s\n'
+            .. ' Size: %d KB\n Fork: %s\n Archive: %s\n\n'
+            .. ' Topics: %s\n',
+        repo.name,
+        repo.description,
+        repo.language,
+        repo.homepage,
+        repo.html_url,
+        repo.stargazers_count,
+        repo.forks_count,
+        repo.watchers_count,
+        repo.open_issues_count,
+        repo.owner.login,
+        repo.created_at,
+        repo.updated_at,
+        repo.size,
+        repo.fork and 'Yes' or 'No',
+        repo.archived and 'Yes' or 'No',
+        table.concat(repo.topics, ', ')
     )
 end
 
