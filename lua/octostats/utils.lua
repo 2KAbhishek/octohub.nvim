@@ -36,8 +36,18 @@ local function write_cache_file(cache_file, data)
     cache_file:write(vim.json.encode(cache_data), 'w')
 end
 
+local function process_notification_queue()
+    vim.schedule(function()
+        while #notification_queue > 0 do
+            local notification = table.remove(notification_queue, 1)
+            M.show_notification(notification.message, notification.level)
+        end
+    end)
+end
+
 M.queue_notification = function(message, level)
     table.insert(notification_queue, { message = message, level = level })
+    process_notification_queue()
 end
 
 M.show_notification = function(message, level)
@@ -45,15 +55,6 @@ M.show_notification = function(message, level)
         title = 'Octostats',
         timeout = 5000,
     })
-end
-
-M.process_notification_queue = function()
-    vim.schedule(function()
-        while #notification_queue > 0 do
-            local notification = table.remove(notification_queue, 1)
-            M.show_notification(notification.message, notification.level)
-        end
-    end)
 end
 
 M.async_shell_execute = function(command, callback)
@@ -64,7 +65,6 @@ M.async_shell_execute = function(command, callback)
             local result = table.concat(j:result(), '\n')
             if return_val ~= 0 then
                 M.queue_notification('Error executing command: ' .. command, vim.log.levels.ERROR)
-                M.process_notification_queue()
                 return
             end
             callback(result)

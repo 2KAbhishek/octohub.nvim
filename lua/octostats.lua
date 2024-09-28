@@ -148,7 +148,6 @@ function M.show_github_stats(username)
     get_github_stats(username, function(stats)
         if stats.message then
             utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
-            utils.process_notification_queue()
             return
         end
 
@@ -158,7 +157,6 @@ function M.show_github_stats(username)
                     get_contribution_data(stats.login, function(contrib_data)
                         local message = format_message(stats, repos, events, contrib_data)
                         show_stats_window(message)
-                        utils.process_notification_queue()
                     end)
                 end)
             end)
@@ -167,7 +165,6 @@ function M.show_github_stats(username)
                 get_contribution_data(stats.login, function(contrib_data)
                     local message = format_message(stats, {}, events, contrib_data)
                     show_stats_window(message)
-                    utils.process_notification_queue()
                 end)
             end)
         end
@@ -179,14 +176,12 @@ function M.open_github_profile(username)
     get_github_stats(username, function(stats)
         if stats.message then
             utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
-            utils.process_notification_queue()
             return
         end
 
         local url = stats.html_url
         utils.open_command(url)
         utils.queue_notification('Opened GitHub profile: ' .. url, vim.log.levels.INFO)
-        utils.process_notification_queue()
     end)
 end
 
