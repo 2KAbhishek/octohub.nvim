@@ -23,7 +23,6 @@ local function select_emoji(contributionCount)
     end
 end
 
-
 local function get_github_stats(username, callback)
     local command = username == '' and 'gh api user' or 'gh api users/' .. username
     utils.get_data_with_cache('user_' .. username, command, callback)
@@ -43,11 +42,13 @@ end
 
 local function get_contribution_graph(contrib_data)
     local calendar = contrib_data.data.user.contributionsCollection.contributionCalendar
-    local graph_parts = {}
+    local graph_parts = {
+        string.format('%-4s\t %-4s\t %-4s\t %-4s\t %-4s\t %-4s\t %-4s\n', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'),
+    }
     for _, week in ipairs(calendar.weeks) do
         for _, day in ipairs(week.contributionDays) do
             local emoji = select_emoji(day.contributionCount)
-            local padded_count = string.format('%3d  ', day.contributionCount)
+            local padded_count = string.format('%4d\t', day.contributionCount)
             table.insert(graph_parts, emoji .. padded_count)
         end
         table.insert(graph_parts, '\n')
