@@ -1,6 +1,10 @@
 local M = {}
 
 M.language_to_filetype = function(language)
+    if language == vim.NIL then
+        return 'md'
+    end
+
     local map = {
         ['ASP.NET'] = 'aspx',
         ['ActionScript'] = 'as',
@@ -90,8 +94,7 @@ M.language_to_filetype = function(language)
         ['Zig'] = 'zig',
     }
 
-    local filetype = map[language]
-    return filetype or 'md'
+    return map[language] or language:lower()
 end
 
 return M
