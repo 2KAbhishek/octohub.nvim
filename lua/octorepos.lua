@@ -9,50 +9,11 @@ local previewers = require('telescope.previewers')
 local devicons = require('nvim-web-devicons')
 local os = require('os')
 local Path = require('plenary.path')
+
 local utils = require('octorepos.utils')
+local languages = require('octorepos.languages')
 
 local PROJECTS_DIR = Path:new(vim.fn.expand('~/Projects/GitHub/Maintain/')):absolute()
-
-local function language_to_filetype(language)
-    local map = {
-        ['C'] = 'c',
-        ['C++'] = 'cpp',
-        ['Java'] = 'java',
-        ['Python'] = 'py',
-        ['JavaScript'] = 'js',
-        ['TypeScript'] = 'ts',
-        ['Ruby'] = 'rb',
-        ['Go'] = 'go',
-        ['Rust'] = 'rs',
-        ['Shell'] = 'sh',
-        ['Lua'] = 'lua',
-        ['HTML'] = 'html',
-        ['CSS'] = 'css',
-        ['PHP'] = 'php',
-        ['Swift'] = 'swift',
-        ['Kotlin'] = 'kt',
-        ['Scala'] = 'scala',
-        ['Groovy'] = 'groovy',
-        ['Perl'] = 'perl',
-        ['R'] = 'r',
-        ['Julia'] = 'jl',
-        ['Haskell'] = 'hs',
-        ['Objective-C'] = 'm',
-        ['C#'] = 'cs',
-        ['F#'] = 'fs',
-        ['Visual Basic .NET'] = 'vb',
-        ['SQL'] = 'sql',
-        ['MATLAB'] = 'm',
-        ['Bash'] = 'sh',
-        ['Powershell'] = 'ps1',
-        ['Dart'] = 'dart',
-        ['Clojure'] = 'clj',
-        ['Elixir'] = 'ex',
-        ['Erlang'] = 'erl',
-    }
-
-    return map[language]
-end
 
 local function get_default_username(callback)
     utils.async_execute('gh api user', function(result)
@@ -64,10 +25,15 @@ local function get_default_username(callback)
 end
 
 local function entry_maker(repo)
-    local filetype = language_to_filetype(repo.language) or ''
+    local filetype = languages.language_to_filetype(repo.language) or ''
     local icon, icon_highlight = devicons.get_icon(filetype, { default = true })
+    if filetype == 'md' then
+        repo.language = 'Markdown'
+    end
+    icon = icon or ''
+
     local display = icon and ('%s %s [%s]'):format(icon, repo.name, repo.language)
-        or ('%s [%s]'):format(repo.name, repo.language)
+
     return {
         value = repo,
         display = display,
@@ -78,7 +44,7 @@ end
 
 local function format_repo_info(entry_value)
     return string.format(
-        'Name: %s\nDescription: %s\nStars: %d\nForks: %d\nLanguage: %s\nCreated At: %s\nLast Updated: %s',
+        ' Name: %s\n Description: %s\n Stars: %d\n Forks: %d\n Language: %s\n Created At: %s\n Last Updated: %s',
         entry_value.name,
         entry_value.description or 'N/A',
         entry_value.stargazers_count,
