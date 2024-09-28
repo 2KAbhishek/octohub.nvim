@@ -14,6 +14,8 @@ local contrib_icons = {
     '',
     '',
 }
+local window_width = 100
+local window_height = 50
 
 local function get_icon(contribution_count)
     local index = math.min(math.floor(contribution_count / (max_contributions / #contrib_icons)) + 1, #contrib_icons)
@@ -80,8 +82,8 @@ local function show_stats_window(content)
         vim.api.nvim_buf_set_lines(stats_window_buf, 0, -1, true, vim.split(content, '\n'))
 
         if not stats_window_win or not vim.api.nvim_win_is_valid(stats_window_win) then
-            local width = math.min(120, vim.o.columns - 4)
-            local height = math.min(40, vim.o.lines - 4)
+            local width = math.min(window_width, vim.o.columns - 4)
+            local height = math.min(window_height, vim.o.lines - 4)
             stats_window_win = vim.api.nvim_open_win(stats_window_buf, true, {
                 relative = 'editor',
                 width = width,
