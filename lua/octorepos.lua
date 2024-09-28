@@ -13,10 +13,11 @@ local Path = require('plenary.path')
 local utils = require('octorepos.utils')
 local languages = require('octorepos.languages')
 
+local top_lang_count = 5
 local PROJECTS_DIR = Path:new(vim.fn.expand('~/Projects/GitHub/Maintain/')):absolute()
 
 local function get_default_username(callback)
-    utils.async_execute('gh api user', function(result)
+    utils.async_shell_execute('gh api user', function(result)
         local data = utils.safe_json_decode(result)
         if data then
             callback(data.login)
@@ -69,7 +70,7 @@ local function clone_and_open_repo(selection, repo_dir)
 
     utils.show_notification('Cloning repository: ' .. selection.value.name, vim.log.levels.INFO)
 
-    utils.async_execute(clone_cmd, function(result)
+    utils.async_shell_execute(clone_cmd, function(result)
         if result then
             open_repo(repo_dir)
         end
@@ -86,6 +87,58 @@ local function handle_selection(prompt_bufnr, selection)
             clone_and_open_repo(selection, repo_dir)
         end
     end
+end
+
+local function calculate_language_stats(repos)
+    local lang_count = {}
+    for _, repo in ipairs(repos) do
+        if repo.language then
+            lang_count[repo.language] = (lang_count[repo.language] or 0) + 1
+        end
+    end
+
+    local lang_stats = {}
+    for lang, count in pairs(lang_count) do
+        table.insert(lang_stats, { language = lang, count = count })
+    end
+
+    table.sort(lang_stats, function(a, b)
+        return a.count > b.count
+    end)
+    return lang_stats
+end
+
+M.get_repo_stats = function(repos)
+    local total_stars = 0
+    local most_starred_repo = { name = '', stars = 0 }
+    for _, repo in ipairs(repos) do
+        total_stars = total_stars + repo.stargazers_count
+        if repo.stargazers_count > most_starred_repo.stars then
+            most_starred_repo = { name = repo.name, stars = repo.stargazers_count }
+        end
+    end
+
+    local lang_stats = calculate_language_stats(repos)
+    local top_langs = ''
+    for i = 1, math.min(top_lang_count, #lang_stats) do
+        top_langs = top_langs .. string.format('%s (%d), ', lang_stats[i].language, lang_stats[i].count)
+    end
+
+    return string.format(
+        '\n Public Repos: %d\n Total Stars: %d\n Most Starred Repo: %s (%d stars)\n♥ Top Languages: %s\n',
+        #repos,
+        total_stars,
+        most_starred_repo.name,
+        most_starred_repo.stars,
+        top_langs
+    )
+end
+
+M.show_repo_stats = function(username)
+    M.get_user_repos(username, function(repos)
+        local repo_stats = M.get_repo_stats(repos)
+        utils.queue_notification(repo_stats, vim.log.levels.INFO)
+    end)
 end
 
 M.get_user_repos = function(username, callback)
