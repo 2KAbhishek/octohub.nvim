@@ -36,8 +36,18 @@ local function write_cache_file(cache_file, data)
     cache_file:write(vim.json.encode(cache_data), 'w')
 end
 
+local function process_notification_queue()
+    vim.schedule(function()
+        while #notification_queue > 0 do
+            local notification = table.remove(notification_queue, 1)
+            M.show_notification(notification.message, notification.level)
+        end
+    end)
+end
+
 M.queue_notification = function(message, level)
     table.insert(notification_queue, { message = message, level = level })
+    process_notification_queue()
 end
 
 M.show_notification = function(message, level)
@@ -47,24 +57,14 @@ M.show_notification = function(message, level)
     })
 end
 
-M.process_notification_queue = function()
-    vim.schedule(function()
-        while #notification_queue > 0 do
-            local notification = table.remove(notification_queue, 1)
-            M.show_notification(notification.message, notification.level)
-        end
-    end)
-end
-
-M.async_execute = function(command, callback)
+M.async_shell_execute = function(command, callback)
     Job:new({
         command = vim.fn.has('win32') == 1 and 'cmd' or 'sh',
-        args = vim.fn.has('win32') == 1 and {'/c', command} or {'-c', command},
+        args = vim.fn.has('win32') == 1 and { '/c', command } or { '-c', command },
         on_exit = function(j, return_val)
             local result = table.concat(j:result(), '\n')
             if return_val ~= 0 then
                 M.queue_notification('Error executing command: ' .. command, vim.log.levels.ERROR)
-                M.process_notification_queue()
                 return
             end
             callback(result)
@@ -93,13 +93,26 @@ M.get_data_with_cache = function(cache_key, command, callback)
         return
     end
 
-    M.async_execute(command, function(result)
+    M.async_shell_execute(command, function(result)
         local data = M.safe_json_decode(result)
         if data then
             write_cache_file(cache_file, data)
             callback(data)
         end
     end)
+end
+
+M.open_command = function(file)
+    local open_command
+    if vim.fn.has('mac') == 1 then
+        open_command = 'open'
+    elseif vim.fn.has('unix') == 1 then
+        open_command = 'xdg-open'
+    else
+        open_command = 'start'
+    end
+
+    os.execute(open_command .. ' ' .. file)
 end
 
 return M
