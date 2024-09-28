@@ -210,16 +210,7 @@ function M.open_github_profile(username)
         end
 
         local url = stats.html_url
-        local open_command
-        if vim.fn.has('mac') == 1 then
-            open_command = 'open'
-        elseif vim.fn.has('unix') == 1 then
-            open_command = 'xdg-open'
-        else
-            open_command = 'start'
-        end
-
-        os.execute(open_command .. ' ' .. url)
+        utils.open_command(url)
         utils.queue_notification('Opened GitHub profile: ' .. url, vim.log.levels.INFO)
         utils.process_notification_queue()
     end)

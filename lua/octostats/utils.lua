@@ -56,7 +56,7 @@ M.process_notification_queue = function()
     end)
 end
 
-M.async_execute = function(command, callback)
+M.async_shell_execute = function(command, callback)
     Job:new({
         command = vim.fn.has('win32') == 1 and 'cmd' or 'sh',
         args = vim.fn.has('win32') == 1 and { '/c', command } or { '-c', command },
@@ -93,13 +93,26 @@ M.get_data_with_cache = function(cache_key, command, callback)
         return
     end
 
-    M.async_execute(command, function(result)
+    M.async_shell_execute(command, function(result)
         local data = M.safe_json_decode(result)
         if data then
             write_cache_file(cache_file, data)
             callback(data)
         end
     end)
+end
+
+M.open_command = function(file)
+    local open_command
+    if vim.fn.has('mac') == 1 then
+        open_command = 'open'
+    elseif vim.fn.has('unix') == 1 then
+        open_command = 'xdg-open'
+    else
+        open_command = 'start'
+    end
+
+    os.execute(open_command .. ' ' .. file)
 end
 
 return M
