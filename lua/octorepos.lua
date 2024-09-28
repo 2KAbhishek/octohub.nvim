@@ -125,7 +125,7 @@ M.get_repo_stats = function(repos)
     end
 
     return string.format(
-        '\n Public Repos: %d\n Total Stars: %d\n Most Starred Repo: %s (%d stars)\n♥ Top Languages: %s\n',
+        ' Public Repos: %d\n Total Stars: %d\n Most Starred Repo: %s (%d stars)\n♥ Top Languages: %s',
         #repos,
         total_stars,
         most_starred_repo.name,
