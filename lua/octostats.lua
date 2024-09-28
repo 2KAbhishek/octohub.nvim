@@ -4,23 +4,20 @@ local top_lang_count = 5
 local activity_count = 5
 local octorepos_present, octorepos = pcall(require, 'octorepos')
 local utils = require('octostats.utils')
+local max_contributions = 50
+local contrib_icons = {
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+}
 
-local function select_emoji(contributionCount)
-    if contributionCount == 0 then
-        return ''
-    elseif contributionCount <= 10 then
-        return ''
-    elseif contributionCount <= 20 then
-        return ''
-    elseif contributionCount <= 30 then
-        return ''
-    elseif contributionCount <= 40 then
-        return ''
-    elseif contributionCount <= 50 then
-        return ''
-    else
-        return ''
-    end
+local function get_icon(contribution_count)
+    local index = math.min(math.floor(contribution_count / (max_contributions / #contrib_icons)) + 1, #contrib_icons)
+    return contrib_icons[index]
 end
 
 local function get_github_stats(username, callback)
