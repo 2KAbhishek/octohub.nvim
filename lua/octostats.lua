@@ -114,27 +114,32 @@ end
 
 local function format_message(stats, repos, events, contrib_data)
     local message = string.format(
-        ' Username: %s\t Name: %s\n Followers: %d\t Following: %d\n Public Repos: %d\n'
-            .. ' Bio: %s\n Location: %s\n Company: %s\n Website: %s\n'
-            .. ' Created At: %s\n Last Updated: %s\n',
+        ' User Info\n'
+            .. ' Username: %s\n'
+            .. ' Name: %s\n'
+            .. ' Followers: %d\n'
+            .. ' Following: %d\n'
+            .. ' Location: %s\n'
+            .. ' Company: %s\n'
+            .. ' Bio: %s\n'
+            .. ' Website: %s\n'
+            .. ' Created At: %s\n',
         stats.login,
-        stats.name or 'N/A',
+        stats.name,
         stats.followers,
         stats.following,
-        stats.public_repos,
-        stats.bio or 'N/A',
-        stats.location or 'N/A',
-        stats.company or 'N/A',
-        stats.blog or 'N/A',
-        stats.created_at,
-        stats.updated_at
+        stats.location,
+        stats.company,
+        stats.bio,
+        stats.blog,
+        stats.created_at
     )
 
     if repos and #repos > 0 then
-        message = message .. string.format('\n Repos:\n%s\n', get_repo_stats(repos))
+        message = message .. octorepos.get_repo_stats(repos)
     end
-    message = message .. string.format('\n Recent Activity:\n%s\n', get_recent_activity(events))
-    message = message .. string.format('\n Contribution Graph:\n%s\n', get_contribution_graph(contrib_data))
+    message = message .. string.format('\n Recent Activity\n%s\n', get_recent_activity(events))
+    message = message .. string.format('\n Contributions\n%s\n', get_contribution_graph(contrib_data))
     return message
 end
 
