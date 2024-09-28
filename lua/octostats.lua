@@ -38,18 +38,33 @@ local function get_contribution_data(username, callback)
 end
 
 local function get_contribution_graph(contrib_data)
+    local top_contributions = 0
     local calendar = contrib_data.data.user.contributionsCollection.contributionCalendar
     local graph_parts = {
-        string.format('%-4s\t %-4s\t %-4s\t %-4s\t %-4s\t %-4s\t %-4s\n', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'),
+        string.format(
+            '\n%-4s\t %-4s\t %-4s\t %-4s\t %-4s\t %-4s\t %-4s\n',
+            'Sun',
+            'Mon',
+            'Tue',
+            'Wed',
+            'Thu',
+            'Fri',
+            'Sat'
+        ),
     }
     for _, week in ipairs(calendar.weeks) do
         for _, day in ipairs(week.contributionDays) do
-            local emoji = select_emoji(day.contributionCount)
+            local contrib_count = day.contributionCount
+            if contrib_count > top_contributions then
+                top_contributions = contrib_count
+            end
+            local emoji = get_icon(contrib_count)
             local padded_count = string.format('%4d\t', day.contributionCount)
             table.insert(graph_parts, emoji .. padded_count)
         end
         table.insert(graph_parts, '\n')
     end
+    table.insert(graph_parts, 1, string.format(' Max Contributions: %d\n', top_contributions))
     return table.concat(graph_parts)
 end
 
