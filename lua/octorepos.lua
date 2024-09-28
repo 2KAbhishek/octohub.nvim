@@ -71,7 +71,7 @@ local function format_repo_info(repo)
         { repo.homepage ~= vim.NIL and #repo.homepage > 0, string.format(' Homepage: %s\n', repo.homepage), 3 },
         { repo.fork, '\n Forked\n' },
         { repo.archived, '\n Archived\n' },
-        { repo.private, '\n Archived\n' },
+        { repo.private, '\n Private\n' },
         { #repo.topics > 0, string.format('\n Topics: %s\n', table.concat(repo.topics, ', ')) },
     }
 
