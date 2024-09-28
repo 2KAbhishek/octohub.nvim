@@ -26,11 +26,7 @@ local function get_default_username(callback)
 end
 
 local function entry_maker(repo)
-    local filetype = languages.language_to_filetype(repo.language) or ''
-    local icon, icon_highlight = devicons.get_icon(filetype, { default = true })
-    if filetype == 'md' then
-        repo.language = 'Markdown'
-    end
+    local icon, icon_highlight = devicons.get_icon(repo.file_type, { default = true })
     icon = icon or ''
 
     local display = icon and ('%s %s [%s]'):format(icon, repo.name, repo.language)
@@ -150,6 +146,11 @@ M.get_user_repos = function(username, callback)
             utils.get_data_with_cache('repos_' .. username .. '_page_' .. page, command, function(repos)
                 if repos and #repos > 0 then
                     for _, repo in ipairs(repos) do
+                        local file_type = languages.language_to_filetype(repo.language)
+                        if file_type == 'md' then
+                            repo.language = 'Markdown'
+                        end
+                        repo.file_type = file_type
                         table.insert(all_repos, repo)
                     end
                     fetch_page(page + 1)
