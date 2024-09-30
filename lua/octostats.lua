@@ -3,6 +3,7 @@ local M = {}
 local activity_count = 5
 local octorepos_present, octorepos = pcall(require, 'octorepos')
 local utils = require('octostats.utils')
+
 local max_contributions = 50
 local contrib_icons = {
     '',
@@ -15,6 +16,8 @@ local contrib_icons = {
 }
 local window_width = 100
 local window_height = 50
+local show_recent_activity = true
+local show_contributions = true
 
 local function get_icon(contribution_count)
     local index = math.min(math.floor(contribution_count / (max_contributions / #contrib_icons)) + 1, #contrib_icons)
@@ -65,7 +68,7 @@ local function get_contribution_graph(contrib_data)
         end
         table.insert(graph_parts, '\n')
     end
-    table.insert(graph_parts, 1, string.format(' Max Contributions: %d\n', top_contributions))
+    table.insert(graph_parts, 1, string.format(' Highest Contributions: %d', top_contributions))
     return table.concat(graph_parts)
 end
 
@@ -113,34 +116,40 @@ local function get_recent_activity(events)
 end
 
 local function format_message(stats, repos, events, contrib_data)
-    local message = string.format(
-        ' User Info\n'
-            .. ' Username: %s\n'
-            .. ' Name: %s\n'
-            .. ' Followers: %d\n'
-            .. ' Following: %d\n'
-            .. ' Location: %s\n'
-            .. ' Company: %s\n'
-            .. ' Bio: %s\n'
-            .. ' Website: %s\n'
-            .. ' Created At: %s\n',
-        stats.login,
-        stats.name,
-        stats.followers,
-        stats.following,
-        stats.location,
-        stats.company,
-        stats.bio,
-        stats.blog,
-        stats.created_at
-    )
+    local messageParts = {
+        string.format(
+            ' User Info\n'
+                .. ' Username: %s\n'
+                .. ' Name: %s\n'
+                .. ' Followers: %d\n'
+                .. ' Following: %d\n'
+                .. ' Location: %s\n'
+                .. ' Company: %s\n'
+                .. ' Bio: %s\n'
+                .. ' Website: %s\n'
+                .. ' Created At: %s\n',
+            stats.login,
+            stats.name,
+            stats.followers,
+            stats.following,
+            stats.location,
+            stats.company,
+            stats.bio,
+            stats.blog,
+            stats.created_at
+        ),
+    }
 
     if repos and #repos > 0 then
-        message = message .. '\n' .. octorepos.get_repo_stats(repos) .. '\n'
+        table.insert(messageParts, '\n' .. octorepos.get_repo_stats(repos) .. '\n')
     end
-    message = message .. string.format('\n Recent Activity\n%s\n', get_recent_activity(events))
-    message = message .. string.format('\n Contributions\n%s\n', get_contribution_graph(contrib_data))
-    return message
+    if show_recent_activity then
+        table.insert(messageParts, string.format('\n Recent Activity\n%s\n', get_recent_activity(events)))
+    end
+    if show_contributions then
+        table.insert(messageParts, string.format('\n Contributions\n%s\n', get_contribution_graph(contrib_data)))
+    end
+    return table.concat(messageParts)
 end
 
 function M.show_github_stats(username)
