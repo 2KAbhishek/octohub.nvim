@@ -15,6 +15,7 @@ local languages = require('octorepos.languages')
 
 local top_lang_count = 5
 local projects_dir = '~/Projects/GitHub/Maintain/'
+local per_user_dir = true
 
 local function get_default_username(callback)
     utils.get_data_with_cache('default_username', 'gh api user', function(data)
@@ -115,7 +116,18 @@ end
 local function handle_selection(prompt_bufnr, selection)
     actions.close(prompt_bufnr)
     if selection then
-        local repo_dir = Path:new(vim.fn.expand(projects_dir), selection.value.name):absolute()
+        local repo_dir
+        if per_user_dir then
+            local owner_dir = Path:new(vim.fn.expand(projects_dir), selection.value.owner.login):absolute()
+            if not Path:new(owner_dir):exists() then
+                vim.fn.mkdir(owner_dir)
+            end
+
+            repo_dir = Path:new(owner_dir, selection.value.name):absolute()
+        else
+            repo_dir = Path:new(vim.fn.expand(projects_dir), selection.value.name):absolute()
+        end
+
         if Path:new(repo_dir):exists() then
             open_repo(repo_dir)
         else
