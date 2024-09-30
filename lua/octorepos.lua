@@ -177,12 +177,21 @@ M.show_repo_stats = function(username)
 end
 
 M.get_user_repos = function(username, callback)
-    local function process_username(username)
+    local function process_username(username, is_auth_user)
         local all_repos = {}
-
         local function fetch_page(page)
-            local command = 'gh api users/' .. username .. '/repos?page=' .. page
-            utils.get_data_with_cache('repos_' .. username .. '_page_' .. page, command, function(repos)
+            local command
+            local auth = is_auth_user and 'auth_' or ''
+            if is_auth_user then
+                command = string.format(
+                    'gh api -H "Accept: application/vnd.github.v3+json" "/user/repos?page=%d&per_page=100&type=all"',
+                    page
+                )
+            else
+                command = string.format('gh api "users/%s/repos?page=%d&per_page=100"', username, page)
+            end
+
+            utils.get_data_with_cache('repos_' .. auth .. username .. '_page_' .. page, command, function(repos)
                 if repos and #repos > 0 then
                     for _, repo in ipairs(repos) do
                         local file_type = languages.language_to_filetype(repo.language)
@@ -198,17 +207,14 @@ M.get_user_repos = function(username, callback)
                 end
             end)
         end
-
         fetch_page(1)
     end
 
-    if username == nil or username == '' then
-        get_default_username(function(default_username)
-            process_username(default_username)
-        end)
-    else
-        process_username(username)
-    end
+    get_default_username(function(default_username)
+        local is_auth_user = username == nil or username == ''
+        local user_to_process = is_auth_user and default_username or username
+        process_username(user_to_process, is_auth_user)
+    end)
 end
 
 M.show_repos = function(username)
