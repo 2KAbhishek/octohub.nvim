@@ -4,41 +4,44 @@ local activity_count = 5
 local octorepos_present, octorepos = pcall(require, 'octorepos')
 local utils = require('octostats.utils')
 
-local max_contributions = 50
-local contrib_icons = {
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
+local config = {
+    max_contributions = 50,
+    contrib_icons = { '', '', '', '', '', '', '' },
+    window_width = 100,
+    window_height = 50,
+    show_recent_activity = true,
+    show_contributions = true,
+    cache_timeout = 60 * 60,
 }
-local window_width = 100
-local window_height = 50
-local show_recent_activity = true
-local show_contributions = true
+
+M.config = config
+M.setup = function(args)
+    M.config = vim.tbl_deep_extend('force', M.config, args or {})
+end
 
 local function get_icon(contribution_count)
-    local index = math.min(math.floor(contribution_count / (max_contributions / #contrib_icons)) + 1, #contrib_icons)
-    return contrib_icons[index]
+    local index = math.min(
+        math.floor(contribution_count / (M.config.max_contributions / #M.config.contrib_icons)) + 1,
+        #M.config.contrib_icons
+    )
+    return M.config.contrib_icons[index]
 end
 
 local function get_github_stats(username, callback)
     local command = username == '' and 'gh api user' or 'gh api users/' .. username
-    utils.get_data_with_cache('user_' .. username, command, callback)
+    utils.get_data_from_cache('user_' .. username, command, callback, M.config.cache_timeout)
 end
 
 local function get_user_events(username, callback)
     local command = 'gh api users/' .. username .. '/events?per_page=100'
-    utils.get_data_with_cache('events_' .. username, command, callback)
+    utils.get_data_from_cache('events_' .. username, command, callback, M.config.cache_timeout)
 end
 
 local function get_contribution_data(username, callback)
     local command = 'gh api graphql -f query=\'{user(login: "'
         .. username
         .. '") { contributionsCollection { contributionCalendar { weeks { contributionDays { contributionCount } } } } } }\''
-    utils.get_data_with_cache('contrib_' .. username, command, callback)
+    utils.get_data_from_cache('contrib_' .. username, command, callback, M.config.cache_timeout)
 end
 
 local function get_contribution_graph(contrib_data)
@@ -84,8 +87,8 @@ local function show_stats_window(content)
         vim.api.nvim_buf_set_lines(stats_window_buf, 0, -1, true, vim.split(content, '\n'))
 
         if not stats_window_win or not vim.api.nvim_win_is_valid(stats_window_win) then
-            local width = math.min(window_width, vim.o.columns - 4)
-            local height = math.min(window_height, vim.o.lines - 4)
+            local width = math.min(M.config.window_width, vim.o.columns - 4)
+            local height = math.min(M.config.window_height, vim.o.lines - 4)
             stats_window_win = vim.api.nvim_open_win(stats_window_buf, true, {
                 relative = 'editor',
                 width = width,
@@ -143,10 +146,10 @@ local function format_message(stats, repos, events, contrib_data)
     if repos and #repos > 0 then
         table.insert(messageParts, '\n' .. octorepos.get_repo_stats(repos) .. '\n')
     end
-    if show_recent_activity then
+    if M.config.show_recent_activity then
         table.insert(messageParts, string.format('\n Recent Activity\n%s\n', get_recent_activity(events)))
     end
-    if show_contributions then
+    if M.config.show_contributions then
         table.insert(messageParts, string.format('\n Contributions\n%s\n', get_contribution_graph(contrib_data)))
     end
     return table.concat(messageParts)

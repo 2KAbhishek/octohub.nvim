@@ -1,7 +1,6 @@
 local Job = require('plenary.job')
 local Path = require('plenary.path')
 local notification_queue = {}
-local cache_timeout = 24 * 60 * 60
 local M = {}
 
 local function get_cache_dir()
@@ -82,7 +81,7 @@ M.safe_json_decode = function(str)
     end
 end
 
-M.get_data_with_cache = function(cache_key, command, callback)
+M.get_data_from_cache = function(cache_key, command, callback, cache_timeout)
     local cache_file = get_cache_file_path(cache_key)
     local cache_data = read_cache_file(cache_file)
 
