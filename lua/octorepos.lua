@@ -17,6 +17,7 @@ local config = {
     top_lang_count = 5,
     per_user_dir = true,
     projects_dir = '~/Projects/GitHub/',
+    cache_timeout = 24 * 3600,
 }
 
 M.config = config
@@ -25,11 +26,11 @@ M.setup = function(args)
 end
 
 local function get_default_username(callback)
-    utils.get_data_with_cache('default_username', 'gh api user', function(data)
+    utils.get_data_from_cache('default_username', 'gh api user', function(data)
         if data then
             callback(data.login)
         end
-    end)
+    end, M.config.cache_timeout)
 end
 
 local function entry_maker(repo)
@@ -210,7 +211,7 @@ M.get_user_repos = function(username, callback)
                 command = string.format('gh api "users/%s/repos?page=%d&per_page=100"', username, page)
             end
 
-            utils.get_data_with_cache('repos_' .. auth .. username .. '_page_' .. page, command, function(repos)
+            utils.get_data_from_cache('repos_' .. auth .. username .. '_page_' .. page, command, function(repos)
                 if repos and #repos > 0 then
                     for _, repo in ipairs(repos) do
                         local file_type = languages.language_to_filetype(repo.language)
@@ -224,7 +225,7 @@ M.get_user_repos = function(username, callback)
                 else
                     callback(all_repos)
                 end
-            end)
+            end, M.config.cache_timeout)
         end
         fetch_page(1)
     end
