@@ -176,7 +176,7 @@ M.get_repo_stats = function(repos)
     local lang_stats = calculate_language_stats(repos)
     local top_langs = ''
     for i = 1, math.min(M.config.top_lang_count, #lang_stats) do
-        top_langs = top_langs .. string.format('%s (%d), ', lang_stats[i].language, lang_stats[i].count)
+        top_langs = top_langs .. string.format('\n%d. %s (%d)', i, lang_stats[i].language, lang_stats[i].count)
     end
 
     return string.format(
