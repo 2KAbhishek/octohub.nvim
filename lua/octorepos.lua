@@ -13,9 +13,16 @@ local Path = require('plenary.path')
 local utils = require('octorepos.utils')
 local languages = require('octorepos.languages')
 
-local top_lang_count = 5
-local projects_dir = '~/Projects/GitHub/Maintain/'
-local per_user_dir = true
+local config = {
+    top_lang_count = 5,
+    per_user_dir = true,
+    projects_dir = '~/Projects/GitHub/',
+}
+
+M.config = config
+M.setup = function(args)
+    M.config = vim.tbl_deep_extend('force', M.config, args or {})
+end
 
 local function get_default_username(callback)
     utils.get_data_with_cache('default_username', 'gh api user', function(data)
@@ -117,15 +124,15 @@ local function handle_selection(prompt_bufnr, selection)
     actions.close(prompt_bufnr)
     if selection then
         local repo_dir
-        if per_user_dir then
-            local owner_dir = Path:new(vim.fn.expand(projects_dir), selection.value.owner.login):absolute()
+        if M.config.per_user_dir then
+            local owner_dir = Path:new(vim.fn.expand(M.config.projects_dir), selection.value.owner.login):absolute()
             if not Path:new(owner_dir):exists() then
                 vim.fn.mkdir(owner_dir)
             end
 
             repo_dir = Path:new(owner_dir, selection.value.name):absolute()
         else
-            repo_dir = Path:new(vim.fn.expand(projects_dir), selection.value.name):absolute()
+            repo_dir = Path:new(vim.fn.expand(M.config.projects_dir), selection.value.name):absolute()
         end
 
         if Path:new(repo_dir):exists() then
@@ -167,7 +174,7 @@ M.get_repo_stats = function(repos)
 
     local lang_stats = calculate_language_stats(repos)
     local top_langs = ''
-    for i = 1, math.min(top_lang_count, #lang_stats) do
+    for i = 1, math.min(M.config.top_lang_count, #lang_stats) do
         top_langs = top_langs .. string.format('%s (%d), ', lang_stats[i].language, lang_stats[i].count)
     end
 
