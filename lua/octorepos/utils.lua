@@ -1,7 +1,10 @@
 local Job = require('plenary.job')
 local Path = require('plenary.path')
-local notification_queue = {}
+local os = require('os')
 local M = {}
+
+local notification_queue = {}
+local inside_tmux = vim.env.TMUX ~= nil
 
 local function get_cache_dir()
     local cache_dir = vim.fn.stdpath('cache')
@@ -112,6 +115,21 @@ M.open_command = function(file)
     end
 
     os.execute(open_command .. ' ' .. file)
+end
+
+M.open_dir = function(dir)
+    if inside_tmux then
+        local open_cmd = string.format('teas %s', dir)
+        local open_result = os.execute(open_cmd)
+        if open_result == 0 then
+            return
+        end
+    end
+
+    vim.schedule(function()
+        vim.cmd('cd ' .. dir)
+        vim.cmd('Telescope git_files')
+    end)
 end
 
 return M
