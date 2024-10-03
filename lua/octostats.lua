@@ -2,7 +2,7 @@ local vim = vim
 local M = {}
 local activity_count = 5
 local octorepos_present, octorepos = pcall(require, 'octorepos')
-local utils = require('octostats.utils')
+local utils = require('utils')
 
 local config = {
     max_contributions = 50,
