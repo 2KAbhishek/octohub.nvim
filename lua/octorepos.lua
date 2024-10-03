@@ -7,7 +7,6 @@ local actions = require('telescope.actions')
 local action_state = require('telescope.actions.state')
 local previewers = require('telescope.previewers')
 local devicons = require('nvim-web-devicons')
-local os = require('os')
 local Path = require('plenary.path')
 
 local utils = require('octorepos.utils')
@@ -100,25 +99,23 @@ local function format_repo_info(repo)
     return table.concat(repo_info)
 end
 
-local function open_repo(repo_dir)
-    local open_cmd = string.format('tea %s', repo_dir)
-    local open_result = os.execute(open_cmd)
-    if open_result ~= 0 then
-        utils.show_notification('Failed to open repository', vim.log.levels.ERROR)
+local function open_repo(selection, repo_dir)
+    local owner = selection.value.owner.login
+    local repo_name = selection.value.name
+
+    if not Path:new(repo_dir):exists() then
+        local clone_cmd = string.format('gh repo clone %s/%s %s', owner, repo_name, repo_dir)
+
+        utils.show_notification('Cloning repository: ' .. owner .. '/' .. repo_name, vim.log.levels.INFO)
+
+        utils.async_shell_execute(clone_cmd, function(result)
+            if result then
+                utils.open_dir(repo_dir)
+            end
+        end)
+    else
+        utils.open_dir(repo_dir)
     end
-end
-
-local function clone_and_open_repo(selection, repo_dir)
-    local clone_cmd =
-        string.format('gh repo clone %s/%s %s', selection.value.owner.login, selection.value.name, repo_dir)
-
-    utils.show_notification('Cloning repository: ' .. selection.value.name, vim.log.levels.INFO)
-
-    utils.async_shell_execute(clone_cmd, function(result)
-        if result then
-            open_repo(repo_dir)
-        end
-    end)
 end
 
 local function handle_selection(prompt_bufnr, selection)
@@ -135,12 +132,7 @@ local function handle_selection(prompt_bufnr, selection)
         else
             repo_dir = Path:new(vim.fn.expand(M.config.projects_dir), selection.value.name):absolute()
         end
-
-        if Path:new(repo_dir):exists() then
-            open_repo(repo_dir)
-        else
-            clone_and_open_repo(selection, repo_dir)
-        end
+        open_repo(selection, repo_dir)
     end
 end
 
