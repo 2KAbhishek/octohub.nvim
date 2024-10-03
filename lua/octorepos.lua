@@ -99,9 +99,29 @@ local function format_repo_info(repo)
     return table.concat(repo_info)
 end
 
-local function open_repo(selection, repo_dir)
-    local owner = selection.value.owner.login
-    local repo_name = selection.value.name
+local function get_repo_dir(repo_name, owner)
+    local repo_dir
+    if M.config.per_user_dir then
+        local owner_dir = Path:new(vim.fn.expand(M.config.projects_dir), owner):absolute()
+        if not Path:new(owner_dir):exists() then
+            vim.fn.mkdir(owner_dir)
+        end
+
+        repo_dir = Path:new(owner_dir, repo_name):absolute()
+    else
+        repo_dir = Path:new(vim.fn.expand(M.config.projects_dir), repo_name):absolute()
+    end
+    return repo_dir
+end
+
+M.open_repo = function(repo_name, owner)
+    local repo_dir
+    if not owner then
+        get_default_username(function(default_username)
+            owner = default_username
+        end)
+    end
+    repo_dir = get_repo_dir(repo_name, owner)
 
     if not Path:new(repo_dir):exists() then
         local clone_cmd = string.format('gh repo clone %s/%s %s', owner, repo_name, repo_dir)
@@ -121,18 +141,9 @@ end
 local function handle_selection(prompt_bufnr, selection)
     actions.close(prompt_bufnr)
     if selection then
-        local repo_dir
-        if M.config.per_user_dir then
-            local owner_dir = Path:new(vim.fn.expand(M.config.projects_dir), selection.value.owner.login):absolute()
-            if not Path:new(owner_dir):exists() then
-                vim.fn.mkdir(owner_dir)
-            end
-
-            repo_dir = Path:new(owner_dir, selection.value.name):absolute()
-        else
-            repo_dir = Path:new(vim.fn.expand(M.config.projects_dir), selection.value.name):absolute()
-        end
-        open_repo(selection, repo_dir)
+        local owner = selection.value.owner.login
+        local repo_name = selection.value.name
+        M.open_repo(repo_name, owner)
     end
 end
 
