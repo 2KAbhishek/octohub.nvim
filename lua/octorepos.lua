@@ -9,7 +9,7 @@ local previewers = require('telescope.previewers')
 local devicons = require('nvim-web-devicons')
 local Path = require('plenary.path')
 
-local utils = require('octorepos.utils')
+local utils = require('utils')
 local languages = require('octorepos.languages')
 
 local config = {
