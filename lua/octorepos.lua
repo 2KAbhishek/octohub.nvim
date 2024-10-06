@@ -18,11 +18,13 @@ local languages = require('octorepos.languages')
 ---@field per_user_dir boolean : Whether to create a directory for each user
 ---@field projects_dir string : Directory where repositories are cloned
 ---@field cache_timeout number : Time in seconds to cache data
+---@field sort_repos_by string : Sort repositories by various params
 local config = {
     top_lang_count = 5,
     per_user_dir = true,
     projects_dir = '~/Projects/GitHub/',
     cache_timeout = 24 * 3600,
+    sort_repos_by = '',
 }
 
 ---@type Octorepos.config
@@ -168,6 +170,34 @@ local function get_repo_dir(repo_name, owner)
     return repo_dir
 end
 
+---@param repos table
+---@param sort_by string
+local function sort_repos(repos, sort_by)
+    if #sort_by > 0 then
+        return table.sort(repos, function(a, b)
+            if sort_by == 'pushed' then
+                return a.pushed_at > b.pushed_at
+            elseif sort_by == 'created' then
+                return a.created_at > b.created_at
+            elseif sort_by == 'updated' then
+                return a.updated_at > b.updated_at
+            elseif sort_by == 'stars' then
+                return a.stargazers_count > b.stargazers_count
+            elseif sort_by == 'forks' then
+                return a.forks_count > b.forks_count
+            elseif sort_by == 'watchers' then
+                return a.watchers_count > b.watchers_count
+            elseif sort_by == 'size' then
+                return a.size > b.size
+            elseif sort_by == 'issues' then
+                return a.open_issues_count > b.open_issues_count
+            elseif sort_by == 'name' then
+                return a.name < b.name
+            end
+        end)
+    end
+end
+
 ---@param repo_name string
 ---@param owner string
 M.open_repo = function(repo_name, owner)
@@ -224,16 +254,18 @@ end
 
 ---@param username? string
 M.show_repo_stats = function(username)
-    M.get_user_repos(username, function(repos)
+    M.get_repos({ username = username }, function(repos)
         local repo_stats = M.get_repo_stats(repos)
         utils.queue_notification(repo_stats, vim.log.levels.INFO)
     end)
 end
 
----@param username? string
+---@param args? table
 ---@param callback fun(data: any)
-M.get_user_repos = function(username, callback)
-    local function process_username(user_to_process, is_auth_user)
+M.get_repos = function(args, callback)
+    local username = args and args.username or ''
+    local sort_by = args and args.sort_by or 'name'
+    local function get_user_repos(user_to_process, is_auth_user)
         local all_repos = {}
         local function fetch_page(page)
             local command
@@ -259,6 +291,7 @@ M.get_user_repos = function(username, callback)
                     end
                     fetch_page(page + 1)
                 else
+                    sort_repos(all_repos, sort_by)
                     callback(all_repos)
                 end
             end, M.config.cache_timeout)
@@ -269,13 +302,15 @@ M.get_user_repos = function(username, callback)
     get_default_username(function(default_username)
         local is_auth_user = username == nil or username == ''
         local user_to_process = is_auth_user and default_username or username
-        process_username(user_to_process, is_auth_user)
+        get_user_repos(user_to_process, is_auth_user)
     end)
 end
 
----@param username? string
-M.show_repos = function(username)
-    M.get_user_repos(username, function(repos)
+---@param username string
+---@param sort_by string
+M.show_repos = function(username, sort_by)
+    sort_by = #sort_by > 0 and sort_by or M.config.sort_repos_by
+    M.get_repos({ username = username, sort_by = sort_by }, function(repos)
         vim.schedule(function()
             pickers
                 .new({}, {
