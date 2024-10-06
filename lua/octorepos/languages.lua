@@ -57,7 +57,6 @@ M.language_to_filetype = function(language)
         ['Embedded Puppet'] = 'epp',
         ['Erlang'] = 'erl',
         ['F# Script File'] = 'fsscript',
-        ['F# Script'] = 'fsi',
         ['F# Script'] = 'fsx',
         ['F#'] = 'fs',
         ['Fennel'] = 'fnl',
