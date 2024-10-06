@@ -154,9 +154,8 @@ end
 ---@param owner string
 ---@return string
 local function get_repo_dir(repo_name, owner)
-    if not Path:new(M.config.projects_dir):exists() then
-        vim.fn.mkdir(M.config.projects_dir)
-    end
+    local projects_dir = Path:new(M.config.projects_dir)
+    projects_dir:mkdir({ parents = true, exists_ok = true })
 
     local repo_dir
     if M.config.per_user_dir then
