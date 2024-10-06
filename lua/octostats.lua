@@ -142,7 +142,7 @@ local function get_recent_activity(events)
     for i = 1, math.min(M.config.activity_count, #events) do
         local event = events[i]
         local action = event.type:gsub('Event', ''):lower()
-        table.insert(activity, string.format('%s %s %s', event.created_at, action, event.repo.name))
+        table.insert(activity, string.format('%s %s %s', utils.human_time(event.created_at), action, event.repo.name))
     end
     return table.concat(activity, '\n')
 end
@@ -173,7 +173,7 @@ local function format_message(stats, repos, events, contrib_data)
             stats.company,
             stats.bio,
             stats.blog,
-            stats.created_at
+            utils.human_time(stats.created_at)
         ),
     }
 
