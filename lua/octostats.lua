@@ -115,12 +115,12 @@ local function get_recent_activity(events, event_count)
                 and event.payload.commits
                 and event.payload.commits[1]
                 and event.payload.commits[1].message
-                and '\n' .. event.payload.commits[1].message
+                and '\n ' .. event.payload.commits[1].message
             or ''
 
         table.insert(
             activity,
-            string.format('%s %s %s %s', utils.human_time(event.created_at), action, event.repo.name, commit)
+            string.format('%s ⚡%s  %s %s', utils.human_time(event.created_at), action, event.repo.name, commit)
         )
     end
     return table.concat(activity, '\n')
