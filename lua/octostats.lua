@@ -7,7 +7,7 @@ local M = {}
 
 ---@class Octostats.config
 ---@field max_contributions number : Max number of contributions per day to use for icon selection
----@field activity_count number : Number of activity events to show
+---@field event_count number : Number of activity events to show
 ---@field contrib_icons table : Table of icons to use for contributions, can be any length
 ---@field window_width number : Width in percentage of the window to display stats
 ---@field window_height number :Height in percentage of the window to display stats
@@ -17,7 +17,7 @@ local M = {}
 ---@field cache_timeout number : Time in seconds to cache data
 local config = {
     max_contributions = 50,
-    activity_count = 5,
+    event_count = 5,
     contrib_icons = { '', '', '', '', '', '', '' },
     window_width = 90,
     window_height = 60,
@@ -136,14 +136,26 @@ local function show_stats_window(content)
 end
 
 ---@param events table
+---@param event_count number?
 ---@return string
-local function get_recent_activity(events)
+local function get_recent_activity(events, event_count)
     local activity = {}
+    event_count = event_count or M.config.event_count
     table.insert(activity, ' Recent Activity\n')
-    for i = 1, math.min(M.config.activity_count, #events) do
+    for i = 1, math.min(event_count, #events) do
         local event = events[i]
-        local action = event.type:gsub('Event', ''):lower()
-        table.insert(activity, string.format('%s %s %s', utils.human_time(event.created_at), action, event.repo.name))
+        local action = event.type:gsub('Event', '')
+        local commit = event.payload
+                and event.payload.commits
+                and event.payload.commits[1]
+                and event.payload.commits[1].message
+                and '\n' .. event.payload.commits[1].message
+            or ''
+
+        table.insert(
+            activity,
+            string.format('%s %s %s %s', utils.human_time(event.created_at), action, event.repo.name, commit)
+        )
     end
     return table.concat(activity, '\n')
 end
@@ -219,8 +231,9 @@ function M.show_all_stats(username)
     end)
 end
 
-function M.show_activity_stats(username)
+function M.show_activity_stats(username, event_count)
     username = username or ''
+    event_count = tonumber(event_count) or M.config.event_count
     get_github_stats(username, function(stats)
         if stats.message then
             utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
@@ -228,7 +241,7 @@ function M.show_activity_stats(username)
         end
 
         get_user_events(stats.login, function(events)
-            local message = get_recent_activity(events)
+            local message = get_recent_activity(events, event_count)
             show_stats_window(message)
         end)
     end)
