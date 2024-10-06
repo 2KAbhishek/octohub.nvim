@@ -1,5 +1,7 @@
 local M = {}
 
+---@param language string
+---@return string
 M.language_to_filetype = function(language)
     if language == vim.NIL then
         return 'md'

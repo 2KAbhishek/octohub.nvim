@@ -1,5 +1,3 @@
-local vim = vim
-local M = {}
 local pickers = require('telescope.pickers')
 local finders = require('telescope.finders')
 local sorters = require('telescope.sorters')
@@ -9,9 +7,17 @@ local previewers = require('telescope.previewers')
 local devicons = require('nvim-web-devicons')
 local Path = require('plenary.path')
 
+---@class Octorepos
+local M = {}
+
 local utils = require('utils')
 local languages = require('octorepos.languages')
 
+---@class Config
+---@field top_lang_count number
+---@field per_user_dir boolean
+---@field projects_dir string
+---@field cache_timeout number
 local config = {
     top_lang_count = 5,
     per_user_dir = true,
@@ -19,21 +25,18 @@ local config = {
     cache_timeout = 24 * 3600,
 }
 
+---@type Config
 M.config = config
+
+---@param args Config?
 M.setup = function(args)
     M.config = vim.tbl_deep_extend('force', M.config, args or {})
 end
 
-local function get_default_username(callback)
-    utils.get_data_from_cache('default_username', 'gh api user', function(data)
-        if data then
-            callback(data.login)
-        end
-    end, M.config.cache_timeout)
-end
-
+---@param repo table
+---@return table
 local function entry_maker(repo)
-    local icon, icon_highlight = devicons.get_icon(repo.file_type, { default = true })
+    local icon, _ = devicons.get_icon(repo.file_type, { default = true })
     icon = icon or ''
 
     local display = icon and ('%s %s [%s]'):format(icon, repo.name, repo.language)
@@ -46,6 +49,8 @@ local function entry_maker(repo)
     }
 end
 
+---@param repo table
+---@return string
 local function format_repo_info(repo)
     local repo_info = {
         string.format(' Repo Info\n\n Name: %s\n Language: %s\n', repo.name, repo.language),
@@ -99,6 +104,50 @@ local function format_repo_info(repo)
     return table.concat(repo_info)
 end
 
+---@param prompt_bufnr number
+---@param selection table
+local function handle_selection(prompt_bufnr, selection)
+    actions.close(prompt_bufnr)
+    if selection then
+        local owner = selection.value.owner.login
+        local repo_name = selection.value.name
+        M.open_repo(repo_name, owner)
+    end
+end
+
+---@param repos table
+---@return table
+local function calculate_language_stats(repos)
+    local lang_count = {}
+    for _, repo in ipairs(repos) do
+        if repo.language then
+            lang_count[repo.language] = (lang_count[repo.language] or 0) + 1
+        end
+    end
+
+    local lang_stats = {}
+    for lang, count in pairs(lang_count) do
+        table.insert(lang_stats, { language = lang, count = count })
+    end
+
+    table.sort(lang_stats, function(a, b)
+        return a.count > b.count
+    end)
+    return lang_stats
+end
+
+---@param callback fun(result: string)
+local function get_default_username(callback)
+    utils.get_data_from_cache('default_username', 'gh api user', function(data)
+        if data then
+            callback(data.login)
+        end
+    end, M.config.cache_timeout)
+end
+
+---@param repo_name string
+---@param owner string
+---@return string
 local function get_repo_dir(repo_name, owner)
     local repo_dir
     if M.config.per_user_dir then
@@ -114,6 +163,8 @@ local function get_repo_dir(repo_name, owner)
     return repo_dir
 end
 
+---@param repo_name string
+---@param owner string
 M.open_repo = function(repo_name, owner)
     local repo_dir
     if not owner then
@@ -138,34 +189,8 @@ M.open_repo = function(repo_name, owner)
     end
 end
 
-local function handle_selection(prompt_bufnr, selection)
-    actions.close(prompt_bufnr)
-    if selection then
-        local owner = selection.value.owner.login
-        local repo_name = selection.value.name
-        M.open_repo(repo_name, owner)
-    end
-end
-
-local function calculate_language_stats(repos)
-    local lang_count = {}
-    for _, repo in ipairs(repos) do
-        if repo.language then
-            lang_count[repo.language] = (lang_count[repo.language] or 0) + 1
-        end
-    end
-
-    local lang_stats = {}
-    for lang, count in pairs(lang_count) do
-        table.insert(lang_stats, { language = lang, count = count })
-    end
-
-    table.sort(lang_stats, function(a, b)
-        return a.count > b.count
-    end)
-    return lang_stats
-end
-
+---@param repos table
+---@return string
 M.get_repo_stats = function(repos)
     local total_stars = 0
     local most_starred_repo = { name = '', stars = 0 }
@@ -192,6 +217,7 @@ M.get_repo_stats = function(repos)
     )
 end
 
+---@param username? string
 M.show_repo_stats = function(username)
     M.get_user_repos(username, function(repos)
         local repo_stats = M.get_repo_stats(repos)
@@ -199,8 +225,10 @@ M.show_repo_stats = function(username)
     end)
 end
 
+---@param username? string
+---@param callback fun(data: any)
 M.get_user_repos = function(username, callback)
-    local function process_username(username, is_auth_user)
+    local function process_username(user_to_process, is_auth_user)
         local all_repos = {}
         local function fetch_page(page)
             local command
@@ -211,10 +239,10 @@ M.get_user_repos = function(username, callback)
                     page
                 )
             else
-                command = string.format('gh api "users/%s/repos?page=%d&per_page=100"', username, page)
+                command = string.format('gh api "users/%s/repos?page=%d&per_page=100"', user_to_process, page)
             end
 
-            utils.get_data_from_cache('repos_' .. auth .. username .. '_page_' .. page, command, function(repos)
+            utils.get_data_from_cache('repos_' .. auth .. user_to_process .. '_page_' .. page, command, function(repos)
                 if repos and #repos > 0 then
                     for _, repo in ipairs(repos) do
                         local file_type = languages.language_to_filetype(repo.language)
@@ -240,6 +268,7 @@ M.get_user_repos = function(username, callback)
     end)
 end
 
+---@param username? string
 M.show_repos = function(username)
     M.get_user_repos(username, function(repos)
         vim.schedule(function()
@@ -252,12 +281,12 @@ M.show_repos = function(username)
                     }),
                     sorter = sorters.get_generic_fuzzy_sorter(),
                     previewer = previewers.new_buffer_previewer({
-                        define_preview = function(self, entry, status)
+                        define_preview = function(self, entry, _)
                             local repo_info = format_repo_info(entry.value)
                             vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, vim.split(repo_info, '\n'))
                         end,
                     }),
-                    attach_mappings = function(prompt_bufnr, map)
+                    attach_mappings = function(prompt_bufnr, _)
                         actions.select_default:replace(function()
                             local selection = action_state.get_selected_entry()
                             handle_selection(prompt_bufnr, selection)
