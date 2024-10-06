@@ -1,24 +1,41 @@
 local vim = vim
-local M = {}
 local activity_count = 5
 local octorepos_present, octorepos = pcall(require, 'octorepos')
 local utils = require('utils')
 
+---@class Octostats
+local M = {}
+
+---@class Octostats.config
+---@field max_contributions number : Max number of contributions per day to use for icon selection, default: 50
+---@field contrib_icons table : Table of icons to use for contributions, can be any length, default: { '', '', '', '', '', '', '' }
+---@field window_width number : Width of the window to display stats, default: 120
+---@field window_height number : Height of the window to display stats, default: 60
+---@field show_recent_activity boolean : Whether to show recent activity, default: true
+---@field show_contributions boolean : Whether to show contributions, default: true
+---@field show_repo_stats boolean : Whether to show repository stats, default: true
+---@field cache_timeout number : Time in seconds to cache data, default: 3600
 local config = {
     max_contributions = 50,
     contrib_icons = { '', '', '', '', '', '', '' },
-    window_width = 100,
-    window_height = 50,
+    window_width = 120,
+    window_height = 60,
     show_recent_activity = true,
     show_contributions = true,
+    show_repo_stats = true,
     cache_timeout = 60 * 60,
 }
 
+---@type Octostats.config
 M.config = config
+
+---@param args Octostats.config
 M.setup = function(args)
     M.config = vim.tbl_deep_extend('force', M.config, args or {})
 end
 
+---@param contribution_count number
+---@return string icon
 local function get_icon(contribution_count)
     local index = math.min(
         math.floor(contribution_count / (M.config.max_contributions / #M.config.contrib_icons)) + 1,
@@ -27,16 +44,22 @@ local function get_icon(contribution_count)
     return M.config.contrib_icons[index]
 end
 
+---@param username string
+---@param callback fun(data: table)
 local function get_github_stats(username, callback)
     local command = username == '' and 'gh api user' or 'gh api users/' .. username
     utils.get_data_from_cache('user_' .. username, command, callback, M.config.cache_timeout)
 end
 
+---@param username string
+---@param callback fun(data: table)
 local function get_user_events(username, callback)
     local command = 'gh api users/' .. username .. '/events?per_page=100'
     utils.get_data_from_cache('events_' .. username, command, callback, M.config.cache_timeout)
 end
 
+---@param username string
+---@param callback fun(data: table)
 local function get_contribution_data(username, callback)
     local command = 'gh api graphql -f query=\'{user(login: "'
         .. username
@@ -44,6 +67,8 @@ local function get_contribution_data(username, callback)
     utils.get_data_from_cache('contrib_' .. username, command, callback, M.config.cache_timeout)
 end
 
+---@param contrib_data table
+---@return string
 local function get_contribution_graph(contrib_data)
     local top_contributions = 0
     local calendar = contrib_data.data.user.contributionsCollection.contributionCalendar
@@ -75,6 +100,7 @@ local function get_contribution_graph(contrib_data)
     return table.concat(graph_parts)
 end
 
+---@param content string
 local function show_stats_window(content)
     local stats_window_buf = nil
     local stats_window_win = nil
@@ -108,6 +134,8 @@ local function show_stats_window(content)
     end)
 end
 
+---@param events table
+---@return string
 local function get_recent_activity(events)
     local activity = {}
     for i = 1, math.min(activity_count, #events) do
@@ -118,6 +146,11 @@ local function get_recent_activity(events)
     return table.concat(activity, '\n')
 end
 
+---@param stats table
+---@param repos table?
+---@param events table
+---@param contrib_data table
+---@return string
 local function format_message(stats, repos, events, contrib_data)
     local messageParts = {
         string.format(
@@ -155,6 +188,7 @@ local function format_message(stats, repos, events, contrib_data)
     return table.concat(messageParts)
 end
 
+---@param username string?
 function M.show_github_stats(username)
     username = username or ''
     get_github_stats(username, function(stats)
@@ -163,7 +197,7 @@ function M.show_github_stats(username)
             return
         end
 
-        if octorepos_present then
+        if octorepos_present and M.config.show_repo_stats then
             octorepos.get_user_repos(stats.login, function(repos)
                 get_user_events(stats.login, function(events)
                     get_contribution_data(stats.login, function(contrib_data)
@@ -183,6 +217,7 @@ function M.show_github_stats(username)
     end)
 end
 
+---@param username string?
 function M.open_github_profile(username)
     username = username or ''
     get_github_stats(username, function(stats)
