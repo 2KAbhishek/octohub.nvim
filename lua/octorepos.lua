@@ -19,12 +19,14 @@ local languages = require('octorepos.languages')
 ---@field projects_dir string : Directory where repositories are cloned
 ---@field cache_timeout number : Time in seconds to cache data
 ---@field sort_repos_by string : Sort repositories by various params
+---@field repo_type string : Type of repositories to display
 local config = {
     top_lang_count = 5,
     per_user_dir = true,
     projects_dir = '~/Projects/GitHub/',
     cache_timeout = 24 * 3600,
     sort_repos_by = '',
+    repo_type = '',
 }
 
 ---@type Octorepos.config
@@ -198,6 +200,33 @@ local function sort_repos(repos, sort_by)
     end
 end
 
+---@param repos table
+---@param repo_type string
+---@return table
+local function filter_repos(repos, repo_type)
+    if #repo_type > 0 then
+        local filtered = {}
+        for _, repo in ipairs(repos) do
+            local should_include = false
+            if repo_type == 'private' then
+                should_include = repo.private
+            elseif repo_type == 'fork' then
+                should_include = repo.fork
+            elseif repo_type == 'archive' then
+                should_include = repo.archived
+            elseif repo_type == 'template' then
+                should_include = repo.is_template
+            end
+
+            if should_include then
+                table.insert(filtered, repo)
+            end
+        end
+        return filtered
+    end
+    return repos
+end
+
 ---@param repo_name string
 ---@param owner string
 M.open_repo = function(repo_name, owner)
@@ -264,7 +293,9 @@ end
 ---@param callback fun(data: any)
 M.get_repos = function(args, callback)
     local username = args and args.username or ''
-    local sort_by = args and args.sort_by or 'name'
+    local sort_by = args and args.sort_by or M.config.sort_repos_by
+    local repo_type = args and args.repo_type or M.config.repo_type
+
     local function get_user_repos(user_to_process, is_auth_user)
         local all_repos = {}
         local function fetch_page(page)
@@ -292,6 +323,7 @@ M.get_repos = function(args, callback)
                     fetch_page(page + 1)
                 else
                     sort_repos(all_repos, sort_by)
+                    all_repos = filter_repos(all_repos, repo_type)
                     callback(all_repos)
                 end
             end, M.config.cache_timeout)
@@ -308,9 +340,11 @@ end
 
 ---@param username string
 ---@param sort_by string
-M.show_repos = function(username, sort_by)
+M.show_repos = function(username, sort_by, repo_type)
     sort_by = #sort_by > 0 and sort_by or M.config.sort_repos_by
-    M.get_repos({ username = username, sort_by = sort_by }, function(repos)
+    repo_type = #repo_type > 0 and repo_type or M.config.repo_type
+
+    M.get_repos({ username = username, sort_by = sort_by, repo_type = repo_type }, function(repos)
         vim.schedule(function()
             pickers
                 .new({}, {

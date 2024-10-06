@@ -2,17 +2,19 @@ local repos = require('octorepos')
 
 vim.api.nvim_create_user_command('OctoRepos', function(opts)
     local args = vim.split(opts.args, ' ')
-    local user_arg, sort_arg = '', ''
+    local user_arg, sort_arg, type_arg = '', '', ''
 
     for _, arg in ipairs(args) do
         if arg:sub(1, 5) == 'sort:' then
             sort_arg = arg:sub(6)
+        elseif arg:sub(1, 5) == 'type:' then
+            type_arg = arg:sub(6)
         else
             user_arg = arg
         end
     end
 
-    repos.show_repos(user_arg, sort_arg)
+    repos.show_repos(user_arg, sort_arg, type_arg)
 end, { nargs = '*' })
 
 vim.api.nvim_create_user_command('OctoRepo', function(opts)
