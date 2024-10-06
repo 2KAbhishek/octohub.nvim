@@ -1,5 +1,4 @@
 local vim = vim
-local activity_count = 5
 local octorepos_present, octorepos = pcall(require, 'octorepos')
 local utils = require('utils')
 
@@ -8,6 +7,7 @@ local M = {}
 
 ---@class Octostats.config
 ---@field max_contributions number : Max number of contributions per day to use for icon selection
+---@field activity_count number : Number of activity events to show
 ---@field contrib_icons table : Table of icons to use for contributions, can be any length
 ---@field window_width number : Width in percentage of the window to display stats
 ---@field window_height number :Height in percentage of the window to display stats
@@ -17,6 +17,7 @@ local M = {}
 ---@field cache_timeout number : Time in seconds to cache data
 local config = {
     max_contributions = 50,
+    activity_count = 5,
     contrib_icons = { '', '', '', '', '', '', '' },
     window_width = 90,
     window_height = 60,
@@ -138,7 +139,7 @@ end
 ---@return string
 local function get_recent_activity(events)
     local activity = {}
-    for i = 1, math.min(activity_count, #events) do
+    for i = 1, math.min(M.config.activity_count, #events) do
         local event = events[i]
         local action = event.type:gsub('Event', ''):lower()
         table.insert(activity, string.format('%s %s %s', event.created_at, action, event.repo.name))
