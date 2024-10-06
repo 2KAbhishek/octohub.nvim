@@ -13,11 +13,11 @@ local M = {}
 local utils = require('utils')
 local languages = require('octorepos.languages')
 
----@class Config
----@field top_lang_count number
----@field per_user_dir boolean
----@field projects_dir string
----@field cache_timeout number
+---@class Octorepos.config
+---@field top_lang_count number : Number of top languages to display
+---@field per_user_dir boolean : Whether to create a directory for each user
+---@field projects_dir string : Directory where repositories are cloned
+---@field cache_timeout number : Time in seconds to cache data
 local config = {
     top_lang_count = 5,
     per_user_dir = true,
@@ -25,10 +25,10 @@ local config = {
     cache_timeout = 24 * 3600,
 }
 
----@type Config
+---@type Octorepos.config
 M.config = config
 
----@param args Config?
+---@param args Octorepos.config
 M.setup = function(args)
     M.config = vim.tbl_deep_extend('force', M.config, args or {})
 end
