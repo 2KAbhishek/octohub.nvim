@@ -35,16 +35,6 @@ M.setup = function(args)
     M.config = vim.tbl_deep_extend('force', M.config, args or {})
 end
 
----@param contribution_count number
----@return string icon
-local function get_icon(contribution_count)
-    local index = math.min(
-        math.floor(contribution_count / (M.config.max_contributions / #M.config.contrib_icons)) + 1,
-        #M.config.contrib_icons
-    )
-    return M.config.contrib_icons[index]
-end
-
 ---@param username string
 ---@param callback fun(data: table)
 local function get_github_stats(username, callback)
@@ -66,6 +56,16 @@ local function get_contribution_data(username, callback)
         .. username
         .. '") { contributionsCollection { contributionCalendar { weeks { contributionDays { contributionCount } } } } } }\''
     utils.get_data_from_cache('contrib_' .. username, command, callback, M.config.cache_timeout)
+end
+
+---@param contribution_count number
+---@return string icon
+local function get_icon(contribution_count)
+    local index = math.min(
+        math.floor(contribution_count / (M.config.max_contributions / #M.config.contrib_icons)) + 1,
+        #M.config.contrib_icons
+    )
+    return M.config.contrib_icons[index]
 end
 
 ---@param contrib_data table
@@ -99,40 +99,6 @@ local function get_contribution_graph(contrib_data)
     end
     table.insert(graph_parts, 1, string.format(' Contributions\n Highest Contributions: %d', top_contributions))
     return table.concat(graph_parts)
-end
-
----@param content string
-local function show_stats_window(content)
-    local stats_window_buf = nil
-    local stats_window_win = nil
-
-    vim.schedule(function()
-        if not stats_window_buf or not vim.api.nvim_buf_is_valid(stats_window_buf) then
-            stats_window_buf = vim.api.nvim_create_buf(false, true)
-        end
-
-        vim.api.nvim_buf_set_lines(stats_window_buf, 0, -1, true, vim.split(content, '\n'))
-
-        if not stats_window_win or not vim.api.nvim_win_is_valid(stats_window_win) then
-            local width = math.min(M.config.window_width, vim.o.columns - 4)
-            local height = math.min(M.config.window_height, vim.o.lines - 4)
-            stats_window_win = vim.api.nvim_open_win(stats_window_buf, true, {
-                relative = 'editor',
-                width = width,
-                height = height,
-                col = (vim.o.columns - width) / 2,
-                row = (vim.o.lines - height) / 2,
-                style = 'minimal',
-                border = 'rounded',
-            })
-
-            vim.api.nvim_win_set_option(stats_window_win, 'wrap', true)
-            vim.api.nvim_win_set_option(stats_window_win, 'cursorline', true)
-            vim.api.nvim_buf_set_keymap(stats_window_buf, 'n', 'q', ':close<CR>', { noremap = true, silent = true })
-        else
-            vim.api.nvim_win_set_buf(stats_window_win, stats_window_buf)
-        end
-    end)
 end
 
 ---@param events table
@@ -202,6 +168,74 @@ local function format_message(stats, repos, events, contrib_data)
     return table.concat(messageParts)
 end
 
+---@param content string
+local function show_stats_window(content)
+    local stats_window_buf = nil
+    local stats_window_win = nil
+
+    vim.schedule(function()
+        if not stats_window_buf or not vim.api.nvim_buf_is_valid(stats_window_buf) then
+            stats_window_buf = vim.api.nvim_create_buf(false, true)
+        end
+
+        vim.api.nvim_buf_set_lines(stats_window_buf, 0, -1, true, vim.split(content, '\n'))
+
+        if not stats_window_win or not vim.api.nvim_win_is_valid(stats_window_win) then
+            local width = math.min(M.config.window_width, vim.o.columns - 4)
+            local height = math.min(M.config.window_height, vim.o.lines - 4)
+            stats_window_win = vim.api.nvim_open_win(stats_window_buf, true, {
+                relative = 'editor',
+                width = width,
+                height = height,
+                col = (vim.o.columns - width) / 2,
+                row = (vim.o.lines - height) / 2,
+                style = 'minimal',
+                border = 'rounded',
+            })
+
+            vim.api.nvim_win_set_option(stats_window_win, 'wrap', true)
+            vim.api.nvim_win_set_option(stats_window_win, 'cursorline', true)
+            vim.api.nvim_buf_set_keymap(stats_window_buf, 'n', 'q', ':close<CR>', { noremap = true, silent = true })
+        else
+            vim.api.nvim_win_set_buf(stats_window_win, stats_window_buf)
+        end
+    end)
+end
+
+---@param username string?
+---@param event_count number?
+function M.show_activity_stats(username, event_count)
+    username = username or ''
+    event_count = tonumber(event_count) or M.config.event_count
+    get_github_stats(username, function(stats)
+        if stats.message then
+            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
+            return
+        end
+
+        get_user_events(stats.login, function(events)
+            local message = get_recent_activity(events, event_count)
+            show_stats_window(message)
+        end)
+    end)
+end
+
+---@param username string?
+function M.show_contribution_stats(username)
+    username = username or ''
+    get_github_stats(username, function(stats)
+        if stats.message then
+            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
+            return
+        end
+
+        get_contribution_data(stats.login, function(contrib_data)
+            local message = get_contribution_graph(contrib_data)
+            show_stats_window(message)
+        end)
+    end)
+end
+
 ---@param username string?
 function M.show_all_stats(username)
     username = username or ''
@@ -228,37 +262,6 @@ function M.show_all_stats(username)
                 end)
             end)
         end
-    end)
-end
-
-function M.show_activity_stats(username, event_count)
-    username = username or ''
-    event_count = tonumber(event_count) or M.config.event_count
-    get_github_stats(username, function(stats)
-        if stats.message then
-            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
-            return
-        end
-
-        get_user_events(stats.login, function(events)
-            local message = get_recent_activity(events, event_count)
-            show_stats_window(message)
-        end)
-    end)
-end
-
-function M.show_contribution_stats(username)
-    username = username or ''
-    get_github_stats(username, function(stats)
-        if stats.message then
-            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
-            return
-        end
-
-        get_contribution_data(stats.login, function(contrib_data)
-            local message = get_contribution_graph(contrib_data)
-            show_stats_window(message)
-        end)
     end)
 end
 
