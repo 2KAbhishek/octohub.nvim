@@ -139,6 +139,7 @@ end
 ---@return string
 local function get_recent_activity(events)
     local activity = {}
+    table.insert(activity, ' Recent Activity\n')
     for i = 1, math.min(M.config.activity_count, #events) do
         local event = events[i]
         local action = event.type:gsub('Event', ''):lower()
@@ -181,7 +182,7 @@ local function format_message(stats, repos, events, contrib_data)
         table.insert(messageParts, '\n' .. octorepos.get_repo_stats(repos) .. '\n')
     end
     if M.config.show_recent_activity then
-        table.insert(messageParts, string.format('\n Recent Activity\n%s\n', get_recent_activity(events)))
+        table.insert(messageParts, '\n' .. get_recent_activity(events) .. '\n')
     end
     if M.config.show_contributions then
         table.insert(messageParts, string.format('\n Contributions\n%s\n', get_contribution_graph(contrib_data)))
@@ -218,6 +219,20 @@ function M.show_github_stats(username)
     end)
 end
 
+function M.show_activity_stats(username)
+    username = username or ''
+    get_github_stats(username, function(stats)
+        if stats.message then
+            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
+            return
+        end
+
+        get_user_events(stats.login, function(events)
+            local message = get_recent_activity(events)
+            show_stats_window(message)
+        end)
+    end)
+end
 ---@param username string?
 function M.open_github_profile(username)
     username = username or ''
