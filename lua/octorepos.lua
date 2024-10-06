@@ -68,8 +68,8 @@ local function format_repo_info(repo)
             repo.watchers_count,
             repo.open_issues_count,
             repo.owner.login,
-            repo.created_at,
-            repo.updated_at,
+            utils.human_time(repo.created_at),
+            utils.human_time(repo.updated_at),
             repo.size
         )
     )
