@@ -97,7 +97,7 @@ local function get_contribution_graph(contrib_data)
         end
         table.insert(graph_parts, '\n')
     end
-    table.insert(graph_parts, 1, string.format(' Highest Contributions: %d', top_contributions))
+    table.insert(graph_parts, 1, string.format(' Contributions\n Highest Contributions: %d', top_contributions))
     return table.concat(graph_parts)
 end
 
@@ -185,13 +185,13 @@ local function format_message(stats, repos, events, contrib_data)
         table.insert(messageParts, '\n' .. get_recent_activity(events) .. '\n')
     end
     if M.config.show_contributions then
-        table.insert(messageParts, string.format('\n Contributions\n%s\n', get_contribution_graph(contrib_data)))
+        table.insert(messageParts, '\n' .. get_contribution_graph(contrib_data) .. '\n')
     end
     return table.concat(messageParts)
 end
 
 ---@param username string?
-function M.show_github_stats(username)
+function M.show_all_stats(username)
     username = username or ''
     get_github_stats(username, function(stats)
         if stats.message then
@@ -200,7 +200,7 @@ function M.show_github_stats(username)
         end
 
         if octorepos_present and M.config.show_repo_stats then
-            octorepos.get_user_repos(stats.login, function(repos)
+            octorepos.get_repos({ username = stats.login }, function(repos)
                 get_user_events(stats.login, function(events)
                     get_contribution_data(stats.login, function(contrib_data)
                         local message = format_message(stats, repos, events, contrib_data)
@@ -233,6 +233,22 @@ function M.show_activity_stats(username)
         end)
     end)
 end
+
+function M.show_contribution_stats(username)
+    username = username or ''
+    get_github_stats(username, function(stats)
+        if stats.message then
+            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
+            return
+        end
+
+        get_contribution_data(stats.login, function(contrib_data)
+            local message = get_contribution_graph(contrib_data)
+            show_stats_window(message)
+        end)
+    end)
+end
+
 ---@param username string?
 function M.open_github_profile(username)
     username = username or ''
