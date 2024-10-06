@@ -84,6 +84,7 @@ local function format_repo_info(repo)
         { repo.fork, '\n Forked\n' },
         { repo.archived, '\n Archived\n' },
         { repo.private, '\n Private\n' },
+        { repo.is_template, '\n Template\n' },
         { #repo.topics > 0, string.format('\n Topics: %s\n', table.concat(repo.topics, ', ')) },
     }
 
