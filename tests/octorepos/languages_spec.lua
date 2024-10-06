@@ -1,4 +1,7 @@
 local languages = require('octorepos.languages')
+local assert = require('luassert.assert')
+local describe = require('plenary.busted').describe
+local it = require('plenary.busted').it
 
 describe('language_to_filetype', function()
     it('works with known languages', function()
