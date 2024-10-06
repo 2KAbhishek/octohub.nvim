@@ -7,18 +7,18 @@ local utils = require('utils')
 local M = {}
 
 ---@class Octostats.config
----@field max_contributions number : Max number of contributions per day to use for icon selection, default: 50
----@field contrib_icons table : Table of icons to use for contributions, can be any length, default: { '', '', '', '', '', '', '' }
----@field window_width number : Width of the window to display stats, default: 120
----@field window_height number : Height of the window to display stats, default: 60
----@field show_recent_activity boolean : Whether to show recent activity, default: true
----@field show_contributions boolean : Whether to show contributions, default: true
----@field show_repo_stats boolean : Whether to show repository stats, default: true
----@field cache_timeout number : Time in seconds to cache data, default: 3600
+---@field max_contributions number : Max number of contributions per day to use for icon selection
+---@field contrib_icons table : Table of icons to use for contributions, can be any length
+---@field window_width number : Width in percentage of the window to display stats
+---@field window_height number :Height in percentage of the window to display stats
+---@field show_recent_activity boolean : Whether to show recent activity
+---@field show_contributions boolean : Whether to show contributions
+---@field show_repo_stats boolean : Whether to show repository stats
+---@field cache_timeout number : Time in seconds to cache data
 local config = {
     max_contributions = 50,
     contrib_icons = { '', '', '', '', '', '', '' },
-    window_width = 120,
+    window_width = 90,
     window_height = 60,
     show_recent_activity = true,
     show_contributions = true,
@@ -183,7 +183,7 @@ local function format_message(stats, repos, events, contrib_data)
         table.insert(messageParts, string.format('\n Recent Activity\n%s\n', get_recent_activity(events)))
     end
     if M.config.show_contributions then
-        table.insert(messageParts, string.format('\n Contributions\n%s\n', get_contribution_graph(contrib_data)))
+        table.insert(messageParts, string.format('\n Contributions\n%s\n', get_contribution_graph(contrib_data)))
     end
     return table.concat(messageParts)
 end
