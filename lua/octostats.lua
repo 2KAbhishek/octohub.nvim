@@ -101,7 +101,7 @@ local function get_contribution_graph(contrib_data)
         end
         table.insert(graph_parts, '\n')
     end
-    table.insert(graph_parts, 1, string.format(' Contributions\n Highest Contributions: %d', top_contributions))
+    table.insert(graph_parts, 1, string.format(' Contributions\n \n Highest Contributions: %d', top_contributions))
     return table.concat(graph_parts)
 end
 
@@ -119,12 +119,12 @@ local function get_recent_activity(events, event_count)
                 and event.payload.commits
                 and event.payload.commits[1]
                 and event.payload.commits[1].message
-                and '\n ' .. event.payload.commits[1].message
+                and '\n ' .. event.payload.commits[1].message .. '\n'
             or ''
 
         table.insert(
             activity,
-            string.format('%s ⚡%s  %s %s', utils.human_time(event.created_at), action, event.repo.name, commit)
+            string.format('%s, %s, %s %s', utils.human_time(event.created_at), action, event.repo.name, commit)
         )
     end
     return table.concat(activity, '\n')
