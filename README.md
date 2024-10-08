@@ -20,7 +20,7 @@
 <a href="https://github.com/2KAbhishek/octorepos.nvim/pulse">
 <img alt="Last Updated" src="https://img.shields.io/github/last-commit/2kabhishek/octorepos.nvim?style=flat&color=e06c75&label="> </a>
 
-<h3>Ready to go Neovim template 🏗️✈️</h3>
+<h3>Manage Your GitHub Repositories with Ease 🐙</h3>
 
 <figure>
   <img src="doc/images/screenshot.png" alt="octorepos.nvim in action">
@@ -30,15 +30,14 @@
 
 </div>
 
-octorepos.nvim is a neovim plugin that allows neovim users to `<action>`.
+`octorepos.nvim` is a Neovim plugin that allows users to manage and display their GitHub repositories efficiently.
 
 ## ✨ Features
 
-- Includes a ready to go neovim plugin template
-- Comes with a lint and test CI action
-- Includes a Github action to auto generate vimdocs
-- Comes with a ready to go README template
-- Works with [mkrepo](https://github.com/2kabhishek/mkrepo)
+- Displays repositories based on user input.
+- Supports sorting and filtering by repository type.
+- Caches repository data for faster access.
+- Provides integration with Telescope for searching repositories.
 
 ## ⚡ Setup
 
@@ -48,97 +47,90 @@ octorepos.nvim is a neovim plugin that allows neovim users to `<action>`.
 
 ### 💻 Installation
 
-```lua
+````lua
 -- Lazy
 {
     '2kabhishek/octorepos.nvim',
     dependencies = {
-        'nvim-lua/plenary.nvim'
+        'nvim-lua/plenary.nvim',
+        'nvim-telescope/telescope.nvim'  -- Required for Telescope integration
     },
-    cmd = 'TemplateHello',
+    cmd = { 'OctoRepos', 'OctoRepo', 'OctoRepoStats' },
 },
 
 -- Packer
-use '2kabhishek/octorepos.nvim'
-
-```
+use {
+    '2kabhishek/octorepos.nvim',
+    requires = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim' },
+}
 
 ## 🚀 Usage
-
-1. Fork the `octorepos.nvim` repo
-2. Update the plugin name, file names etc, change `template` to `your-plugin-name`
-3. Add the code required for your plugin,
-
-   - Main logic, config options for the plugin code goes into [lua/template](./lua/template.lua)
-   - Supporting code goes into [lua/modules](./lua/template/) if needed
-   - For adding commands and keybindngs use [plugin/template](./plugin/template.lua)
-4. Add test code to the [tests](./tests/template) directory
-5. Update the README
-6. Tweak the [docs action](./.github/workflows/docs.yml) file to reflect your username, commit message and plugin name
-
-   - Generating vimdocs needs write access to actions (repo settings > actions > general > workflow permissions)
 
 ### Configuration
 
 octorepos.nvim can be configured using the following options:
 
 ```lua
-template.setup({
-    name = 'octorepos.nvim', -- Name to be greeted, 'World' by default
+local octorepos = require('octorepos')
+
+octorepos.setup({
+    top_lang_count = 5,               -- Number of top languages to display
+    per_user_dir = true,              -- Create a directory for each user
+    projects_dir = '~/Projects/GitHub/',  -- Directory where repositories are cloned
+    sort_repos_by = '',               -- Sort repositories by various parameters
+    repo_type = '',                   -- Type of repositories to display
+    repo_cache_timeout = 3600 * 24,   -- Time in seconds to cache repositories
+    username_cache_timeout = 3600 * 24 * 7,  -- Time in seconds to cache username
 })
-```
+````
 
 ### Commands
 
 `octorepos.nvim` adds the following commands:
 
-- `TemplateHello`: Shows a hello message with the confugred name.
+- `:OctoRepos [user] [sort:<criteria>] [type:<repo_type>]`: Displays the repositories for a given user, sorted by the specified criteria.
+- `:OctoRepo <repo_name> [user]`: Opens a specified repository, optionally by a user.
+- `:OctoRepoStats [repo_name]`: Displays statistics for a specified repository.
 
 ### Keybindings
 
 It is recommended to use:
 
-- `<leader>th,` for `TemplateHello`
+- `<leader>go` for `:OctoRepos`
+- `<leader>gO` for `:OctoRepo`
+- `<leader>gn` for `:OctoRepoStats`
 
-> NOTE: By default there are no configured keybindings.
+> NOTE: By default, there are no configured keybindings.
 
 ### Help
 
-Run `:help nerdy` for more details.
+Run `:help octorepos` for more details.
 
 ## 🏗️ What's Next
 
-Planning to add `<feature/module>`.
+Planning to add support for advanced filtering options and repository contributions tracking.
 
 ### ✅ To-Do
 
-- [x] Setup repo
-- [ ] Think real hard
-- [ ] Start typing
+- [ ] Add more tests
+- [ ] Enhance documentation
 
 ## ⛅ Behind The Code
 
 ### 🌈 Inspiration
 
-octorepos.nvim was inspired by [nvim-plugin-template](https://github.com/ellisonleao/nvim-plugin-template), I added some changes on top to make setting up a new plugin faster.
+`octorepos.nvim` was inspired by various GitHub management tools and Neovim plugin structures, focusing on usability and performance.
 
 ### 💡 Challenges/Learnings
 
-- The main challenges were `<issue/difficulty>`
-- I learned about `<learning/accomplishment>`
-
-### 🧰 Tooling
-
-- [dots2k](https://github.com/2kabhishek/dots2k) — Dev Environment
-- [nvim2k](https://github.com/2kabhishek/nvim2k) — Personalized Editor
-- [sway2k](https://github.com/2kabhishek/sway2k) — Desktop Environment
-- [qute2k](https://github.com/2kabhishek/qute2k) — Personalized Browser
+- The main challenges were managing API rate limits and caching efficiently.
+- I learned about Lua's powerful features for handling data structures and Neovim's extensibility.
 
 ### 🔍 More Info
 
-- [nerdy.nvim](https://github.com/2kabhishek/nerdy.nevim) — Find nerd glyphs easily
-- [tdo.nvim](https://github.com/2KAbhishek/tdo.nvim) — Fast and simple notes in Neovim
-- [termim.nvim](https://github.com/2kabhishek/termim,nvim) — Neovim terminal improved
+- [nerdy.nvim](https://github.com/2kabhishek/nerdy.nvim) — Find nerd glyphs easily
+- [tdo.nvim](https://github.com/2kabhishek/tdo.nvim) — Fast and simple notes in Neovim
+- [termim.nvim](https://github.com/2kabhishek/termim.nvim) — Neovim terminal improved
 
 <hr>
 
@@ -146,7 +138,7 @@ octorepos.nvim was inspired by [nvim-plugin-template](https://github.com/ellison
 
 <strong>⭐ hit the star button if you found this useful ⭐</strong><br>
 
-<a href="https://github.com/2KAbhishek/octorepos.nvim">Source</a>
+<a href="https://github.com/2kabhishek/octorepos.nvim">Source</a>
 | <a href="https://2kabhishek.github.io/blog" target="_blank">Blog </a>
 | <a href="https://twitter.com/2kabhishek" target="_blank">Twitter </a>
 | <a href="https://linkedin.com/in/2kabhishek" target="_blank">LinkedIn </a>
