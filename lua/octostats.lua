@@ -213,7 +213,7 @@ function M.show_activity_stats(username, event_count)
     event_count = tonumber(event_count) or M.config.event_count
     get_github_stats(username, function(stats)
         if stats.message then
-            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
+            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octostats')
             return
         end
 
@@ -229,7 +229,7 @@ function M.show_contribution_stats(username)
     username = username or ''
     get_github_stats(username, function(stats)
         if stats.message then
-            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
+            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octostats')
             return
         end
 
@@ -245,7 +245,7 @@ function M.show_all_stats(username)
     username = username or ''
     get_github_stats(username, function(stats)
         if stats.message then
-            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
+            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octostats')
             return
         end
 
@@ -274,13 +274,13 @@ function M.open_github_profile(username)
     username = username or ''
     get_github_stats(username, function(stats)
         if stats.message then
-            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR)
+            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octostats')
             return
         end
 
         local url = stats.html_url
         utils.open_command(url)
-        utils.queue_notification('Opened GitHub profile: ' .. url, vim.log.levels.INFO)
+        utils.queue_notification('Opened GitHub profile: ' .. url, vim.log.levels.INFO, 'Octostats')
     end)
 end
 
