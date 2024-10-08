@@ -156,21 +156,18 @@ end
 ---@param owner string
 ---@return string
 local function get_repo_dir(repo_name, owner)
-    local projects_dir = Path:new(M.config.projects_dir)
+    local projects_dir = Path:new(vim.fn.expand(M.config.projects_dir))
     projects_dir:mkdir({ parents = true, exists_ok = true })
 
     local repo_dir
     if M.config.per_user_dir then
-        local owner_dir = Path:new(vim.fn.expand(M.config.projects_dir), owner):absolute()
-        if not Path:new(owner_dir):exists() then
-            vim.fn.mkdir(owner_dir)
-        end
-
-        repo_dir = Path:new(owner_dir, repo_name):absolute()
+        local owner_dir = projects_dir:joinpath(owner)
+        owner_dir:mkdir({ parents = true, exists_ok = true })
+        repo_dir = owner_dir:joinpath(repo_name)
     else
-        repo_dir = Path:new(vim.fn.expand(M.config.projects_dir), repo_name):absolute()
+        repo_dir = projects_dir:joinpath(repo_name)
     end
-    return repo_dir
+    return repo_dir:absolute()
 end
 
 ---@param repos table
