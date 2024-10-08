@@ -17,16 +17,18 @@ local languages = require('octorepos.languages')
 ---@field top_lang_count number : Number of top languages to display
 ---@field per_user_dir boolean : Whether to create a directory for each user
 ---@field projects_dir string : Directory where repositories are cloned
----@field cache_timeout number : Time in seconds to cache data
 ---@field sort_repos_by string : Sort repositories by various params
 ---@field repo_type string : Type of repositories to display
+---@field repo_cache_timeout number : Time in seconds to cache repositories
+---@field username_cache_timeout number : Time in seconds to cache username
 local config = {
     top_lang_count = 5,
     per_user_dir = true,
     projects_dir = '~/Projects/GitHub/',
-    cache_timeout = 24 * 3600,
     sort_repos_by = '',
     repo_type = '',
+    repo_cache_timeout = 3600 * 24,
+    username_cache_timeout = 3600 * 24 * 7,
 }
 
 ---@type Octorepos.config
@@ -147,7 +149,7 @@ local function get_default_username(callback)
         if data then
             callback(data.login)
         end
-    end, M.config.cache_timeout)
+    end, M.config.username_cache_timeout)
 end
 
 ---@param repo_name string
@@ -325,7 +327,7 @@ M.get_repos = function(args, callback)
                     all_repos = filter_repos(all_repos, repo_type)
                     callback(all_repos)
                 end
-            end, M.config.cache_timeout)
+            end, M.config.repo_cache_timeout)
         end
         fetch_page(1)
     end
