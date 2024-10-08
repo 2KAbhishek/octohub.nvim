@@ -242,7 +242,7 @@ M.open_repo = function(repo_name, owner)
     if not Path:new(repo_dir):exists() then
         local clone_cmd = string.format('gh repo clone %s/%s %s', owner, repo_name, repo_dir)
 
-        utils.show_notification('Cloning repository: ' .. owner .. '/' .. repo_name, vim.log.levels.INFO)
+        utils.show_notification('Cloning repository: ' .. owner .. '/' .. repo_name, vim.log.levels.INFO, 'Octorepos')
 
         utils.async_shell_execute(clone_cmd, function(result)
             if result then
@@ -286,7 +286,7 @@ end
 M.show_repo_stats = function(username)
     M.get_repos({ username = username }, function(repos)
         local repo_stats = M.get_repo_stats(repos)
-        utils.queue_notification(repo_stats, vim.log.levels.INFO)
+        utils.queue_notification(repo_stats, vim.log.levels.INFO, 'Octorepos')
     end)
 end
 
