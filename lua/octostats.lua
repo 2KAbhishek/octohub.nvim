@@ -14,7 +14,9 @@ local M = {}
 ---@field show_recent_activity boolean : Whether to show recent activity
 ---@field show_contributions boolean : Whether to show contributions
 ---@field show_repo_stats boolean : Whether to show repository stats
----@field cache_timeout number : Time in seconds to cache data
+---@field events_cache_timeout number : Time in seconds to cache events data
+---@field contributions_cache_timeout number : Time in seconds to contributions data
+---@field user_cache_timeout number : Time in seconds to cache user data
 local config = {
     max_contributions = 50,
     event_count = 5,
@@ -24,7 +26,9 @@ local config = {
     show_recent_activity = true,
     show_contributions = true,
     show_repo_stats = true,
-    cache_timeout = 60 * 60,
+    events_cache_timeout = 60 * 30,
+    contibutions_cache_timeout = 3600 * 4,
+    user_cache_timeout = 3600 * 24 * 7,
 }
 
 ---@type Octostats.config
@@ -39,14 +43,14 @@ end
 ---@param callback fun(data: table)
 local function get_github_stats(username, callback)
     local command = username == '' and 'gh api user' or 'gh api users/' .. username
-    utils.get_data_from_cache('user_' .. username, command, callback, M.config.cache_timeout)
+    utils.get_data_from_cache('user_' .. username, command, callback, M.config.user_cache_timeout)
 end
 
 ---@param username string
 ---@param callback fun(data: table)
 local function get_user_events(username, callback)
     local command = 'gh api users/' .. username .. '/events?per_page=100'
-    utils.get_data_from_cache('events_' .. username, command, callback, M.config.cache_timeout)
+    utils.get_data_from_cache('events_' .. username, command, callback, M.config.events_cache_timeout)
 end
 
 ---@param username string
@@ -55,7 +59,7 @@ local function get_contribution_data(username, callback)
     local command = 'gh api graphql -f query=\'{user(login: "'
         .. username
         .. '") { contributionsCollection { contributionCalendar { weeks { contributionDays { contributionCount } } } } } }\''
-    utils.get_data_from_cache('contrib_' .. username, command, callback, M.config.cache_timeout)
+    utils.get_data_from_cache('contrib_' .. username, command, callback, M.config.contibutions_cache_timeout)
 end
 
 ---@param contribution_count number
