@@ -17,6 +17,7 @@ local M = {}
 ---@field events_cache_timeout number : Time in seconds to cache events data
 ---@field contributions_cache_timeout number : Time in seconds to contributions data
 ---@field user_cache_timeout number : Time in seconds to cache user data
+---@field add_default_keybindings boolean : Whether to add default keybindings
 local config = {
     max_contributions = 50,
     event_count = 5,
@@ -29,6 +30,7 @@ local config = {
     events_cache_timeout = 60 * 30,
     contibutions_cache_timeout = 3600 * 4,
     user_cache_timeout = 3600 * 24 * 7,
+    add_default_keybindings = true,
 }
 
 ---@type Octostats.config
@@ -101,7 +103,11 @@ local function get_contribution_graph(contrib_data)
         end
         table.insert(graph_parts, '\n')
     end
-    table.insert(graph_parts, 1, string.format(' Contributions\n \n Highest Contributions: %d', top_contributions))
+    table.insert(
+        graph_parts,
+        1,
+        string.format(' Contributions\n \n Highest Contributions: %d', top_contributions)
+    )
     return table.concat(graph_parts)
 end
 

@@ -20,7 +20,7 @@
 <a href="https://github.com/2KAbhishek/octostats.nvim/pulse">
 <img alt="Last Updated" src="https://img.shields.io/github/last-commit/2kabhishek/octostats.nvim?style=flat&color=e06c75&label="> </a>
 
-<h3>Ready to go Neovim template 🏗️✈️</h3>
+<h3>All Your GitHub Stats in Neovim 🐙📊</h3>
 
 <figure>
   <img src="doc/images/screenshot.png" alt="octostats.nvim in action">
@@ -30,21 +30,21 @@
 
 </div>
 
-octostats.nvim is a neovim plugin that allows neovim users to `<action>`.
+`octostats.nvim` is a Neovim plugin that brings your GitHub profile and contribution stats directly into Neovim.
+With this plugin, you can view activity events, contributions, repository stats, and more — all from within your editor.
 
 ## ✨ Features
 
-- Includes a ready to go neovim plugin template
-- Comes with a lint and test CI action
-- Includes a Github action to auto generate vimdocs
-- Comes with a ready to go README template
-- Works with [mkrepo](https://github.com/2kabhishek/mkrepo)
+- Display GitHub profile stats including recent activity and contributions for any user.
+- View repository statistics, such as top languages and contribution metrics.
+- Customizable display options for activity, contribution graphs, and repo stats.
 
 ## ⚡ Setup
 
 ### ⚙️ Requirements
 
 - Latest version of `neovim`
+- Authenticated `gh` CLI
 
 ### 💻 Installation
 
@@ -52,90 +52,86 @@ octostats.nvim is a neovim plugin that allows neovim users to `<action>`.
 -- Lazy
 {
     '2kabhishek/octostats.nvim',
+    cmd = { 'OctoStats', 'OctoProfile', 'OctoActivityStats', 'OctoContributionStats' },
+    keys = { '<leader>gos', '<leader>gop', '<leader>goa', '<leader>gog' },
     dependencies = {
-        'nvim-lua/plenary.nvim'
+        '2kabhishek/utils.nvim',
+        '2kabhishek/octorepos.nvim', -- Optional, if you want to view repo stats
     },
-    cmd = 'TemplateHello',
+    opts = {},
 },
-
--- Packer
-use '2kabhishek/octostats.nvim'
-
 ```
 
 ## 🚀 Usage
 
-1. Fork the `octostats.nvim` repo
-2. Update the plugin name, file names etc, change `template` to `your-plugin-name`
-3. Add the code required for your plugin,
-
-   - Main logic, config options for the plugin code goes into [lua/template](./lua/template.lua)
-   - Supporting code goes into [lua/modules](./lua/template/) if needed
-   - For adding commands and keybindngs use [plugin/template](./plugin/template.lua)
-4. Add test code to the [tests](./tests/template) directory
-5. Update the README
-6. Tweak the [docs action](./.github/workflows/docs.yml) file to reflect your username, commit message and plugin name
-
-   - Generating vimdocs needs write access to actions (repo settings > actions > general > workflow permissions)
-
 ### Configuration
 
-octostats.nvim can be configured using the following options:
+`octostats.nvim` can be configured using the following options:
 
 ```lua
-template.setup({
-    name = 'octostats.nvim', -- Name to be greeted, 'World' by default
+require('octostats').setup({
+    max_contributions = 50,                -- Max number of contributions per day to use for icon selection
+    event_count = 5,                       -- Number of activity events to show
+    contrib_icons = { '', '', '', '', '', '', '' }, -- Icons for different contribution levels
+    window_width = 90,                     -- Width in percentage of the window to display stats
+    window_height = 60,                    -- Height in percentage of the window to display stats
+    show_recent_activity = true,           -- Show recent activity in the stats window
+    show_contributions = true,             -- Show contributions in the stats window
+    show_repo_stats = true,                -- Show repository stats in the stats window
+    events_cache_timeout = 60 * 30,        -- Cache timeout for activity events (30 minutes)
+    contributions_cache_timeout = 3600 * 4, -- Cache timeout for contributions data (4 hours)
+    user_cache_timeout = 3600 * 24 * 7,    -- Cache timeout for user data (7 days)
+    add_default_keybindings = true,        -- Add default keybindings for the plugin
 })
 ```
 
 ### Commands
 
-`octostats.nvim` adds the following commands:
+`octostats.nvim` introduces the following commands to interact with your GitHub data:
 
-- `TemplateHello`: Shows a hello message with the confugred name.
+- `OctoStats`: Displays all stats (activity, contributions, repository data).
+  - Ex: `:OctoStats theprimeagen` shows stats for `theprimeagen`.
+- `OctoActivityStats [username] [count:N]`: Displays recent activity for a user, with an optional count.
+  - Ex: `:OctoActivityStats count:20` shows the last 20 activity events for the current user.
+- `OctoContributionStats [username]`: Displays contribution stats for a user.
+- `OctoProfile [username]`: Opens the GitHub profile of a user in your browser.
+
+If the `user` parameter is not provided, the plugin will use the current authenticated username from `gh`
 
 ### Keybindings
 
-It is recommended to use:
+By default, these are the configured keybindings.
 
-- `<leader>th,` for `TemplateHello`
+| Keybinding    | Command                           | Description         |
+| ------------- | --------------------------------- | ------------------- |
+| `<leader>gos` | `:OctoStats<CR>`                  | All Stats           |
+| `<leader>goa` | `:OctoActivityStats count:20<CR>` | Activity Stats      |
+| `<leader>gog` | `:OctoContributionStats<CR>`      | Contribution Graph  |
+| `<leader>gop` | `:OctoProfile<CR>`                | Open GitHub Profile |
 
-> NOTE: By default there are no configured keybindings.
+I recommend customizing these keybindings based on your preferences.
 
 ### Help
 
-Run `:help nerdy` for more details.
+Run `:help octostats` to view these docs in Neovim.
 
 ## 🏗️ What's Next
 
-Planning to add `<feature/module>`.
-
-### ✅ To-Do
-
-- [x] Setup repo
-- [ ] Think real hard
-- [ ] Start typing
+- [ ] Adding tests for the plugin
 
 ## ⛅ Behind The Code
 
 ### 🌈 Inspiration
 
-octostats.nvim was inspired by [nvim-plugin-template](https://github.com/ellisonleao/nvim-plugin-template), I added some changes on top to make setting up a new plugin faster.
+`octostats.nvim` was inspired by the need to quickly access GitHub data without leaving the Neovim environment.
 
 ### 💡 Challenges/Learnings
 
-- The main challenges were `<issue/difficulty>`
-- I learned about `<learning/accomplishment>`
-
-### 🧰 Tooling
-
-- [dots2k](https://github.com/2kabhishek/dots2k) — Dev Environment
-- [nvim2k](https://github.com/2kabhishek/nvim2k) — Personalized Editor
-- [sway2k](https://github.com/2kabhishek/sway2k) — Desktop Environment
-- [qute2k](https://github.com/2kabhishek/qute2k) — Personalized Browser
+- Integrating GitHub's API efficiently while minimizing API call limits was challenging. I learned how to implement caching effectively in Neovim.
 
 ### 🔍 More Info
 
+- [octorepos.nvim](https://github.com/2kabhishek/octorepos.nevim) — All your GitHub repositories in Neovim
 - [nerdy.nvim](https://github.com/2kabhishek/nerdy.nevim) — Find nerd glyphs easily
 - [tdo.nvim](https://github.com/2KAbhishek/tdo.nvim) — Fast and simple notes in Neovim
 - [termim.nvim](https://github.com/2kabhishek/termim,nvim) — Neovim terminal improved

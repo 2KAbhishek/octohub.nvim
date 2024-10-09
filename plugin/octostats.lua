@@ -25,3 +25,14 @@ end, { nargs = '?' })
 vim.api.nvim_create_user_command('OctoProfile', function(opts)
     stats.open_github_profile(opts.args)
 end, { nargs = '?' })
+
+if stats.config.add_default_keybindings then
+    local function add_keymap(keys, cmd, desc)
+        vim.api.nvim_set_keymap('n', keys, cmd, { noremap = true, silent = true, desc = desc })
+    end
+
+    add_keymap('<leader>gos', ':OctoStats<CR>', 'All Stats')
+    add_keymap('<leader>goa', ':OctoActivityStats count:20<CR>', 'Activity Stats')
+    add_keymap('<leader>gog', ':OctoContributionStats<CR>', 'Contribution Graph')
+    add_keymap('<leader>gop', ':OctoProfile<CR>', 'Open GitHub Profile')
+end
