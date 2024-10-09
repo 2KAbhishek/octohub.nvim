@@ -20,7 +20,7 @@
 <a href="https://github.com/2KAbhishek/octorepos.nvim/pulse">
 <img alt="Last Updated" src="https://img.shields.io/github/last-commit/2kabhishek/octorepos.nvim?style=flat&color=e06c75&label="> </a>
 
-<h3>Manage Your GitHub Repositories with Ease 🐙</h3>
+<h3>All Your GitHub Repos in Neovim 🐙📂</h3>
 
 <figure>
   <img src="doc/images/screenshot.png" alt="octorepos.nvim in action">
@@ -30,39 +30,46 @@
 
 </div>
 
-`octorepos.nvim` is a Neovim plugin that allows users to manage and display their GitHub repositories efficiently.
+`octorepos.nvim` is a Neovim plugin that lets you manage and explore your GitHub repositories directly from within Neovim.
+With this plugin, you can view, filter, and sort repositories, all without leaving your editor.
 
 ## ✨ Features
 
-- Displays repositories based on user input.
-- Supports sorting and filtering by repository type.
-- Caches repository data for faster access.
-- Provides integration with Telescope for searching repositories.
+- Quickly list and open any GitHub repositories, yours or others, directly from Neovim.
+- Sort repositories by stars, forks, and other criteria, with support for filtering by type (forks, private, etc.).
+- View all sorts of repository details at a glance, including issues, stars, forks, and more.
+- Seamless integration with Telescope for fuzzy searching and quick access to repositories.
 
 ## ⚡ Setup
 
 ### ⚙️ Requirements
 
 - Latest version of `neovim`
+- Authenticated `gh` CLI
+- [tmux-tea](https://github.com/2kabhishek/tmux-tea) (optional) if you want to use individual sessions for each repository
 
 ### 💻 Installation
 
-````lua
--- Lazy
+```lua
+-- Lazy nvim
 {
     '2kabhishek/octorepos.nvim',
-    dependencies = {
-        'nvim-lua/plenary.nvim',
-        'nvim-telescope/telescope.nvim'  -- Required for Telescope integration
+    cmd = { 'OctoRepos', 'OctoRepo', 'OctoRepoStats', 'OctoRepoWeb' },
+    keys = {
+        '<leader>goo',
+        '<leader>gof',
+        '<leader>goi',
+        '<leader>goh',
+        '<leader>gop',
+        '<leader>goc',
+        '<leader>gor',
+        '<leader>gow',
+        '<leader>gon',
     },
-    cmd = { 'OctoRepos', 'OctoRepo', 'OctoRepoStats' },
+    dependencies = { '2kabhishek/utils.nvim', 'nvim-telescope/telescope.nvim' },
+    opts = {},
 },
-
--- Packer
-use {
-    '2kabhishek/octorepos.nvim',
-    requires = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim' },
-}
+```
 
 ## 🚀 Usage
 
@@ -74,60 +81,89 @@ octorepos.nvim can be configured using the following options:
 local octorepos = require('octorepos')
 
 octorepos.setup({
-    top_lang_count = 5,               -- Number of top languages to display
+    top_lang_count = 5,               -- Number of top languages to display in stats
     per_user_dir = true,              -- Create a directory for each user
-    projects_dir = '~/Projects/GitHub/',  -- Directory where repositories are cloned
+    projects_dir = '~/Projects/',     -- Directory where repositories are cloned
     sort_repos_by = '',               -- Sort repositories by various parameters
     repo_type = '',                   -- Type of repositories to display
     repo_cache_timeout = 3600 * 24,   -- Time in seconds to cache repositories
     username_cache_timeout = 3600 * 24 * 7,  -- Time in seconds to cache username
+    add_default_keybindings = true,   -- Add default keybindings for the plugin
 })
-````
+```
 
 ### Commands
 
 `octorepos.nvim` adds the following commands:
 
 - `:OctoRepos [user] [sort:<criteria>] [type:<repo_type>]`: Displays the repositories for a given user, sorted by the specified criteria.
+  - Available sorting criteria: `stars`, `forks`, `updated`, `created`, `pushed`, `name`, `size`, `watchers`, `issues`
+  - Available repository types: `private`, `fork`, `template`, `archived`
+  - Ex: `:OctoRepos 2kabhishek sort:updated type:fork` - Display all forked repositories for the user `2kabhishek`, sorted by the last update.
 - `:OctoRepo <repo_name> [user]`: Opens a specified repository, optionally by a user.
-- `:OctoRepoStats [repo_name]`: Displays statistics for a specified repository.
+  - Ex: `:OctoRepo octorepos.nvim` - Clone the repository `octorepos.nvim` from the current user.
+  - Ex: `:OctoRepo 2kabhishek octorepos.nvim` - Clone the repository `octorepos.nvim` from the user `2kabhishek`.
+- `:OctoRepoStats [user]`: Displays statistics for the repositories of a given user.
+  - Ex: `:OctoRepoStats 2kabhishek` - Display statistics for the repositories of the user `2kabhishek`.
+- `:OctoRepoWeb` - Opens the current repository in the browser.
+
+If the `user` parameter is not provided, the plugin will use the current authenticated username from `gh`
 
 ### Keybindings
 
-It is recommended to use:
+By default, these are the configured keybindings.
 
-- `<leader>go` for `:OctoRepos`
-- `<leader>gO` for `:OctoRepo`
-- `<leader>gn` for `:OctoRepoStats`
+| Keybinding    | Command                       | Description            |
+| ------------- | ----------------------------- | ---------------------- |
+| `<leader>goo` | `:OctoRepos<CR>`              | All Repos              |
+| `<leader>gof` | `:OctoRepos sort:stars<CR>`   | Top Starred Repos      |
+| `<leader>goi` | `:OctoRepos sort:issues<CR>`  | Repos With Issues      |
+| `<leader>goh` | `:OctoRepos sort:updated<CR>` | Recently Updated Repos |
+| `<leader>gop` | `:OctoRepos type:private<CR>` | Private Repos          |
+| `<leader>goc` | `:OctoRepos type:fork<CR>`    | Forked Repos           |
+| `<leader>gor` | `:OctoRepo<CR>`               | Open / Clone Repo      |
+| `<leader>gow` | `:OctoRepoWeb<CR>`            | Open Repo in Browser   |
+| `<leader>gon` | `:OctoRepoStats<CR>`          | Repo Stats             |
 
-> NOTE: By default, there are no configured keybindings.
+I recommend customizing these keybindings based on your preferences.
+
+### Telescope Integration
+
+`octorepos.nvim` adds a Telescope extension for easy searching and browsing of repositories.
+
+To use this extension, add the following code to your configuration:
+
+```lua
+local telescope = require('telescope')
+
+telescope.load_extension('repos')
+```
+
+You can now use the following command to show repositories in Telescope: `:Telescope repos`
 
 ### Help
 
-Run `:help octorepos` for more details.
+Run `:help octorepos` to view these docs in Neovim.
 
 ## 🏗️ What's Next
 
-Planning to add support for advanced filtering options and repository contributions tracking.
-
-### ✅ To-Do
-
 - [ ] Add more tests
-- [ ] Enhance documentation
+- You tell me!
 
 ## ⛅ Behind The Code
 
 ### 🌈 Inspiration
 
-`octorepos.nvim` was inspired by various GitHub management tools and Neovim plugin structures, focusing on usability and performance.
+I wanted to be able to manage my GitHub repositories directly from Neovim, without having to switch to a browser or terminal.
 
 ### 💡 Challenges/Learnings
 
-- The main challenges were managing API rate limits and caching efficiently.
+- The main challenges were figuring out how to interact with the GitHub API and how to display the data in a user-friendly way.
 - I learned about Lua's powerful features for handling data structures and Neovim's extensibility.
 
 ### 🔍 More Info
 
+- [octostats.nvim](https://github.com/2kabhishek/octostats.nevim) — All your GitHub stats in Neovim
 - [nerdy.nvim](https://github.com/2kabhishek/nerdy.nvim) — Find nerd glyphs easily
 - [tdo.nvim](https://github.com/2kabhishek/tdo.nvim) — Fast and simple notes in Neovim
 - [termim.nvim](https://github.com/2kabhishek/termim.nvim) — Neovim terminal improved
