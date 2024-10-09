@@ -30,6 +30,10 @@ vim.api.nvim_create_user_command('OctoRepoStats', function(opts)
     repos.show_repo_stats(opts.args)
 end, { nargs = '?' })
 
+vim.api.nvim_create_user_command('OctoRepoWeb', function(opts)
+    repos.open_repo_web(opts.args)
+end, { nargs = '?' })
+
 if repos.config.add_default_keybindings then
     vim.api.nvim_set_keymap('n', '<leader>goo', ':OctoRepos<CR>', { noremap = true, silent = true })
     vim.api.nvim_set_keymap('n', '<leader>gop', ':OctoRepos type:private<CR>', { noremap = true, silent = true })
