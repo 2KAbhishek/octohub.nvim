@@ -35,9 +35,17 @@ vim.api.nvim_create_user_command('OctoRepoWeb', function(opts)
 end, { nargs = '?' })
 
 if repos.config.add_default_keybindings then
-    vim.api.nvim_set_keymap('n', '<leader>goo', ':OctoRepos<CR>', { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', '<leader>gop', ':OctoRepos type:private<CR>', { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', '<leader>goh', ':OctoRepos sort:updated<CR>', { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', '<leader>gor', ':OctoRepo<CR>', { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('n', '<leader>gon', ':OctoRepoStats<CR>', { noremap = true, silent = true })
+    local function add_keymap(keys, cmd, desc)
+        vim.api.nvim_set_keymap('n', keys, cmd, { noremap = true, silent = true, desc = desc })
+    end
+
+    add_keymap('<leader>goo', ':OctoRepos<CR>', 'All Repos')
+    add_keymap('<leader>gof', ':OctoRepos sort:stars<CR>', 'Top Starred Repos')
+    add_keymap('<leader>goi', ':OctoRepos sort:issues<CR>', 'Repos With Issues')
+    add_keymap('<leader>goh', ':OctoRepos sort:updated<CR>', 'Recently Updated Repos')
+    add_keymap('<leader>gop', ':OctoRepos type:private<CR>', 'Private Repos')
+    add_keymap('<leader>goc', ':OctoRepos type:fork<CR>', 'Forked Repos')
+    add_keymap('<leader>gor', ':OctoRepo<CR>', 'Open Repo')
+    add_keymap('<leader>gow', ':OctoRepoWeb<CR>', 'Open Repo in Browser')
+    add_keymap('<leader>gon', ':OctoRepoStats<CR>', 'Repo Stats')
 end
