@@ -21,6 +21,7 @@ local languages = require('octorepos.languages')
 ---@field repo_type string : Type of repositories to display
 ---@field repo_cache_timeout number : Time in seconds to cache repositories
 ---@field username_cache_timeout number : Time in seconds to cache username
+---@field add_default_keybindings boolean : Whether to add default keybindings
 local config = {
     top_lang_count = 5,
     per_user_dir = true,
@@ -29,6 +30,7 @@ local config = {
     repo_type = '',
     repo_cache_timeout = 3600 * 24,
     username_cache_timeout = 3600 * 24 * 7,
+    add_default_keybindings = true,
 }
 
 ---@type Octorepos.config
