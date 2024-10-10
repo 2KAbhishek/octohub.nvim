@@ -1,36 +1,36 @@
 <div align = "center">
 
-<h1><a href="https://github.com/2kabhishek/octorepos.nvim">octorepos.nvim</a></h1>
+<h1><a href="https://github.com/2kabhishek/octohub.nvim">octohub.nvim</a></h1>
 
-<a href="https://github.com/2KAbhishek/octorepos.nvim/blob/main/LICENSE">
-<img alt="License" src="https://img.shields.io/github/license/2kabhishek/octorepos.nvim?style=flat&color=eee&label="> </a>
+<a href="https://github.com/2KAbhishek/octohub.nvim/blob/main/LICENSE">
+<img alt="License" src="https://img.shields.io/github/license/2kabhishek/octohub.nvim?style=flat&color=eee&label="> </a>
 
-<a href="https://github.com/2KAbhishek/octorepos.nvim/graphs/contributors">
-<img alt="People" src="https://img.shields.io/github/contributors/2kabhishek/octorepos.nvim?style=flat&color=ffaaf2&label=People"> </a>
+<a href="https://github.com/2KAbhishek/octohub.nvim/graphs/contributors">
+<img alt="People" src="https://img.shields.io/github/contributors/2kabhishek/octohub.nvim?style=flat&color=ffaaf2&label=People"> </a>
 
-<a href="https://github.com/2KAbhishek/octorepos.nvim/stargazers">
-<img alt="Stars" src="https://img.shields.io/github/stars/2kabhishek/octorepos.nvim?style=flat&color=98c379&label=Stars"></a>
+<a href="https://github.com/2KAbhishek/octohub.nvim/stargazers">
+<img alt="Stars" src="https://img.shields.io/github/stars/2kabhishek/octohub.nvim?style=flat&color=98c379&label=Stars"></a>
 
-<a href="https://github.com/2KAbhishek/octorepos.nvim/network/members">
-<img alt="Forks" src="https://img.shields.io/github/forks/2kabhishek/octorepos.nvim?style=flat&color=66a8e0&label=Forks"> </a>
+<a href="https://github.com/2KAbhishek/octohub.nvim/network/members">
+<img alt="Forks" src="https://img.shields.io/github/forks/2kabhishek/octohub.nvim?style=flat&color=66a8e0&label=Forks"> </a>
 
-<a href="https://github.com/2KAbhishek/octorepos.nvim/watchers">
-<img alt="Watches" src="https://img.shields.io/github/watchers/2kabhishek/octorepos.nvim?style=flat&color=f5d08b&label=Watches"> </a>
+<a href="https://github.com/2KAbhishek/octohub.nvim/watchers">
+<img alt="Watches" src="https://img.shields.io/github/watchers/2kabhishek/octohub.nvim?style=flat&color=f5d08b&label=Watches"> </a>
 
-<a href="https://github.com/2KAbhishek/octorepos.nvim/pulse">
-<img alt="Last Updated" src="https://img.shields.io/github/last-commit/2kabhishek/octorepos.nvim?style=flat&color=e06c75&label="> </a>
+<a href="https://github.com/2KAbhishek/octohub.nvim/pulse">
+<img alt="Last Updated" src="https://img.shields.io/github/last-commit/2kabhishek/octohub.nvim?style=flat&color=e06c75&label="> </a>
 
 <h3>All Your GitHub Repos in Neovim 🐙📂</h3>
 
 <figure>
-  <img src="doc/images/screenshot.png" alt="octorepos.nvim in action">
+  <img src="doc/images/screenshot.png" alt="octohub.nvim in action">
   <br/>
-  <figcaption>octorepos.nvim in action</figcaption>
+  <figcaption>octohub.nvim in action</figcaption>
 </figure>
 
 </div>
 
-`octorepos.nvim` is a Neovim plugin that lets you manage and explore your GitHub repositories directly from within Neovim.
+`octohub.nvim` is a Neovim plugin that lets you manage and explore your GitHub repositories directly from within Neovim.
 With this plugin, you can view, filter, and sort repositories, all without leaving your editor.
 
 `octostats.nvim` is a Neovim plugin that brings your GitHub profile and contribution stats directly into Neovim.
@@ -61,7 +61,7 @@ With this plugin, you can view activity events, contributions, repository stats,
 ```lua
 -- Lazy nvim
 {
-    '2kabhishek/octorepos.nvim',
+    '2kabhishek/octohub.nvim',
     cmd = {
         'OctoRepos',
         'OctoRepo',
@@ -96,12 +96,12 @@ With this plugin, you can view activity events, contributions, repository stats,
 
 ### Configuration
 
-octorepos.nvim can be configured using the following options:
+octohub.nvim can be configured using the following options:
 
 ```lua
-local octorepos = require('octorepos')
+local octohub = require('octohub')
 
-octorepos.setup({
+octohub.setup({
     top_lang_count = 5,               -- Number of top languages to display in stats
     per_user_dir = true,              -- Create a directory for each user
     projects_dir = '~/Projects/',     -- Directory where repositories are cloned
@@ -128,19 +128,18 @@ octorepos.setup({
 
 ### Commands
 
-`octorepos.nvim` adds the following commands:
+`octohub.nvim` adds the following commands:
 
 - `:OctoRepos [user] [sort:<criteria>] [type:<repo_type>]`: Displays the repositories for a given user, sorted by the specified criteria.
   - Available sorting criteria: `stars`, `forks`, `updated`, `created`, `pushed`, `name`, `size`, `watchers`, `issues`
   - Available repository types: `private`, `fork`, `template`, `archived`
   - Ex: `:OctoRepos 2kabhishek sort:updated type:fork` - Display all forked repositories for the user `2kabhishek`, sorted by the last update.
 - `:OctoRepo <repo_name> [user]`: Opens a specified repository, optionally by a user.
-  - Ex: `:OctoRepo octorepos.nvim` - Clone the repository `octorepos.nvim` from the current user.
-  - Ex: `:OctoRepo 2kabhishek octorepos.nvim` - Clone the repository `octorepos.nvim` from the user `2kabhishek`.
+  - Ex: `:OctoRepo octohub.nvim` - Clone the repository `octohub.nvim` from the current user.
+  - Ex: `:OctoRepo 2kabhishek octohub.nvim` - Clone the repository `octohub.nvim` from the user `2kabhishek`.
 - `:OctoRepoStats [user]`: Displays statistics for the repositories of a given user.
   - Ex: `:OctoRepoStats 2kabhishek` - Display statistics for the repositories of the user `2kabhishek`.
 - `:OctoRepoWeb` - Opens the current repository in the browser.
-
 - `OctoStats`: Displays all stats (activity, contributions, repository data).
   - Ex: `:OctoStats theprimeagen` shows stats for `theprimeagen`.
 - `OctoActivityStats [username] [count:N]`: Displays recent activity for a user, with an optional count.
@@ -174,7 +173,7 @@ I recommend customizing these keybindings based on your preferences.
 
 ### Telescope Integration
 
-`octorepos.nvim` adds a Telescope extension for easy searching and browsing of repositories.
+`octohub.nvim` adds a Telescope extension for easy searching and browsing of repositories.
 
 To use this extension, add the following code to your configuration:
 
@@ -188,7 +187,7 @@ You can now use the following command to show repositories in Telescope: `:Teles
 
 ### Help
 
-Run `:help octorepos` to view these docs in Neovim.
+Run `:help octohub` to view these docs in Neovim.
 
 ## 🏗️ What's Next
 
@@ -199,15 +198,12 @@ Run `:help octorepos` to view these docs in Neovim.
 
 ### 🌈 Inspiration
 
-I wanted to be able to manage my GitHub repositories directly from Neovim, without having to switch to a browser or terminal.
-
-`octostats.nvim` was inspired by the need to quickly access GitHub data without leaving the Neovim environment.
+I use GitHub quite a bit and wanted to get all of my most used activities done from Neovim.
 
 ### 💡 Challenges/Learnings
 
 - The main challenges were figuring out how to interact with the GitHub API and how to display the data in a user-friendly way.
 - I learned about Lua's powerful features for handling data structures and Neovim's extensibility.
-- Integrating GitHub's API efficiently while minimizing API call limits was challenging. I learned how to implement caching effectively in Neovim.
 
 ### 🔍 More Info
 
@@ -221,7 +217,7 @@ I wanted to be able to manage my GitHub repositories directly from Neovim, witho
 
 <strong>⭐ hit the star button if you found this useful ⭐</strong><br>
 
-<a href="https://github.com/2kabhishek/octorepos.nvim">Source</a>
+<a href="https://github.com/2kabhishek/octohub.nvim">Source</a>
 | <a href="https://2kabhishek.github.io/blog" target="_blank">Blog </a>
 | <a href="https://twitter.com/2kabhishek" target="_blank">Twitter </a>
 | <a href="https://linkedin.com/in/2kabhishek" target="_blank">LinkedIn </a>

@@ -8,12 +8,13 @@ local devicons = require('nvim-web-devicons')
 local Path = require('plenary.path')
 
 local utils = require('utils')
-local languages = require('octorepos.languages')
+local languages = require('octohub.languages')
 
+---@class octohub.repos
 local M = {}
 
----@type Octorepos.config
-M.config = require('octorepos').config
+---@type octohub.config
+M.config = require('octohub').config
 
 ---@param repo table
 ---@return table
@@ -42,8 +43,8 @@ local function format_repo_info(repo)
         repo_info,
         string.format(
             ' Link: %s\n\n'
-                .. ' Stars: %d\n Forks: %d\n Watchers: %d\n Open Issues: %d\n\n'
-                .. ' Owner: %s\n Created At: %s\n Last Updated: %s\n Size: %d KB\n',
+            .. ' Stars: %d\n Forks: %d\n Watchers: %d\n Open Issues: %d\n\n'
+            .. ' Owner: %s\n Created At: %s\n Last Updated: %s\n Size: %d KB\n',
             repo.html_url,
             repo.stargazers_count,
             repo.forks_count,
@@ -215,7 +216,7 @@ M.open_repo = function(repo_name, owner)
     if not Path:new(repo_dir):exists() then
         local clone_cmd = string.format('gh repo clone %s/%s %s', owner, repo_name, repo_dir)
 
-        utils.show_notification('Cloning repository: ' .. owner .. '/' .. repo_name, vim.log.levels.INFO, 'Octorepos')
+        utils.show_notification('Cloning repository: ' .. owner .. '/' .. repo_name, vim.log.levels.INFO, 'Octohub')
 
         utils.async_shell_execute(clone_cmd, function(result)
             if result then
@@ -259,7 +260,7 @@ end
 M.show_repo_stats = function(username)
     M.get_repos({ username = username }, function(repos)
         local repo_stats = M.get_repo_stats(repos)
-        utils.queue_notification(repo_stats, vim.log.levels.INFO, 'Octorepos')
+        utils.queue_notification(repo_stats, vim.log.levels.INFO, 'Octohub')
     end)
 end
 

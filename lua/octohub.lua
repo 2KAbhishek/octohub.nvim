@@ -1,7 +1,7 @@
----@class Octorepos
+---@class octohub
 local M = {}
 
----@class Octorepos.config
+---@class octohub.config
 ---@field per_user_dir boolean : Whether to create a directory for each user
 ---@field projects_dir string : Directory where repositories are cloned
 ---@field contrib_icons table : Table of icons to use for contributions, can be any length
@@ -43,10 +43,10 @@ local config = {
     add_default_keybindings = true,
 }
 
----@type Octorepos.config
+---@type octohub.config
 M.config = config
 
----@param args Octorepos.config
+---@param args octohub.config
 M.setup = function(args)
     M.config = vim.tbl_deep_extend('force', M.config, args or {})
 end

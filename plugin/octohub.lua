@@ -1,5 +1,5 @@
-local repos = require('octorepos.repos')
-local stats = require('octorepos.stats')
+local repos = require('octohub.repos')
+local stats = require('octohub.stats')
 
 vim.api.nvim_create_user_command('OctoRepos', function(opts)
     local args = vim.split(opts.args, ' ')

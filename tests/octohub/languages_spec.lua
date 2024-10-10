@@ -1,4 +1,4 @@
-local languages = require('octorepos.languages')
+local languages = require('octohub.languages')
 local assert = require('luassert.assert')
 local describe = require('plenary.busted').describe
 local it = require('plenary.busted').it
