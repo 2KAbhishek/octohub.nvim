@@ -28,14 +28,6 @@ vim.api.nvim_create_user_command('OctoRepo', function(opts)
     end
 end, { nargs = '*' })
 
-vim.api.nvim_create_user_command('OctoRepoStats', function(opts)
-    repos.show_repo_stats(opts.args)
-end, { nargs = '?' })
-
-vim.api.nvim_create_user_command('OctoRepoWeb', function(opts)
-    web.open_repo_web(opts.args)
-end, { nargs = '?' })
-
 vim.api.nvim_create_user_command('OctoStats', function(opts)
     stats.show_all_stats(opts.args)
 end, { nargs = '?' })
@@ -56,6 +48,14 @@ end, { nargs = '*' })
 
 vim.api.nvim_create_user_command('OctoContributionStats', function(opts)
     stats.show_contribution_stats(opts.args)
+end, { nargs = '?' })
+
+vim.api.nvim_create_user_command('OctoRepoStats', function(opts)
+    stats.show_repo_stats(opts.args)
+end, { nargs = '?' })
+
+vim.api.nvim_create_user_command('OctoRepoWeb', function(opts)
+    web.open_repo_web(opts.args)
 end, { nargs = '?' })
 
 vim.api.nvim_create_user_command('OctoProfile', function(opts)

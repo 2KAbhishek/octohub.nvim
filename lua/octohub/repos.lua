@@ -99,29 +99,8 @@ local function handle_selection(prompt_bufnr, selection)
     end
 end
 
----@param repos table
----@return table
-local function calculate_language_stats(repos)
-    local lang_count = {}
-    for _, repo in ipairs(repos) do
-        if repo.language then
-            lang_count[repo.language] = (lang_count[repo.language] or 0) + 1
-        end
-    end
-
-    local lang_stats = {}
-    for lang, count in pairs(lang_count) do
-        table.insert(lang_stats, { language = lang, count = count })
-    end
-
-    table.sort(lang_stats, function(a, b)
-        return a.count > b.count
-    end)
-    return lang_stats
-end
-
 ---@param callback fun(result: string)
-local function get_default_username(callback)
+function M.get_default_username(callback)
     utils.get_data_from_cache('default_username', 'gh api user', function(data)
         if data then
             callback(data.login)
@@ -204,10 +183,10 @@ end
 
 ---@param repo_name string
 ---@param owner string
-M.open_repo = function(repo_name, owner)
+function M.open_repo(repo_name, owner)
     local repo_dir
     if not owner then
-        get_default_username(function(default_username)
+        M.get_default_username(function(default_username)
             owner = default_username
         end)
     end
@@ -228,45 +207,9 @@ M.open_repo = function(repo_name, owner)
     end
 end
 
----@param repos table
----@return string
-M.get_repo_stats = function(repos)
-    local total_stars = 0
-    local most_starred_repo = { name = '', stars = 0 }
-    for _, repo in ipairs(repos) do
-        total_stars = total_stars + repo.stargazers_count
-        if repo.stargazers_count > most_starred_repo.stars then
-            most_starred_repo = { name = repo.name, stars = repo.stargazers_count }
-        end
-    end
-
-    local lang_stats = calculate_language_stats(repos)
-    local top_langs = ''
-    for i = 1, math.min(M.config.top_lang_count, #lang_stats) do
-        top_langs = top_langs .. string.format('\n%d. %s (%d)', i, lang_stats[i].language, lang_stats[i].count)
-    end
-
-    return string.format(
-        ' Public Repos: %d\n Total Stars: %d\n Most Starred Repo: %s (%d stars)\n♥ Top Languages: %s',
-        #repos,
-        total_stars,
-        most_starred_repo.name,
-        most_starred_repo.stars,
-        top_langs
-    )
-end
-
----@param username? string
-M.show_repo_stats = function(username)
-    M.get_repos({ username = username }, function(repos)
-        local repo_stats = M.get_repo_stats(repos)
-        utils.queue_notification(repo_stats, vim.log.levels.INFO, 'Octohub')
-    end)
-end
-
 ---@param args? table
 ---@param callback fun(data: any)
-M.get_repos = function(args, callback)
+function M.get_repos(args, callback)
     local username = args and args.username or ''
     local sort_by = args and args.sort_by or M.config.sort_repos_by
     local repo_type = args and args.repo_type or M.config.repo_type
@@ -306,7 +249,7 @@ M.get_repos = function(args, callback)
         fetch_page(1)
     end
 
-    get_default_username(function(default_username)
+    M.get_default_username(function(default_username)
         local is_auth_user = username == nil or username == ''
         local user_to_process = is_auth_user and default_username or username
         get_user_repos(user_to_process, is_auth_user)
@@ -315,7 +258,7 @@ end
 
 ---@param username string
 ---@param sort_by string
-M.show_repos = function(username, sort_by, repo_type)
+function M.show_repos(username, sort_by, repo_type)
     sort_by = #sort_by > 0 and sort_by or M.config.sort_repos_by
     repo_type = #repo_type > 0 and repo_type or M.config.repo_type
 

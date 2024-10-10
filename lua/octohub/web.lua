@@ -1,3 +1,6 @@
+local octorepos = require('octohub.repos')
+local utils = require('utils')
+
 ---@class octohub.web
 local M = {}
 
@@ -10,17 +13,13 @@ end
 
 ---@param username string?
 function M.open_github_profile(username)
-    username = username or ''
-    get_github_stats(username, function(stats)
-        if stats.message then
-            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octohub')
-            return
-        end
-
-        local url = stats.html_url
-        utils.open_command(url)
-        utils.queue_notification('Opened GitHub profile: ' .. url, vim.log.levels.INFO, 'Octohub')
-    end)
+    if not username then
+        octorepos.get_default_username(function(default_username)
+            username = default_username
+        end)
+    end
+    local url = 'https://github.com/' .. username
+    utils.open_command(url)
 end
 
 return M
