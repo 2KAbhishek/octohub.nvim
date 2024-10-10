@@ -33,12 +33,19 @@
 `octorepos.nvim` is a Neovim plugin that lets you manage and explore your GitHub repositories directly from within Neovim.
 With this plugin, you can view, filter, and sort repositories, all without leaving your editor.
 
+`octostats.nvim` is a Neovim plugin that brings your GitHub profile and contribution stats directly into Neovim.
+With this plugin, you can view activity events, contributions, repository stats, and more — all from within your editor.
+
 ## ✨ Features
 
 - Quickly list and open any GitHub repositories, yours or others, directly from Neovim.
 - Sort repositories by stars, forks, and other criteria, with support for filtering by type (forks, private, etc.).
 - View all sorts of repository details at a glance, including issues, stars, forks, and more.
 - Seamless integration with Telescope for fuzzy searching and quick access to repositories.
+
+- Display GitHub profile stats including recent activity and contributions for any user.
+- View repository statistics, such as top languages and contribution metrics.
+- Customizable display options for activity, contribution graphs, and repo stats.
 
 ## ⚡ Setup
 
@@ -55,7 +62,16 @@ With this plugin, you can view, filter, and sort repositories, all without leavi
 -- Lazy nvim
 {
     '2kabhishek/octorepos.nvim',
-    cmd = { 'OctoRepos', 'OctoRepo', 'OctoRepoStats', 'OctoRepoWeb' },
+    cmd = {
+        'OctoRepos',
+        'OctoRepo',
+        'OctoRepoStats',
+        'OctoRepoWeb',
+        'OctoStats',
+        'OctoProfile',
+        'OctoActivityStats',
+        'OctoContributionStats'
+    },
     keys = {
         '<leader>goo',
         '<leader>gof',
@@ -66,6 +82,10 @@ With this plugin, you can view, filter, and sort repositories, all without leavi
         '<leader>gor',
         '<leader>gow',
         '<leader>gon',
+        '<leader>gos',
+        '<leader>gop',
+        '<leader>goa',
+        '<leader>gog',
     },
     dependencies = { '2kabhishek/utils.nvim', 'nvim-telescope/telescope.nvim' },
     opts = {},
@@ -90,6 +110,19 @@ octorepos.setup({
     repo_cache_timeout = 3600 * 24,   -- Time in seconds to cache repositories
     username_cache_timeout = 3600 * 24 * 7,  -- Time in seconds to cache username
     add_default_keybindings = true,   -- Add default keybindings for the plugin
+
+    max_contributions = 50,                -- Max number of contributions per day to use for icon selection
+    event_count = 5,                       -- Number of activity events to show
+    contrib_icons = { '', '', '', '', '', '', '' }, -- Icons for different contribution levels
+    window_width = 90,                     -- Width in percentage of the window to display stats
+    window_height = 60,                    -- Height in percentage of the window to display stats
+    show_recent_activity = true,           -- Show recent activity in the stats window
+    show_contributions = true,             -- Show contributions in the stats window
+    show_repo_stats = true,                -- Show repository stats in the stats window
+    events_cache_timeout = 60 * 30,        -- Cache timeout for activity events (30 minutes)
+    contributions_cache_timeout = 3600 * 4, -- Cache timeout for contributions data (4 hours)
+    user_cache_timeout = 3600 * 24 * 7,    -- Cache timeout for user data (7 days)
+    add_default_keybindings = true,        -- Add default keybindings for the plugin
 })
 ```
 
@@ -108,23 +141,34 @@ octorepos.setup({
   - Ex: `:OctoRepoStats 2kabhishek` - Display statistics for the repositories of the user `2kabhishek`.
 - `:OctoRepoWeb` - Opens the current repository in the browser.
 
+- `OctoStats`: Displays all stats (activity, contributions, repository data).
+  - Ex: `:OctoStats theprimeagen` shows stats for `theprimeagen`.
+- `OctoActivityStats [username] [count:N]`: Displays recent activity for a user, with an optional count.
+  - Ex: `:OctoActivityStats count:20` shows the last 20 activity events for the current user.
+- `OctoContributionStats [username]`: Displays contribution stats for a user.
+- `OctoProfile [username]`: Opens the GitHub profile of a user in your browser.
+
 If the `user` parameter is not provided, the plugin will use the current authenticated username from `gh`
 
 ### Keybindings
 
 By default, these are the configured keybindings.
 
-| Keybinding    | Command                       | Description            |
-| ------------- | ----------------------------- | ---------------------- |
-| `<leader>goo` | `:OctoRepos<CR>`              | All Repos              |
-| `<leader>gof` | `:OctoRepos sort:stars<CR>`   | Top Starred Repos      |
-| `<leader>goi` | `:OctoRepos sort:issues<CR>`  | Repos With Issues      |
-| `<leader>goh` | `:OctoRepos sort:updated<CR>` | Recently Updated Repos |
-| `<leader>gop` | `:OctoRepos type:private<CR>` | Private Repos          |
-| `<leader>goc` | `:OctoRepos type:fork<CR>`    | Forked Repos           |
-| `<leader>gor` | `:OctoRepo<CR>`               | Open / Clone Repo      |
-| `<leader>gow` | `:OctoRepoWeb<CR>`            | Open Repo in Browser   |
-| `<leader>gon` | `:OctoRepoStats<CR>`          | Repo Stats             |
+| Keybinding    | Command                           | Description            |
+| ------------- | --------------------------------- | ---------------------- |
+| `<leader>goo` | `:OctoRepos<CR>`                  | All Repos              |
+| `<leader>gof` | `:OctoRepos sort:stars<CR>`       | Top Starred Repos      |
+| `<leader>goi` | `:OctoRepos sort:issues<CR>`      | Repos With Issues      |
+| `<leader>goh` | `:OctoRepos sort:updated<CR>`     | Recently Updated Repos |
+| `<leader>gop` | `:OctoRepos type:private<CR>`     | Private Repos          |
+| `<leader>goc` | `:OctoRepos type:fork<CR>`        | Forked Repos           |
+| `<leader>gor` | `:OctoRepo<CR>`                   | Open / Clone Repo      |
+| `<leader>gow` | `:OctoRepoWeb<CR>`                | Open Repo in Browser   |
+| `<leader>gon` | `:OctoRepoStats<CR>`              | Repo Stats             |
+| `<leader>gos` | `:OctoStats<CR>`                  | All Stats              |
+| `<leader>goa` | `:OctoActivityStats count:20<CR>` | Activity Stats         |
+| `<leader>gog` | `:OctoContributionStats<CR>`      | Contribution Graph     |
+| `<leader>gop` | `:OctoProfile<CR>`                | Open GitHub Profile    |
 
 I recommend customizing these keybindings based on your preferences.
 
@@ -157,14 +201,16 @@ Run `:help octorepos` to view these docs in Neovim.
 
 I wanted to be able to manage my GitHub repositories directly from Neovim, without having to switch to a browser or terminal.
 
+`octostats.nvim` was inspired by the need to quickly access GitHub data without leaving the Neovim environment.
+
 ### 💡 Challenges/Learnings
 
 - The main challenges were figuring out how to interact with the GitHub API and how to display the data in a user-friendly way.
 - I learned about Lua's powerful features for handling data structures and Neovim's extensibility.
+- Integrating GitHub's API efficiently while minimizing API call limits was challenging. I learned how to implement caching effectively in Neovim.
 
 ### 🔍 More Info
 
-- [octostats.nvim](https://github.com/2kabhishek/octostats.nevim) — All your GitHub stats in Neovim
 - [nerdy.nvim](https://github.com/2kabhishek/nerdy.nvim) — Find nerd glyphs easily
 - [tdo.nvim](https://github.com/2kabhishek/tdo.nvim) — Fast and simple notes in Neovim
 - [termim.nvim](https://github.com/2kabhishek/termim.nvim) — Neovim terminal improved
