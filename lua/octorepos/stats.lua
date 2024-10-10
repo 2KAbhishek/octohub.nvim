@@ -1,45 +1,11 @@
-local vim = vim
-local octorepos_present, octorepos = pcall(require, 'octorepos')
+local octorepos = require('octorepos.repos')
 local utils = require('utils')
 
 ---@class Octostats
 local M = {}
 
----@class Octostats.config
----@field max_contributions number : Max number of contributions per day to use for icon selection
----@field event_count number : Number of activity events to show
----@field contrib_icons table : Table of icons to use for contributions, can be any length
----@field window_width number : Width in percentage of the window to display stats
----@field window_height number :Height in percentage of the window to display stats
----@field show_recent_activity boolean : Whether to show recent activity
----@field show_contributions boolean : Whether to show contributions
----@field show_repo_stats boolean : Whether to show repository stats
----@field events_cache_timeout number : Time in seconds to cache events data
----@field contributions_cache_timeout number : Time in seconds to contributions data
----@field user_cache_timeout number : Time in seconds to cache user data
----@field add_default_keybindings boolean : Whether to add default keybindings
-local config = {
-    max_contributions = 50,
-    event_count = 5,
-    contrib_icons = { '', '', '', '', '', '', '' },
-    window_width = 90,
-    window_height = 60,
-    show_recent_activity = true,
-    show_contributions = true,
-    show_repo_stats = true,
-    events_cache_timeout = 60 * 30,
-    contibutions_cache_timeout = 3600 * 4,
-    user_cache_timeout = 3600 * 24 * 7,
-    add_default_keybindings = true,
-}
-
----@type Octostats.config
-M.config = config
-
----@param args Octostats.config
-M.setup = function(args)
-    M.config = vim.tbl_deep_extend('force', M.config, args or {})
-end
+---@type Octorepos.config
+M.config = require('octorepos').config
 
 ---@param username string
 ---@param callback fun(data: table)
@@ -255,7 +221,7 @@ function M.show_all_stats(username)
             return
         end
 
-        if octorepos_present and M.config.show_repo_stats then
+        if M.config.show_repo_stats then
             octorepos.get_repos({ username = stats.login }, function(repos)
                 get_user_events(stats.login, function(events)
                     get_contribution_data(stats.login, function(contrib_data)
