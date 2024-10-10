@@ -30,19 +30,16 @@
 
 </div>
 
-`octohub.nvim` is a Neovim plugin that lets you manage and explore your GitHub repositories directly from within Neovim.
-With this plugin, you can view, filter, and sort repositories, all without leaving your editor.
-
-`octostats.nvim` is a Neovim plugin that brings your GitHub profile and contribution stats directly into Neovim.
-With this plugin, you can view activity events, contributions, repository stats, and more — all from within your editor.
+`octohub.nvim` is a Neovim plugin that lets you manage, explore, and understand your GitHub repositories directly from within Neovim.
+With this plugin, you can view, filter, and sort repositories, view activity events, contributions, repository stats, and more — all without leaving your editor.
+It brings your GitHub profile and contribution stats directly into Neovim, providing a comprehensive GitHub experience within your editor.
 
 ## ✨ Features
 
 - Quickly list and open any GitHub repositories, yours or others, directly from Neovim.
-- Sort repositories by stars, forks, and other criteria, with support for filtering by type (forks, private, etc.).
+- Sort repositories by stars, forks, and other criteria, with support for filtering by type (forks, private repos, etc.).
 - View all sorts of repository details at a glance, including issues, stars, forks, and more.
 - Seamless integration with Telescope for fuzzy searching and quick access to repositories.
-
 - Display GitHub profile stats including recent activity and contributions for any user.
 - View repository statistics, such as top languages and contribution metrics.
 - Customizable display options for activity, contribution graphs, and repo stats.
@@ -87,7 +84,10 @@ With this plugin, you can view activity events, contributions, repository stats,
         '<leader>goa',
         '<leader>gog',
     },
-    dependencies = { '2kabhishek/utils.nvim', 'nvim-telescope/telescope.nvim' },
+    dependencies = {
+        '2kabhishek/utils.nvim',
+        'nvim-telescope/telescope.nvim'
+    },
     opts = {},
 },
 ```
@@ -102,37 +102,36 @@ octohub.nvim can be configured using the following options:
 local octohub = require('octohub')
 
 octohub.setup({
-    top_lang_count = 5,               -- Number of top languages to display in stats
-    per_user_dir = true,              -- Create a directory for each user
+    contrib_icons = { '', '', '', '', '', '', '' }, -- Icons for different contribution levels
     projects_dir = '~/Projects/',     -- Directory where repositories are cloned
+    per_user_dir = true,              -- Create a directory for each user
     sort_repos_by = '',               -- Sort repositories by various parameters
     repo_type = '',                   -- Type of repositories to display
-    repo_cache_timeout = 3600 * 24,   -- Time in seconds to cache repositories
-    username_cache_timeout = 3600 * 24 * 7,  -- Time in seconds to cache username
-    add_default_keybindings = true,   -- Add default keybindings for the plugin
-
-    max_contributions = 50,                -- Max number of contributions per day to use for icon selection
-    event_count = 5,                       -- Number of activity events to show
-    contrib_icons = { '', '', '', '', '', '', '' }, -- Icons for different contribution levels
-    window_width = 90,                     -- Width in percentage of the window to display stats
-    window_height = 60,                    -- Height in percentage of the window to display stats
-    show_recent_activity = true,           -- Show recent activity in the stats window
-    show_contributions = true,             -- Show contributions in the stats window
-    show_repo_stats = true,                -- Show repository stats in the stats window
-    events_cache_timeout = 60 * 30,        -- Cache timeout for activity events (30 minutes)
+    max_contributions = 50,           -- Max number of contributions per day to use for icon selection
+    top_lang_count = 5,               -- Number of top languages to display in stats
+    event_count = 5,                  -- Number of activity events to show
+    window_width = 90,                -- Width in percentage of the window to display stats
+    window_height = 60,               -- Height in percentage of the window to display stats
+    show_recent_activity = true,      -- Show recent activity in the stats window
+    show_contributions = true,        -- Show contributions in the stats window
+    show_repo_stats = true,           -- Show repository stats in the stats window
+    repo_cache_timeout = 3600 * 24,         -- Time in seconds to cache repositories
+    username_cache_timeout = 3600 * 24 * 7, -- Time in seconds to cache username
+    events_cache_timeout = 60 * 30,         -- Cache timeout for activity events (30 minutes)
     contributions_cache_timeout = 3600 * 4, -- Cache timeout for contributions data (4 hours)
-    user_cache_timeout = 3600 * 24 * 7,    -- Cache timeout for user data (7 days)
-    add_default_keybindings = true,        -- Add default keybindings for the plugin
+    user_cache_timeout = 3600 * 24 * 7,     -- Cache timeout for user data (7 days)
+    add_default_keybindings = true,         -- Add default keybindings for the plugin
 })
 ```
+
+- Available `sort_repos_by` options: `stars`, `forks`, `updated`, `created`, `pushed`, `name`, `size`, `watchers`, `issues`
+- Available `repo_type` options: `private`, `fork`, `template`, `archived`
 
 ### Commands
 
 `octohub.nvim` adds the following commands:
 
-- `:OctoRepos [user] [sort:<criteria>] [type:<repo_type>]`: Displays the repositories for a given user, sorted by the specified criteria.
-  - Available sorting criteria: `stars`, `forks`, `updated`, `created`, `pushed`, `name`, `size`, `watchers`, `issues`
-  - Available repository types: `private`, `fork`, `template`, `archived`
+- `:OctoRepos [user] [sort:<sort_repos_by>] [type:<repo_type>]`: Displays the repositories for a given user, sorted by the specified criteria.
   - Ex: `:OctoRepos 2kabhishek sort:updated type:fork` - Display all forked repositories for the user `2kabhishek`, sorted by the last update.
 - `:OctoRepo <repo_name> [user]`: Opens a specified repository, optionally by a user.
   - Ex: `:OctoRepo octohub.nvim` - Clone the repository `octohub.nvim` from the current user.
@@ -170,6 +169,8 @@ By default, these are the configured keybindings.
 | `<leader>gop` | `:OctoProfile<CR>`                | Open GitHub Profile    |
 
 I recommend customizing these keybindings based on your preferences.
+
+You can also add the following to your `which-key` configuration: `{ '<leader>go', group = 'Octohub' },`
 
 ### Telescope Integration
 

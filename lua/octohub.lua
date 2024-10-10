@@ -2,9 +2,9 @@
 local M = {}
 
 ---@class octohub.config
+---@field contrib_icons table : Table of icons to use for contributions, can be any length
 ---@field per_user_dir boolean : Whether to create a directory for each user
 ---@field projects_dir string : Directory where repositories are cloned
----@field contrib_icons table : Table of icons to use for contributions, can be any length
 ---@field sort_repos_by string : Sort repositories by various params
 ---@field repo_type string : Type of repositories to display
 ---@field max_contributions number : Max number of contributions per day to use for icon selection
@@ -22,9 +22,9 @@ local M = {}
 ---@field user_cache_timeout number : Time in seconds to cache user data
 ---@field add_default_keybindings boolean : Whether to add default keybindings
 local config = {
-    per_user_dir = true,
-    projects_dir = '~/Projects/GitHub/',
     contrib_icons = { '', '', '', '', '', '', '' },
+    per_user_dir = true,
+    projects_dir = '~/Projects/',
     sort_repos_by = '',
     repo_type = '',
     max_contributions = 50,
