@@ -1,5 +1,6 @@
 local repos = require('octohub.repos')
 local stats = require('octohub.stats')
+local web = require('octohub.web')
 
 vim.api.nvim_create_user_command('OctoRepos', function(opts)
     local args = vim.split(opts.args, ' ')
@@ -32,7 +33,7 @@ vim.api.nvim_create_user_command('OctoRepoStats', function(opts)
 end, { nargs = '?' })
 
 vim.api.nvim_create_user_command('OctoRepoWeb', function(opts)
-    repos.open_repo_web(opts.args)
+    web.open_repo_web(opts.args)
 end, { nargs = '?' })
 
 vim.api.nvim_create_user_command('OctoStats', function(opts)
@@ -58,7 +59,7 @@ vim.api.nvim_create_user_command('OctoContributionStats', function(opts)
 end, { nargs = '?' })
 
 vim.api.nvim_create_user_command('OctoProfile', function(opts)
-    stats.open_github_profile(opts.args)
+    web.open_github_profile(opts.args)
 end, { nargs = '?' })
 
 if repos.config.add_default_keybindings then

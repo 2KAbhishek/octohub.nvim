@@ -241,19 +241,4 @@ function M.show_all_stats(username)
     end)
 end
 
----@param username string?
-function M.open_github_profile(username)
-    username = username or ''
-    get_github_stats(username, function(stats)
-        if stats.message then
-            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octohub')
-            return
-        end
-
-        local url = stats.html_url
-        utils.open_command(url)
-        utils.queue_notification('Opened GitHub profile: ' .. url, vim.log.levels.INFO, 'Octohub')
-    end)
-end
-
 return M

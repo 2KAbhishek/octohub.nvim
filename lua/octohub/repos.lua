@@ -348,11 +348,4 @@ M.show_repos = function(username, sort_by, repo_type)
     end)
 end
 
-M.open_repo_web = function()
-    local open_cmd = string.format('gh repo view --web')
-    vim.schedule(function()
-        os.execute(open_cmd)
-    end)
-end
-
 return M
