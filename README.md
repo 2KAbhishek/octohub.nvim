@@ -46,7 +46,8 @@ With this plugin, you can view, filter, and sort repositories, all without leavi
 
 - Latest version of `neovim`
 - Authenticated `gh` CLI
-- [tmux-tea](https://github.com/2kabhishek/tmux-tea) (optional) if you want to use individual sessions for each repository
+- [tmux-tea](https://github.com/2kabhishek/tmux-tea) (optional, recommended) if you want to use individual sessions for each repository
+  - I also recommend enabling the default command to be nvim with `set -g @tea-default-command 'nvim'` for a better experience
 
 ### 💻 Installation
 
