@@ -62,27 +62,27 @@ It brings your GitHub profile and contribution stats directly into Neovim, provi
     cmd = {
         'OctoRepos',
         'OctoRepo',
-        'OctoRepoStats',
-        'OctoRepoWeb',
         'OctoStats',
-        'OctoProfile',
         'OctoActivityStats',
-        'OctoContributionStats'
+        'OctoContributionStats',
+        'OctoRepoStats',
+        'OctoProfile',
+        'OctoRepoWeb',
     },
     keys = {
-        '<leader>goo',
-        '<leader>gof',
-        '<leader>goi',
-        '<leader>goh',
-        '<leader>gop',
-        '<leader>goc',
-        '<leader>gor',
-        '<leader>gow',
-        '<leader>gon',
-        '<leader>gos',
-        '<leader>gop',
         '<leader>goa',
+        '<leader>goc',
+        '<leader>gof',
         '<leader>gog',
+        '<leader>goh',
+        '<leader>goi',
+        '<leader>goo',
+        '<leader>gop',
+        '<leader>gor',
+        '<leader>gos',
+        '<leader>got',
+        '<leader>gou',
+        '<leader>gow',
     },
     dependencies = {
         '2kabhishek/utils.nvim',
@@ -152,21 +152,21 @@ If the `user` parameter is not provided, the plugin will use the current authent
 
 By default, these are the configured keybindings.
 
-| Keybinding    | Command                           | Description            |
-| ------------- | --------------------------------- | ---------------------- |
-| `<leader>goo` | `:OctoRepos<CR>`                  | All Repos              |
-| `<leader>gof` | `:OctoRepos sort:stars<CR>`       | Top Starred Repos      |
-| `<leader>goi` | `:OctoRepos sort:issues<CR>`      | Repos With Issues      |
-| `<leader>goh` | `:OctoRepos sort:updated<CR>`     | Recently Updated Repos |
-| `<leader>gop` | `:OctoRepos type:private<CR>`     | Private Repos          |
-| `<leader>goc` | `:OctoRepos type:fork<CR>`        | Forked Repos           |
-| `<leader>gor` | `:OctoRepo<CR>`                   | Open / Clone Repo      |
-| `<leader>gow` | `:OctoRepoWeb<CR>`                | Open Repo in Browser   |
-| `<leader>gon` | `:OctoRepoStats<CR>`              | Repo Stats             |
-| `<leader>gos` | `:OctoStats<CR>`                  | All Stats              |
-| `<leader>goa` | `:OctoActivityStats count:20<CR>` | Activity Stats         |
-| `<leader>gog` | `:OctoContributionStats<CR>`      | Contribution Graph     |
-| `<leader>gop` | `:OctoProfile<CR>`                | Open GitHub Profile    |
+| Keybinding    | Command                       | Description            |
+| ------------- | ----------------------------- | ---------------------- |
+| `<leader>goo` | `:OctoRepos<CR>`              | All Repos              |
+| `<leader>gos` | `:OctoRepos sort:stars<CR>`   | Top Starred Repos      |
+| `<leader>goi` | `:OctoRepos sort:issues<CR>`  | Repos With Issues      |
+| `<leader>gou` | `:OctoRepos sort:updated<CR>` | Recently Updated Repos |
+| `<leader>gop` | `:OctoRepos type:private<CR>` | Private Repos          |
+| `<leader>gof` | `:OctoRepos type:fork<CR>`    | Forked Repos           |
+| `<leader>goc` | `:OctoRepo<CR>`               | Open / Clone Repo      |
+| `<leader>got` | `:OctoStats<CR>`              | All Stats              |
+| `<leader>goa` | `:OctoActivityStats<CR>`      | Activity Stats         |
+| `<leader>gog` | `:OctoContributionStats<CR>`  | Contribution Graph     |
+| `<leader>gor` | `:OctoRepoStats<CR>`          | Repo Stats             |
+| `<leader>gop` | `:OctoProfile<CR>`            | Open GitHub Profile    |
+| `<leader>gow` | `:OctoRepoWeb<CR>`            | Open Repo in Browser   |
 
 I recommend customizing these keybindings based on your preferences.
 
