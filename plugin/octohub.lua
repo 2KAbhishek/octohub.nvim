@@ -34,7 +34,7 @@ end, { nargs = '?' })
 
 vim.api.nvim_create_user_command('OctoActivityStats', function(opts)
     local args = vim.split(opts.args, ' ')
-    local user_arg, count_arg = '', ''
+    local user_arg, count_arg = '', tonumber(0)
 
     for _, arg in ipairs(args) do
         if arg:sub(1, 6) == 'count:' then
@@ -54,8 +54,8 @@ vim.api.nvim_create_user_command('OctoRepoStats', function(opts)
     stats.show_repo_stats(opts.args)
 end, { nargs = '?' })
 
-vim.api.nvim_create_user_command('OctoRepoWeb', function(opts)
-    web.open_repo_web(opts.args)
+vim.api.nvim_create_user_command('OctoRepoWeb', function(_)
+    web.open_repo_web()
 end, { nargs = '?' })
 
 vim.api.nvim_create_user_command('OctoProfile', function(opts)

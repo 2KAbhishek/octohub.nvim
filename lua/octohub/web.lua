@@ -13,11 +13,13 @@ end
 
 ---@param username string?
 function M.open_github_profile(username)
-    if not username then
+    if #username == 0 then
         octorepos.get_default_username(function(default_username)
+            vim.notify('No username provided, using default username: ' .. default_username)
             username = default_username
         end)
     end
+    vim.notify('Opening github profile for ' .. username)
     local url = 'https://github.com/' .. username
     utils.open_command(url)
 end

@@ -43,8 +43,8 @@ local function format_repo_info(repo)
         repo_info,
         string.format(
             ' Link: %s\n\n'
-            .. ' Stars: %d\n Forks: %d\n Watchers: %d\n Open Issues: %d\n\n'
-            .. ' Owner: %s\n Created At: %s\n Last Updated: %s\n Size: %d KB\n',
+                .. ' Stars: %d\n Forks: %d\n Watchers: %d\n Open Issues: %d\n\n'
+                .. ' Owner: %s\n Created At: %s\n Last Updated: %s\n Size: %d KB\n',
             repo.html_url,
             repo.stargazers_count,
             repo.forks_count,
@@ -109,7 +109,7 @@ function M.get_default_username(callback)
 end
 
 ---@param repo_name string
----@param owner string
+---@param owner string?
 ---@return string
 local function get_repo_dir(repo_name, owner)
     local projects_dir = Path:new(vim.fn.expand(M.config.projects_dir))
@@ -182,7 +182,7 @@ local function filter_repos(repos, repo_type)
 end
 
 ---@param repo_name string
----@param owner string
+---@param owner string?
 function M.open_repo(repo_name, owner)
     local repo_dir
     if not owner then
@@ -256,8 +256,9 @@ function M.get_repos(args, callback)
     end)
 end
 
----@param username string
----@param sort_by string
+---@param username string?
+---@param sort_by string?
+---@param repo_type string?
 function M.show_repos(username, sort_by, repo_type)
     sort_by = #sort_by > 0 and sort_by or M.config.sort_repos_by
     repo_type = #repo_type > 0 and repo_type or M.config.repo_type

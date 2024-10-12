@@ -1,6 +1,6 @@
 local telescope = require('telescope')
 
-local function telescope_show_repos(opts)
+local function telescope_show_repos(_)
     require('octohub.repos').show_repos()
 end
 
