@@ -20,7 +20,7 @@
 <a href="https://github.com/2KAbhishek/octohub.nvim/pulse">
 <img alt="Last Updated" src="https://img.shields.io/github/last-commit/2kabhishek/octohub.nvim?style=flat&color=e06c75&label="> </a>
 
-<h3>All Your GitHub Actions in Neovim 🐙🛠️</h3>
+<h3>All Your GitHub repos and more in Neovim 🐙🛠️</h3>
 
 <figure>
   <img src="doc/images/screenshot-repos.png" alt="octohub.nvim repo picker">
