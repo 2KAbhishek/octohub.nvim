@@ -36,9 +36,7 @@
 
 </div>
 
-`octohub.nvim` is a Neovim plugin that lets you manage, explore, and understand your GitHub repositories directly from within Neovim.
-With this plugin, you can view, filter, and sort repositories, view activity events, contributions, repository stats, and more — all without leaving your editor.
-It brings your GitHub profile and contribution stats directly into Neovim, providing a comprehensive GitHub experience within your editor.
+**octohub.nvim** is a Neovim plugin for managing and exploring GitHub repositories directly within the editor. It lets you view, filter, and sort repositories, track activity, and access profile and contribution stats, all without leaving Neovim.
 
 ## ✨ Features
 
