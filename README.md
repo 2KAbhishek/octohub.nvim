@@ -23,16 +23,21 @@
 <h3>All Your GitHub repos and more in Neovim 🐙🛠️</h3>
 
 <figure>
-  <img src="doc/images/screenshot-repos.png" alt="octohub.nvim repo picker">
-  <br/>
-  <figcaption>octohub.nvim repo picker</figcaption>
+  <img src="doc/images/logo.png" alt="octohub.nvim" style="width: 100%;">
 </figure>
 
-<figure>
-  <img src="doc/images/screenshot-stats.png" alt="octohub.nvim stats window">
-  <br/>
-  <figcaption>octohub.nvim stats window</figcaption>
-</figure>
+<div style="display: flex; justify-content: space-between;">
+  <figure style="flex: 1; margin-right: 10px;">
+    <img src="doc/images/screenshot-repos.png" alt="octohub.nvim repo picker" style="width: 100%;">
+    <br/>
+    <figcaption>octohub.nvim repo picker</figcaption>
+  </figure>
+  <figure style="flex: 1; margin-left: 10px;">
+    <img src="doc/images/screenshot-stats.png" alt="octohub.nvim stats window" style="width: 100%;">
+    <br/>
+    <figcaption>octohub.nvim stats window</figcaption>
+  </figure>
+</div>
 
 </div>
 
