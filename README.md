@@ -119,11 +119,11 @@ octohub.setup({
     show_recent_activity = true,      -- Show recent activity in the stats window
     show_contributions = true,        -- Show contributions in the stats window
     show_repo_stats = true,           -- Show repository stats in the stats window
-    repo_cache_timeout = 3600 * 24,         -- Time in seconds to cache repositories
+    events_cache_timeout = 3600 * 6,        -- Time in seconds to cache activity events
+    contributions_cache_timeout = 3600 * 6, -- Time in seconds to cache contributions data
+    repo_cache_timeout = 3600 * 24 * 7,     -- Time in seconds to cache repositories
     username_cache_timeout = 3600 * 24 * 7, -- Time in seconds to cache username
-    events_cache_timeout = 60 * 30,         -- Cache timeout for activity events (30 minutes)
-    contributions_cache_timeout = 3600 * 4, -- Cache timeout for contributions data (4 hours)
-    user_cache_timeout = 3600 * 24 * 7,     -- Cache timeout for user data (7 days)
+    user_cache_timeout = 3600 * 24 * 7,     -- Time in seconds to cache user data
     add_default_keybindings = true,         -- Add default keybindings for the plugin
 })
 ```
