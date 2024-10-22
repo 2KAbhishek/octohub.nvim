@@ -40,6 +40,8 @@
 
 ## ✨ Features
 
+[Video walkthrough of features](https://youtu.be/Sebh2aFfFPg)
+
 - Quickly list and open any GitHub repositories, yours or others, directly from Neovim.
 - Sort repositories by stars, forks, and other criteria, with support for filtering by type (forks, private repos, etc.).
 - View all sorts of repository details at a glance, including issues, stars, forks, and more.
