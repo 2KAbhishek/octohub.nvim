@@ -247,7 +247,7 @@ end
 ---@param event_count number?
 function M.show_activity_stats(username, event_count)
     username = username or ''
-    event_count = tonumber(event_count) or M.config.event_count
+    event_count = event_count or M.config.event_count
     get_github_stats(username, function(stats)
         if stats.message then
             utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octohub')

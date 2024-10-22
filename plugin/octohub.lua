@@ -34,16 +34,16 @@ end, { nargs = '?' })
 
 vim.api.nvim_create_user_command('OctoActivityStats', function(opts)
     local args = vim.split(opts.args, ' ')
-    local user_arg, count_arg = '', tonumber(0)
+    local user_arg, count_arg = '', ''
 
     for _, arg in ipairs(args) do
         if arg:sub(1, 6) == 'count:' then
-            count_arg = tonumber(arg:sub(7))
+            count_arg = arg:sub(7)
         else
             user_arg = arg
         end
     end
-    stats.show_activity_stats(user_arg, count_arg)
+    stats.show_activity_stats(user_arg, tonumber(count_arg))
 end, { nargs = '*' })
 
 vim.api.nvim_create_user_command('OctoContributionStats', function(opts)
