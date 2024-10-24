@@ -1,4 +1,4 @@
-*octohub.txt*         For Neovim >= 0.8.0         Last change: 2024 October 22
+*octohub.txt*         For Neovim >= 0.8.0         Last change: 2024 October 24
 
 ==============================================================================
 Table of Contents                                  *octohub-table-of-contents*
@@ -134,6 +134,8 @@ COMMANDS ~
     - Ex: `:OctoActivityStats count:20` shows the last 20 activity events for the current user.
 - `OctoContributionStats [username]`Displays contribution stats for a user.
 - `OctoProfile [username]`Opens the GitHub profile of a user in your browser.
+- `UtilsCacheClear[prefix]`Clears the cache for a given prefix. Provided by utils.nvim <https://github.com/2kabhishek/utils.nvim>.
+    - Ex: `:UtilsClearCache username` - Clears the cache for `username`
 
 If the `user` parameter is not provided, the plugin will use the current
 authenticated username from `gh`
