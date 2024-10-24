@@ -1,6 +1,6 @@
 return {
-    setup = function (opts)
+    setup = function(opts)
         require('octohub.config').setup(opts)
-        require('octohub.setup_cmd').setup()
-    end
+        require('octohub.commands').setup()
+    end,
 }

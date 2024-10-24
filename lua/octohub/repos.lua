@@ -14,7 +14,6 @@ local utils = require('utils')
 ---@class octohub.repos
 local M = {}
 
-
 ---@param repo table
 ---@return table
 local function entry_maker(repo)
