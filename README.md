@@ -151,6 +151,8 @@ octohub.setup({
   - Ex: `:OctoActivityStats count:20` shows the last 20 activity events for the current user.
 - `OctoContributionStats [username]`: Displays contribution stats for a user.
 - `OctoProfile [username]`: Opens the GitHub profile of a user in your browser.
+- `UtilsClearCache[prefix]`: Clears all the cache for a given prefix. Provided by [utils.nvim](https://github.com/2kabhishek/utils.nvim).
+  - Ex: `:UtilsClearCache username` - Clears the cache for `username`
 
 If the `user` parameter is not provided, the plugin will use the current authenticated username from `gh`
 
