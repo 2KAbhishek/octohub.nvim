@@ -1,24 +1,22 @@
 local octorepos = require('octohub.repos')
+local config = require('octohub.config').config
 local utils = require('utils')
 
 ---@class octohub.stats
 local M = {}
 
----@type octohub.config
-M.config = require('octohub').config
-
 ---@param username string
 ---@param callback fun(data: table)
 local function get_github_stats(username, callback)
     local command = username == '' and 'gh api user' or 'gh api users/' .. username
-    utils.get_data_from_cache('user_' .. username, command, callback, M.config.user_cache_timeout)
+    utils.get_data_from_cache('user_' .. username, command, callback, config.user_cache_timeout)
 end
 
 ---@param username string
 ---@param callback fun(data: table)
 local function get_user_events(username, callback)
     local command = 'gh api users/' .. username .. '/events?per_page=100'
-    utils.get_data_from_cache('events_' .. username, command, callback, M.config.events_cache_timeout)
+    utils.get_data_from_cache('events_' .. username, command, callback, config.events_cache_timeout)
 end
 
 ---@param username string
@@ -27,17 +25,17 @@ local function get_contribution_data(username, callback)
     local command = 'gh api graphql -f query=\'{user(login: "'
         .. username
         .. '") { contributionsCollection { contributionCalendar { weeks { contributionDays { contributionCount } } } } } }\''
-    utils.get_data_from_cache('contrib_' .. username, command, callback, M.config.contibutions_cache_timeout)
+    utils.get_data_from_cache('contrib_' .. username, command, callback, config.contibutions_cache_timeout)
 end
 
 ---@param contribution_count number
 ---@return string icon
 local function get_icon(contribution_count)
     local index = math.min(
-        math.floor(contribution_count / (M.config.max_contributions / #M.config.contrib_icons)) + 1,
-        #M.config.contrib_icons
+        math.floor(contribution_count / (config.max_contributions / #config.contrib_icons)) + 1,
+        #config.contrib_icons
     )
-    return M.config.contrib_icons[index]
+    return config.contrib_icons[index]
 end
 
 ---@param contrib_data table
@@ -82,7 +80,7 @@ end
 ---@return string
 local function get_recent_activity(events, event_count)
     local activity = {}
-    event_count = event_count or M.config.event_count
+    event_count = event_count or config.event_count
     table.insert(activity, ' Recent Activity\n')
     for i = 1, math.min(event_count, #events) do
         local event = events[i]
@@ -137,7 +135,7 @@ local function get_repo_stats(repos)
 
     local lang_stats = calculate_language_stats(repos)
     local top_langs = ''
-    for i = 1, math.min(M.config.top_lang_count, #lang_stats) do
+    for i = 1, math.min(config.top_lang_count, #lang_stats) do
         top_langs = top_langs .. string.format('\n%d. %s (%d)', i, lang_stats[i].language, lang_stats[i].count)
     end
 
@@ -184,10 +182,10 @@ local function format_message(stats, repos, events, contrib_data)
     if repos and #repos > 0 then
         table.insert(messageParts, '\n' .. get_repo_stats(repos) .. '\n')
     end
-    if M.config.show_recent_activity then
+    if config.show_recent_activity then
         table.insert(messageParts, '\n' .. get_recent_activity(events) .. '\n')
     end
-    if M.config.show_contributions then
+    if config.show_contributions then
         table.insert(messageParts, '\n' .. get_contribution_graph(contrib_data) .. '\n')
     end
     return table.concat(messageParts)
@@ -206,8 +204,8 @@ local function show_stats_window(content)
         vim.api.nvim_buf_set_lines(stats_window_buf, 0, -1, true, vim.split(content, '\n'))
 
         if not stats_window_win or not vim.api.nvim_win_is_valid(stats_window_win) then
-            local width = math.min(M.config.window_width, vim.o.columns - 4)
-            local height = math.min(M.config.window_height, vim.o.lines - 4)
+            local width = math.min(config.window_width, vim.o.columns - 4)
+            local height = math.min(config.window_height, vim.o.lines - 4)
             stats_window_win = vim.api.nvim_open_win(stats_window_buf, true, {
                 relative = 'editor',
                 width = width,
@@ -247,7 +245,7 @@ end
 ---@param event_count number?
 function M.show_activity_stats(username, event_count)
     username = username or ''
-    event_count = event_count or M.config.event_count
+    event_count = event_count or config.event_count
     get_github_stats(username, function(stats)
         if stats.message then
             utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octohub')
@@ -286,7 +284,7 @@ function M.show_all_stats(username)
             return
         end
 
-        if M.config.show_repo_stats then
+        if config.show_repo_stats then
             octorepos.get_repos({ username = stats.login }, function(repos)
                 get_user_events(stats.login, function(events)
                     get_contribution_data(stats.login, function(contrib_data)
