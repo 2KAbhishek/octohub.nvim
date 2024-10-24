@@ -108,7 +108,7 @@ octohub.nvim can be configured using the following options:
 local octohub = require('octohub')
 
 octohub.setup({
-    contrib_icons = { '', '', '', '', '', '', '' }, -- Icons for different contribution levels
+    contribution_icons = { '', '', '', '', '', '', '' }, -- Icons for different contribution levels
     projects_dir = '~/Projects/',     -- Directory where repositories are cloned
     per_user_dir = true,              -- Create a directory for each user
     sort_repos_by = '',               -- Sort repositories by various parameters
