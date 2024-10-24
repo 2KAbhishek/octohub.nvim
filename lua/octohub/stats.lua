@@ -25,24 +25,24 @@ local function get_contribution_data(username, callback)
     local command = 'gh api graphql -f query=\'{user(login: "'
         .. username
         .. '") { contributionsCollection { contributionCalendar { weeks { contributionDays { contributionCount } } } } } }\''
-    utils.get_data_from_cache('contrib_' .. username, command, callback, config.contibutions_cache_timeout)
+    utils.get_data_from_cache('contribution_' .. username, command, callback, config.contibutions_cache_timeout)
 end
 
 ---@param contribution_count number
 ---@return string icon
 local function get_icon(contribution_count)
     local index = math.min(
-        math.floor(contribution_count / (config.max_contributions / #config.contrib_icons)) + 1,
-        #config.contrib_icons
+        math.floor(contribution_count / (config.max_contributions / #config.contribution_icons)) + 1,
+        #config.contribution_icons
     )
-    return config.contrib_icons[index]
+    return config.contribution_icons[index]
 end
 
----@param contrib_data table
+---@param contribution_data table
 ---@return string
-local function get_contribution_graph(contrib_data)
+local function get_contribution_graph(contribution_data)
     local top_contributions = 0
-    local calendar = contrib_data.data.user.contributionsCollection.contributionCalendar
+    local calendar = contribution_data.data.user.contributionsCollection.contributionCalendar
     local graph_parts = {
         string.format(
             '\n%-4s\t %-4s\t %-4s\t %-4s\t %-4s\t %-4s\t %-4s\n',
@@ -57,11 +57,11 @@ local function get_contribution_graph(contrib_data)
     }
     for _, week in ipairs(calendar.weeks) do
         for _, day in ipairs(week.contributionDays) do
-            local contrib_count = day.contributionCount
-            if contrib_count > top_contributions then
-                top_contributions = contrib_count
+            local contribution_count = day.contributionCount
+            if contribution_count > top_contributions then
+                top_contributions = contribution_count
             end
-            local emoji = get_icon(contrib_count)
+            local emoji = get_icon(contribution_count)
             local padded_count = string.format('%4d\t', day.contributionCount)
             table.insert(graph_parts, emoji .. padded_count)
         end
@@ -152,9 +152,9 @@ end
 ---@param stats table
 ---@param repos table?
 ---@param events table
----@param contrib_data table
+---@param contribution_data table
 ---@return string
-local function format_message(stats, repos, events, contrib_data)
+local function format_message(stats, repos, events, contribution_data)
     local messageParts = {
         string.format(
             ' User Info\n'
@@ -186,7 +186,7 @@ local function format_message(stats, repos, events, contrib_data)
         table.insert(messageParts, '\n' .. get_recent_activity(events) .. '\n')
     end
     if config.show_contributions then
-        table.insert(messageParts, '\n' .. get_contribution_graph(contrib_data) .. '\n')
+        table.insert(messageParts, '\n' .. get_contribution_graph(contribution_data) .. '\n')
     end
     return table.concat(messageParts)
 end
@@ -268,8 +268,8 @@ function M.show_contribution_stats(username)
             return
         end
 
-        get_contribution_data(stats.login, function(contrib_data)
-            local message = get_contribution_graph(contrib_data)
+        get_contribution_data(stats.login, function(contribution_data)
+            local message = get_contribution_graph(contribution_data)
             show_stats_window(message)
         end)
     end)
@@ -287,16 +287,16 @@ function M.show_all_stats(username)
         if config.show_repo_stats then
             octorepos.get_repos({ username = stats.login }, function(repos)
                 get_user_events(stats.login, function(events)
-                    get_contribution_data(stats.login, function(contrib_data)
-                        local message = format_message(stats, repos, events, contrib_data)
+                    get_contribution_data(stats.login, function(contribution_data)
+                        local message = format_message(stats, repos, events, contribution_data)
                         show_stats_window(message)
                     end)
                 end)
             end)
         else
             get_user_events(stats.login, function(events)
-                get_contribution_data(stats.login, function(contrib_data)
-                    local message = format_message(stats, {}, events, contrib_data)
+                get_contribution_data(stats.login, function(contribution_data)
+                    local message = format_message(stats, {}, events, contribution_data)
                     show_stats_window(message)
                 end)
             end)
