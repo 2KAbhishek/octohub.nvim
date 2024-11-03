@@ -42,7 +42,7 @@ local function format_repo_info(repo)
         string.format(
             ' Link: %s\n\n'
                 .. ' Stars: %d\n Forks: %d\n Watchers: %d\n Open Issues: %d\n\n'
-                .. ' Owner: %s\n Created At: %s\n Last Updated: %s\n Size: %d KB\n',
+                .. ' Owner: %s\n Created At: %s\n Last Updated: %s\n Disk Usage: %d\n',
             repo.html_url,
             repo.stargazers_count,
             repo.forks_count,
