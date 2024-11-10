@@ -75,6 +75,7 @@
         'OctoProfile',
         'OctoRepoWeb',
     },
+    -- Change these if you do not want to use default keybindings
     keys = {
         '<leader>goa',
         '<leader>goc',
@@ -94,6 +95,7 @@
         '2kabhishek/utils.nvim',
         'nvim-telescope/telescope.nvim'
     },
+    -- Add your custom configs here, keep it blank for default configs (required)
     opts = {},
 },
 ```
