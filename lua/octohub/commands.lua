@@ -7,13 +7,12 @@ local M = {}
 
 M.setup = function()
     vim.api.nvim_create_user_command('OctoRepos', function(opts)
-        local args = vim.split(opts.args, ' ')
         local user_arg, sort_arg, type_arg = '', '', ''
 
-        for _, arg in ipairs(args) do
-            if arg:sub(1, 5) == 'sort:' then
+        for _, arg in ipairs(vim.split(opts.args, ' ')) do
+            if arg:match('^sort:') then
                 sort_arg = arg:sub(6)
-            elseif arg:sub(1, 5) == 'type:' then
+            elseif arg:match('^type:') then
                 type_arg = arg:sub(6)
             else
                 user_arg = arg
@@ -41,7 +40,7 @@ M.setup = function()
         local user_arg, count_arg = '', ''
 
         for _, arg in ipairs(args) do
-            if arg:sub(1, 6) == 'count:' then
+            if arg:match('^count:') then
                 count_arg = arg:sub(7)
             else
                 user_arg = arg
