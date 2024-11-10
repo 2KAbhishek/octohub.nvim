@@ -3,7 +3,7 @@ local stats = require('octohub.stats')
 local web = require('octohub.web')
 local config = require('octohub.config').config
 
-M = {}
+local M = {}
 
 M.setup = function()
     vim.api.nvim_create_user_command('OctoRepos', function(opts)
