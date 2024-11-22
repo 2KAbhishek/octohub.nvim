@@ -1,4 +1,4 @@
-*octohub.txt*         For Neovim >= 0.8.0        Last change: 2024 November 10
+*octohub.txt*         For Neovim >= 0.8.0        Last change: 2024 November 22
 
 ==============================================================================
 Table of Contents                                  *octohub-table-of-contents*
@@ -150,7 +150,7 @@ By default, these are the configured keybindings.
   ------------------------------------------------------------------------
   Keybinding     Command                          Description
   -------------- -------------------------------- ------------------------
-  <leader>goo    :OctoRepos<CR>                   All Repos
+  <leader>goo    :OctoRepos<CR>                   Browse All Repos
 
   <leader>gos    :OctoRepos sort:stars<CR>        Top Starred Repos
 
