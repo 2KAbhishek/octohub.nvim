@@ -164,7 +164,7 @@ By default, these are the configured keybindings.
 
 | Keybinding    | Command                       | Description            |
 | ------------- | ----------------------------- | ---------------------- |
-| `<leader>goo` | `:OctoRepos<CR>`              | All Repos              |
+| `<leader>goo` | `:OctoRepos<CR>`              | Browse All Repos       |
 | `<leader>gos` | `:OctoRepos sort:stars<CR>`   | Top Starred Repos      |
 | `<leader>goi` | `:OctoRepos sort:issues<CR>`  | Repos With Issues      |
 | `<leader>gou` | `:OctoRepos sort:updated<CR>` | Recently Updated Repos |
