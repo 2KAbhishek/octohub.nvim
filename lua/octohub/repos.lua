@@ -25,7 +25,7 @@ local function entry_maker(repo)
     return {
         value = repo,
         display = display,
-        ordinal = repo.name,
+        ordinal = repo.name .. ' ' .. repo.language,
         path = repo.name,
     }
 end
