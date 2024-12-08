@@ -168,6 +168,8 @@ local function filter_repos(repos, repo_type)
                 should_include = repo.archived
             elseif repo_type == 'template' then
                 should_include = repo.is_template
+            else
+                should_include = true
             end
 
             if should_include then
@@ -214,19 +216,22 @@ function M.get_repos(args, callback)
 
     local function get_user_repos(user_to_process, is_auth_user)
         local all_repos = {}
+        local cache_prefix = 'repos_'
         local function fetch_page(page)
-            local command
-            local auth = is_auth_user and 'auth_' or ''
+            local command = string.format('gh api "users/%s/repos?page=%d&per_page=100"', user_to_process, page)
             if is_auth_user then
+                cache_prefix = cache_prefix .. 'auth_'
                 command = string.format(
                     'gh api -H "Accept: application/vnd.github.v3+json" "/user/repos?page=%d&per_page=100&type=all"',
                     page
                 )
-            else
-                command = string.format('gh api "users/%s/repos?page=%d&per_page=100"', user_to_process, page)
+            end
+            if repo_type == 'star' then
+                cache_prefix = cache_prefix .. 'star_'
+                command = string.format('gh api "users/%s/starred?page=%d&per_page=100"', user_to_process, page)
             end
 
-            utils.get_data_from_cache('repos_' .. auth .. user_to_process .. '_page_' .. page, command, function(repos)
+            utils.get_data_from_cache(cache_prefix .. user_to_process .. '_page_' .. page, command, function(repos)
                 if repos and #repos > 0 then
                     for _, repo in ipairs(repos) do
                         local file_type = languages.language_to_filetype(repo.language)
