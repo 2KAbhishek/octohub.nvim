@@ -133,8 +133,10 @@ octohub.setup({
 })
 ```
 
-- Available `sort_repos_by` options: `stars`, `forks`, `updated`, `created`, `pushed`, `name`, `size`, `watchers`, `issues`
+- Available `sort_repos_by` options: `star`, `fork`, `update`, `create`, `push`, `language`, `name`, `size`, `watch`, `issue`
 - Available `repo_type` options: `private`, `fork`, `template`, `archive`, `star`
+
+> Note: The `sort_repos_by` and `repo_type` options match the start of keywords, you can expand them for readability. e.g. `sort:updated` is same as `sort:update`.
 
 ### Commands
 
