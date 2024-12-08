@@ -160,13 +160,13 @@ local function filter_repos(repos, repo_type)
         local filtered = {}
         for _, repo in ipairs(repos) do
             local should_include = false
-            if repo_type == 'private' then
+            if repo_type:match('^private') then
                 should_include = repo.private
-            elseif repo_type == 'fork' then
+            elseif repo_type:match('^fork') then
                 should_include = repo.fork
-            elseif repo_type == 'archive' then
+            elseif repo_type:match('^archive') then
                 should_include = repo.archived
-            elseif repo_type == 'template' then
+            elseif repo_type:match('^template') then
                 should_include = repo.is_template
             else
                 should_include = true
@@ -226,7 +226,7 @@ function M.get_repos(args, callback)
                     page
                 )
             end
-            if repo_type == 'star' then
+            if repo_type:match('^star') then
                 cache_prefix = cache_prefix .. 'star_'
                 command = string.format('gh api "users/%s/starred?page=%d&per_page=100"', user_to_process, page)
             end
