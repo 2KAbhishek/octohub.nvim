@@ -87,6 +87,7 @@
         '<leader>gop',
         '<leader>gor',
         '<leader>gos',
+        '<leader>goS',
         '<leader>got',
         '<leader>gou',
         '<leader>gow',
@@ -133,7 +134,7 @@ octohub.setup({
 ```
 
 - Available `sort_repos_by` options: `stars`, `forks`, `updated`, `created`, `pushed`, `name`, `size`, `watchers`, `issues`
-- Available `repo_type` options: `private`, `fork`, `template`, `archived`
+- Available `repo_type` options: `private`, `fork`, `template`, `archive`, `star`
 
 ### Commands
 
@@ -141,6 +142,7 @@ octohub.setup({
 
 - `:OctoRepos [user] [sort:<sort_repos_by>] [type:<repo_type>]`: Displays the repositories for a given user, sorted by the specified criteria.
   - Ex: `:OctoRepos 2kabhishek sort:updated type:fork` - Display all forked repositories for the user `2kabhishek`, sorted by the last update.
+  - Ex: `:OctoRepos type:stars` - Display all repositories starred by the current user.
 - `:OctoRepo <repo_name> [user]`: Opens a specified repository, optionally by a user.
   - Ex: `:OctoRepo octohub.nvim` - Clone the repository `octohub.nvim` from the current user.
   - Ex: `:OctoRepo 2kabhishek octohub.nvim` - Clone the repository `octohub.nvim` from the user `2kabhishek`.
@@ -153,6 +155,7 @@ octohub.setup({
   - Ex: `:OctoActivityStats count:20` shows the last 20 activity events for the current user.
 - `OctoContributionStats [username]`: Displays contribution stats for a user.
 - `OctoProfile [username]`: Opens the GitHub profile of a user in your browser.
+
 - `UtilsClearCache[prefix]`: Clears all the cache for a given prefix. Provided by [utils.nvim](https://github.com/2kabhishek/utils.nvim).
   - Ex: `:UtilsClearCache username` - Clears the cache for `username`
 
@@ -162,21 +165,22 @@ If the `user` parameter is not provided, the plugin will use the current authent
 
 By default, these are the configured keybindings.
 
-| Keybinding    | Command                       | Description            |
-| ------------- | ----------------------------- | ---------------------- |
-| `<leader>goo` | `:OctoRepos<CR>`              | Browse All Repos       |
-| `<leader>gos` | `:OctoRepos sort:stars<CR>`   | Top Starred Repos      |
-| `<leader>goi` | `:OctoRepos sort:issues<CR>`  | Repos With Issues      |
-| `<leader>gou` | `:OctoRepos sort:updated<CR>` | Recently Updated Repos |
-| `<leader>gop` | `:OctoRepos type:private<CR>` | Private Repos          |
-| `<leader>gof` | `:OctoRepos type:fork<CR>`    | Forked Repos           |
-| `<leader>goc` | `:OctoRepo<CR>`               | Open / Clone Repo      |
-| `<leader>got` | `:OctoStats<CR>`              | All Stats              |
-| `<leader>goa` | `:OctoActivityStats<CR>`      | Activity Stats         |
-| `<leader>gog` | `:OctoContributionStats<CR>`  | Contribution Graph     |
-| `<leader>gor` | `:OctoRepoStats<CR>`          | Repo Stats             |
-| `<leader>gop` | `:OctoProfile<CR>`            | Open GitHub Profile    |
-| `<leader>gow` | `:OctoRepoWeb<CR>`            | Open Repo in Browser   |
+| Keybinding    | Command                       | Description           |
+| ------------- | ----------------------------- | --------------------- |
+| `<leader>goo` | `:OctoRepos<CR>`              | All Repos             |
+| `<leader>gos` | `:OctoRepos sort:stars<CR>`   | Repos by Stars        |
+| `<leader>goS` | `:OctoRepos type:star<CR>`    | Starred Repos         |
+| `<leader>goi` | `:OctoRepos sort:issues<CR>`  | Repos by Issues       |
+| `<leader>gou` | `:OctoRepos sort:updated<CR>` | Repos by Last Updated |
+| `<leader>gop` | `:OctoRepos type:private<CR>` | Private Repos         |
+| `<leader>gof` | `:OctoRepos type:fork<CR>`    | Forked Repos          |
+| `<leader>goc` | `:OctoRepo<CR>`               | Open Repo             |
+| `<leader>got` | `:OctoStats<CR>`              | All Stats             |
+| `<leader>goa` | `:OctoActivityStats<CR>`      | Activity Stats        |
+| `<leader>gog` | `:OctoContributionStats<CR>`  | Contribution Graph    |
+| `<leader>gor` | `:OctoRepoStats<CR>`          | Repo Stats            |
+| `<leader>gop` | `:OctoProfile<CR>`            | Open GitHub Profile   |
+| `<leader>gow` | `:OctoRepoWeb<CR>`            | Open Repo in Browser  |
 
 I recommend customizing these keybindings based on your preferences.
 
