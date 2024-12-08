@@ -1,4 +1,4 @@
-*octohub.txt*         For Neovim >= 0.8.0        Last change: 2024 December 01
+*octohub.txt*         For Neovim >= 0.8.0        Last change: 2024 December 08
 
 ==============================================================================
 Table of Contents                                  *octohub-table-of-contents*
@@ -67,6 +67,7 @@ INSTALLATION ~
             '<leader>gop',
             '<leader>gor',
             '<leader>gos',
+            '<leader>goS',
             '<leader>got',
             '<leader>gou',
             '<leader>gow',
@@ -115,28 +116,34 @@ octohub.nvim can be configured using the following options:
 <
 
 - Available `sort_repos_by` options: `stars`, `forks`, `updated`, `created`, `pushed`, `name`, `size`, `watchers`, `issues`
-- Available `repo_type` options: `private`, `fork`, `template`, `archived`
+- Available `repo_type` options: `private`, `fork`, `template`, `archive`, `star`
 
 
 COMMANDS ~
 
 `octohub.nvim` adds the following commands:
 
-- `:OctoRepos [user] [sort:<sort_repos_by>] [type:<repo_type>]`Displays the repositories for a given user, sorted by the specified criteria.
+- `:OctoRepos [user] [sort:<sort_repos_by>] [type:<repo_type>]`Displays the
+    repositories for a given user, sorted by the specified criteria.
     - Ex: `:OctoRepos 2kabhishek sort:updated type:fork` - Display all forked repositories for the user `2kabhishek`, sorted by the last update.
-- `:OctoRepo <repo_name> [user]`Opens a specified repository, optionally by a user.
+    - Ex: `:OctoRepos type:stars` - Display all repositories starred by the current user.
+- `:OctoRepo <repo_name> [user]`Opens a specified repository, optionally by a
+    user.
     - Ex: `:OctoRepo octohub.nvim` - Clone the repository `octohub.nvim` from the current user.
     - Ex: `:OctoRepo 2kabhishek octohub.nvim` - Clone the repository `octohub.nvim` from the user `2kabhishek`.
-- `:OctoRepoStats [user]`Displays statistics for the repositories of a given user.
+- `:OctoRepoStats [user]`Displays statistics for the repositories of a given
+    user.
     - Ex: `:OctoRepoStats 2kabhishek` - Display statistics for the repositories of the user `2kabhishek`.
 - `:OctoRepoWeb` - Opens the current repository in the browser.
 - `OctoStats`Displays all stats (activity, contributions, repository data).
     - Ex: `:OctoStats theprimeagen` shows stats for `theprimeagen`.
-- `OctoActivityStats [username] [count:N]`Displays recent activity for a user, with an optional count.
+- `OctoActivityStats [username] [count:N]`Displays recent activity for a user,
+    with an optional count.
     - Ex: `:OctoActivityStats count:20` shows the last 20 activity events for the current user.
 - `OctoContributionStats [username]`Displays contribution stats for a user.
 - `OctoProfile [username]`Opens the GitHub profile of a user in your browser.
-- `UtilsClearCache[prefix]`Clears all the cache for a given prefix. Provided by utils.nvim <https://github.com/2kabhishek/utils.nvim>.
+- `UtilsClearCache[prefix]`Clears all the cache for a given prefix. Provided by
+    utils.nvim <https://github.com/2kabhishek/utils.nvim>.
     - Ex: `:UtilsClearCache username` - Clears the cache for `username`
 
 If the `user` parameter is not provided, the plugin will use the current
@@ -147,22 +154,24 @@ KEYBINDINGS ~
 
 By default, these are the configured keybindings.
 
-  ------------------------------------------------------------------------
+  -----------------------------------------------------------------------
   Keybinding     Command                          Description
-  -------------- -------------------------------- ------------------------
-  <leader>goo    :OctoRepos<CR>                   Browse All Repos
+  -------------- -------------------------------- -----------------------
+  <leader>goo    :OctoRepos<CR>                   All Repos
 
-  <leader>gos    :OctoRepos sort:stars<CR>        Top Starred Repos
+  <leader>gos    :OctoRepos sort:stars<CR>        Repos by Stars
 
-  <leader>goi    :OctoRepos sort:issues<CR>       Repos With Issues
+  <leader>goS    :OctoRepos type:star<CR>         Starred Repos
 
-  <leader>gou    :OctoRepos sort:updated<CR>      Recently Updated Repos
+  <leader>goi    :OctoRepos sort:issues<CR>       Repos by Issues
+
+  <leader>gou    :OctoRepos sort:updated<CR>      Repos by Last Updated
 
   <leader>gop    :OctoRepos type:private<CR>      Private Repos
 
   <leader>gof    :OctoRepos type:fork<CR>         Forked Repos
 
-  <leader>goc    :OctoRepo<CR>                    Open / Clone Repo
+  <leader>goc    :OctoRepo<CR>                    Open Repo
 
   <leader>got    :OctoStats<CR>                   All Stats
 
@@ -175,7 +184,7 @@ By default, these are the configured keybindings.
   <leader>gop    :OctoProfile<CR>                 Open GitHub Profile
 
   <leader>gow    :OctoRepoWeb<CR>                 Open Repo in Browser
-  ------------------------------------------------------------------------
+  -----------------------------------------------------------------------
 I recommend customizing these keybindings based on your preferences.
 
 You can also add the following to your `which-key` configuration: `{
