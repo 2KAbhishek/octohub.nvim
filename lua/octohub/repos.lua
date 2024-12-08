@@ -129,25 +129,25 @@ end
 local function sort_repos(repos, sort_by)
     if #sort_by > 0 then
         return table.sort(repos, function(a, b)
-            if sort_by == 'pushed' then
+            if sort_by:match('^push') then
                 return a.pushed_at > b.pushed_at
-            elseif sort_by == 'created' then
+            elseif sort_by:match('^create') then
                 return a.created_at > b.created_at
-            elseif sort_by == 'updated' then
+            elseif sort_by:match('^update') then
                 return a.updated_at > b.updated_at
-            elseif sort_by == 'stars' then
+            elseif sort_by:match('^star') then
                 return a.stargazers_count > b.stargazers_count
-            elseif sort_by == 'forks' then
+            elseif sort_by:match('^fork') then
                 return a.forks_count > b.forks_count
-            elseif sort_by == 'watchers' then
+            elseif sort_by:match('^watcher') then
                 return a.watchers_count > b.watchers_count
-            elseif sort_by == 'size' then
+            elseif sort_by:match('^size') then
                 return a.size > b.size
-            elseif sort_by == 'issues' then
+            elseif sort_by:match('^issue') then
                 return a.open_issues_count > b.open_issues_count
-            elseif sort_by == 'name' then
+            elseif sort_by:match('^name') then
                 return a.name < b.name
-            elseif sort_by == 'language' then
+            elseif sort_by:match('^language') then
                 return a.language < b.language
             end
         end)
