@@ -71,9 +71,10 @@ M.setup = function()
         end
 
         add_keymap('<leader>goo', ':OctoRepos<CR>', 'All Repos')
-        add_keymap('<leader>gos', ':OctoRepos sort:stars<CR>', 'Top Starred Repos')
-        add_keymap('<leader>goi', ':OctoRepos sort:issues<CR>', 'Repos With Issues')
-        add_keymap('<leader>gou', ':OctoRepos sort:updated<CR>', 'Recently Updated Repos')
+        add_keymap('<leader>gos', ':OctoRepos sort:stars<CR>', 'Repos by Stars')
+        add_keymap('<leader>goS', ':OctoRepos type:star<CR>', 'Starred Repos')
+        add_keymap('<leader>goi', ':OctoRepos sort:issues<CR>', 'Repos by Issues')
+        add_keymap('<leader>gou', ':OctoRepos sort:updated<CR>', 'Repos by Last Updated')
         add_keymap('<leader>gop', ':OctoRepos type:private<CR>', 'Private Repos')
         add_keymap('<leader>gof', ':OctoRepos type:fork<CR>', 'Forked Repos')
         add_keymap('<leader>goc', ':OctoRepo<CR>', 'Open Repo')
