@@ -139,8 +139,6 @@ local function sort_repos(repos, sort_by)
                 return a.stargazers_count > b.stargazers_count
             elseif sort_by:match('^fork') then
                 return a.forks_count > b.forks_count
-            elseif sort_by:match('^watcher') then
-                return a.watchers_count > b.watchers_count
             elseif sort_by:match('^size') then
                 return a.size > b.size
             elseif sort_by:match('^issue') then

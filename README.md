@@ -76,7 +76,6 @@
         'OctoReposBySize',
         'OctoReposByStars',
         'OctoReposByUpdated',
-        'OctoReposByWatchers',
         'OctoReposTypeArchived',
         'OctoReposTypeForked',
         'OctoReposTypePrivate',
@@ -99,7 +98,6 @@
         '<leader>gof',
         '<leader>goF',
         '<leader>gog',
-        '<leader>goh',
         '<leader>goi',
         '<leader>gol',
         '<leader>goo',
@@ -111,8 +109,8 @@
         '<leader>got',
         '<leader>goT',
         '<leader>gou',
+        '<leader>goU',
         '<leader>gow',
-        '<leader>goW',
     },
     dependencies = {
         '2kabhishek/utils.nvim',
@@ -166,7 +164,6 @@ Available `sort_repos_by` options:
 - `size` - Sort by size, `OctoReposBySize`
 - `star` - Sort by stars, `OctoReposByStars`
 - `update` - Sort by last update, `OctoReposByUpdated`
-- `watch` - Sort by watchers, `OctoReposByWatchers`
 
 Available `repo_type` options:
 
@@ -215,10 +212,9 @@ By default, these are the configured keybindings.
 | `<leader>gof` | `:OctoReposByForks<CR>`      | Repos by Forks       |
 | `<leader>goi` | `:OctoReposByIssues<CR>`     | Repos by Issues      |
 | `<leader>gol` | `:OctoReposByLanguage<CR>`   | Repos by Language    |
-| `<leader>gop` | `:OctoReposByPushed<CR>`     | Repos by Pushed      |
 | `<leader>gos` | `:OctoReposByStars<CR>`      | Repos by Stars       |
 | `<leader>gou` | `:OctoReposByUpdated<CR>`    | Repos by Updated     |
-| `<leader>goW` | `:OctoReposByWatchers<CR>`   | Repos by Watchers    |
+| `<leader>goU` | `:OctoReposByPushed<CR>`     | Repos by Pushed      |
 | `<leader>goA` | `:OctoReposTypeArchived<CR>` | Archived Repos       |
 | `<leader>goF` | `:OctoReposTypeForked<CR>`   | Forked Repos         |
 | `<leader>goP` | `:OctoReposTypePrivate<CR>`  | Private Repos        |
@@ -228,7 +224,7 @@ By default, these are the configured keybindings.
 | `<leader>gog` | `:OctoContributionStats<CR>` | Contribution Graph   |
 | `<leader>gor` | `:OctoRepoStats<CR>`         | Repo Stats           |
 | `<leader>got` | `:OctoStats<CR>`             | All Stats            |
-| `<leader>goh` | `:OctoProfile<CR>`           | Open GitHub Profile  |
+| `<leader>gop` | `:OctoProfile<CR>`           | Open GitHub Profile  |
 | `<leader>gow` | `:OctoRepoWeb<CR>`           | Open Repo in Browser |
 
 I recommend customizing these keybindings based on your preferences.

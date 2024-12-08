@@ -37,7 +37,6 @@ M.setup = function()
     add_octorepos_command('OctoReposBySize', 'size', '')
     add_octorepos_command('OctoReposByStars', 'star', '')
     add_octorepos_command('OctoReposByUpdated', 'update', '')
-    add_octorepos_command('OctoReposByWatchers', 'watch', '')
 
     add_octorepos_command('OctoReposTypeArchived', '', 'archive')
     add_octorepos_command('OctoReposTypeForked', '', 'fork')
@@ -100,10 +99,9 @@ M.setup = function()
         add_keymap('<leader>gof', ':OctoReposByForks<CR>', 'Repos by Forks')
         add_keymap('<leader>goi', ':OctoReposByIssues<CR>', 'Repos by Issues')
         add_keymap('<leader>gol', ':OctoReposByLanguage<CR>', 'Repos by Language')
-        add_keymap('<leader>gop', ':OctoReposByPushed<CR>', 'Repos by Pushed')
         add_keymap('<leader>gos', ':OctoReposByStars<CR>', 'Repos by Stars')
         add_keymap('<leader>gou', ':OctoReposByUpdated<CR>', 'Repos by Updated')
-        add_keymap('<leader>goW', ':OctoReposByWatchers<CR>', 'Repos by Watchers')
+        add_keymap('<leader>goU', ':OctoReposByPushed<CR>', 'Repos by Pushed')
 
         add_keymap('<leader>goA', ':OctoReposTypeArchived<CR>', 'Archived Repos')
         add_keymap('<leader>goF', ':OctoReposTypeForked<CR>', 'Forked Repos')
@@ -116,7 +114,7 @@ M.setup = function()
         add_keymap('<leader>gor', ':OctoRepoStats<CR>', 'Repo Stats')
         add_keymap('<leader>got', ':OctoStats<CR>', 'All Stats')
 
-        add_keymap('<leader>goh', ':OctoProfile<CR>', 'Open GitHub Profile')
+        add_keymap('<leader>gop', ':OctoProfile<CR>', 'Open GitHub Profile')
         add_keymap('<leader>gow', ':OctoRepoWeb<CR>', 'Open Repo in Browser')
     end
 end
