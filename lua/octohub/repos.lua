@@ -147,6 +147,8 @@ local function sort_repos(repos, sort_by)
                 return a.open_issues_count > b.open_issues_count
             elseif sort_by == 'name' then
                 return a.name < b.name
+            elseif sort_by == 'language' then
+                return a.language < b.language
             end
         end)
     end
