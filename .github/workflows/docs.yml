@@ -13,15 +13,15 @@ jobs:
         uses: kdheepak/panvimdoc@main
         with:
           vimdoc: octohub
-          version: "Neovim >= 0.8.0"
+          version: 'Neovim >= 0.8.0'
           demojify: true
           treesitter: true
       - name: Commit files
         run: |
           git config --local user.email "2kabhishek@users.noreply.github.com"
           git config --local user.name "Abhishek via github-actions"
-          git add .
-          git diff --quiet && git commit -m "docs: update help docs"
+          git add doc
+          git commit -m "docs: update help docs" || true
       - name: Push
         uses: ad-m/github-push-action@master
         with:
