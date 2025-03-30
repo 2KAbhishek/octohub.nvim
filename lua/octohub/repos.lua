@@ -9,7 +9,12 @@ local Path = require('plenary.path')
 
 local languages = require('octohub.languages')
 local config = require('octohub.config').config
-local utils = require('utils')
+
+local cache = require('utils.cache')
+local picker = require('utils.picker')
+local time = require('utils.time')
+local noti = require('utils.notification')
+local shell = require('utils.shell')
 
 ---@class octohub.repos
 local M = {}
@@ -49,8 +54,8 @@ local function format_repo_info(repo)
             repo.watchers_count,
             repo.open_issues_count,
             repo.owner.login,
-            utils.human_time(repo.created_at),
-            utils.human_time(repo.updated_at),
+            time.human_time(repo.created_at),
+            time.human_time(repo.updated_at),
             repo.size
         )
     )
@@ -99,7 +104,7 @@ end
 
 ---@param callback fun(result: string)
 function M.get_default_username(callback)
-    utils.get_data_from_cache('default_username', 'gh api user', function(data)
+    cache.get_data_from_cache('default_username', 'gh api user', function(data)
         if data then
             callback(data.login)
         end
@@ -195,15 +200,15 @@ function M.open_repo(repo_name, owner)
     if not Path:new(repo_dir):exists() then
         local clone_cmd = string.format('gh repo clone %s/%s %s', owner, repo_name, repo_dir)
 
-        utils.show_notification('Cloning repository: ' .. owner .. '/' .. repo_name, vim.log.levels.INFO, 'Octohub')
+        noti.show_notification('Cloning repository: ' .. owner .. '/' .. repo_name, vim.log.levels.INFO, 'Octohub')
 
-        utils.async_shell_execute(clone_cmd, function(result)
+        shell.async_shell_execute(clone_cmd, function(result)
             if result then
-                utils.open_dir(repo_dir)
+                picker.open_dir(repo_dir)
             end
         end)
     else
-        utils.open_dir(repo_dir)
+        picker.open_dir(repo_dir)
     end
 end
 
@@ -231,7 +236,7 @@ function M.get_repos(args, callback)
                 command = string.format('gh api "users/%s/starred?page=%d&per_page=100"', user_to_process, page)
             end
 
-            utils.get_data_from_cache(cache_prefix .. user_to_process .. '_page_' .. page, command, function(repos)
+            cache.get_data_from_cache(cache_prefix .. user_to_process .. '_page_' .. page, command, function(repos)
                 if repos and #repos > 0 then
                     for _, repo in ipairs(repos) do
                         local file_type = languages.language_to_filetype(repo.language)

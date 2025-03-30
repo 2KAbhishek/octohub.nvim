@@ -1,6 +1,9 @@
 local octorepos = require('octohub.repos')
 local config = require('octohub.config').config
-local utils = require('utils')
+
+local cache = require('utils.cache')
+local time = require('utils.time')
+local noti = require('utils.notification')
 
 ---@class octohub.stats
 local M = {}
@@ -9,14 +12,14 @@ local M = {}
 ---@param callback fun(data: table)
 local function get_github_stats(username, callback)
     local command = username == '' and 'gh api user' or 'gh api users/' .. username
-    utils.get_data_from_cache('user_' .. username, command, callback, config.user_cache_timeout)
+    cache.get_data_from_cache('user_' .. username, command, callback, config.user_cache_timeout)
 end
 
 ---@param username string
 ---@param callback fun(data: table)
 local function get_user_events(username, callback)
     local command = 'gh api users/' .. username .. '/events?per_page=100'
-    utils.get_data_from_cache('events_' .. username, command, callback, config.events_cache_timeout)
+    cache.get_data_from_cache('events_' .. username, command, callback, config.events_cache_timeout)
 end
 
 ---@param username string
@@ -25,7 +28,7 @@ local function get_contribution_data(username, callback)
     local command = 'gh api graphql -f query=\'{user(login: "'
         .. username
         .. '") { contributionsCollection { contributionCalendar { weeks { contributionDays { contributionCount } } } } } }\''
-    utils.get_data_from_cache('contribution_' .. username, command, callback, config.contibutions_cache_timeout)
+    cache.get_data_from_cache('contribution_' .. username, command, callback, config.contibutions_cache_timeout)
 end
 
 ---@param contribution_count number
@@ -94,7 +97,7 @@ local function get_recent_activity(events, event_count)
 
         table.insert(
             activity,
-            string.format('%s, %s, %s %s', utils.human_time(event.created_at), action, event.repo.name, commit)
+            string.format('%s, %s, %s %s', time.human_time(event.created_at), action, event.repo.name, commit)
         )
     end
     return table.concat(activity, '\n')
@@ -175,7 +178,7 @@ local function format_message(stats, repos, events, contribution_data)
             stats.company,
             stats.bio,
             stats.blog,
-            utils.human_time(stats.created_at)
+            time.human_time(stats.created_at)
         ),
     }
 
@@ -230,7 +233,7 @@ function M.show_repo_stats(username)
     username = username or ''
     get_github_stats(username, function(stats)
         if stats.message then
-            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octohub')
+            noti.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octohub')
             return
         end
 
@@ -248,7 +251,7 @@ function M.show_activity_stats(username, event_count)
     event_count = event_count or config.event_count
     get_github_stats(username, function(stats)
         if stats.message then
-            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octohub')
+            noti.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octohub')
             return
         end
 
@@ -264,7 +267,7 @@ function M.show_contribution_stats(username)
     username = username or ''
     get_github_stats(username, function(stats)
         if stats.message then
-            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octohub')
+            noti.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octohub')
             return
         end
 
@@ -280,7 +283,7 @@ function M.show_all_stats(username)
     username = username or ''
     get_github_stats(username, function(stats)
         if stats.message then
-            utils.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octohub')
+            noti.queue_notification('Error: ' .. stats.message, vim.log.levels.ERROR, 'Octohub')
             return
         end
 

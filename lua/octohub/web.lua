@@ -1,5 +1,5 @@
 local octorepos = require('octohub.repos')
-local utils = require('utils')
+local shell = require('utils.shell')
 
 ---@class octohub.web
 local M = {}
@@ -19,7 +19,7 @@ function M.open_github_profile(username)
         end)
     end
     local url = 'https://github.com/' .. username
-    utils.open_command(url)
+    shell.open_command(url)
 end
 
 return M
