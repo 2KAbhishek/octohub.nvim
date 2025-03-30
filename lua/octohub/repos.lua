@@ -11,7 +11,6 @@ local languages = require('octohub.languages')
 local config = require('octohub.config').config
 
 local cache = require('utils.cache')
-local picker = require('utils.picker')
 local time = require('utils.time')
 local noti = require('utils.notification')
 local shell = require('utils.shell')
@@ -204,11 +203,11 @@ function M.open_repo(repo_name, owner)
 
         shell.async_shell_execute(clone_cmd, function(result)
             if result then
-                picker.open_dir(repo_dir)
+                shell.open_session_or_dir(repo_dir)
             end
         end)
     else
-        picker.open_dir(repo_dir)
+        shell.open_session_or_dir(repo_dir)
     end
 end
 
