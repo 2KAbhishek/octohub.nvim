@@ -45,7 +45,7 @@
 - Quickly list and open any GitHub repositories, yours or others, directly from Neovim.
 - Sort repositories by stars, forks, and other criteria, with support for filtering by type (forks, private repos, etc.).
 - View all sorts of repository details at a glance, including issues, stars, forks, and more.
-- Seamless integration with Telescope for fuzzy searching and quick access to repositories.
+- Seamless integration with pickers for fuzzy searching and quick access to repositories.
 - Display GitHub profile stats including recent activity and contributions for any user.
 - View repository statistics, such as top languages and contribution metrics.
 - Customizable display options for activity, contribution graphs, and repo stats.
@@ -114,7 +114,6 @@
     },
     dependencies = {
         '2kabhishek/utils.nvim',
-        'nvim-telescope/telescope.nvim'
     },
     -- Add your custom configs here, keep it blank for default configs (required)
     opts = {},
@@ -234,6 +233,8 @@ You can also add the following to your `which-key` configuration: `{ '<leader>go
 ### Telescope Integration
 
 `octohub.nvim` adds a Telescope extension for easy searching and browsing of repositories.
+
+> Make sure that you define the picker provider as `telescope` in your utils.nvim configuration.
 
 To use this extension, add the following code to your configuration:
 
