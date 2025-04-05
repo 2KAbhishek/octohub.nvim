@@ -1,9 +1,3 @@
-local pickers = require('telescope.pickers')
-local finders = require('telescope.finders')
-local sorters = require('telescope.sorters')
-local actions = require('telescope.actions')
-local action_state = require('telescope.actions.state')
-local previewers = require('telescope.previewers')
 local devicons = require('nvim-web-devicons')
 local Path = require('plenary.path')
 
@@ -14,6 +8,7 @@ local cache = require('utils.cache')
 local time = require('utils.time')
 local noti = require('utils.notification')
 local shell = require('utils.shell')
+local picker = require('utils.picker')
 
 ---@class octohub.repos
 local M = {}
@@ -93,7 +88,6 @@ end
 ---@param prompt_bufnr number
 ---@param selection table
 local function handle_selection(prompt_bufnr, selection)
-    actions.close(prompt_bufnr)
     if selection then
         local owner = selection.value.owner.login
         local repo_name = selection.value.name
@@ -272,29 +266,13 @@ function M.show_repos(username, sort_by, repo_type)
 
     M.get_repos({ username = username, sort_by = sort_by, repo_type = repo_type }, function(repos)
         vim.schedule(function()
-            pickers
-                .new({}, {
-                    prompt_title = 'Select a repository:',
-                    finder = finders.new_table({
-                        results = repos,
-                        entry_maker = entry_maker,
-                    }),
-                    sorter = sorters.get_generic_fuzzy_sorter(),
-                    previewer = previewers.new_buffer_previewer({
-                        define_preview = function(self, entry, _)
-                            local repo_info = format_repo_info(entry.value)
-                            vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, vim.split(repo_info, '\n'))
-                        end,
-                    }),
-                    attach_mappings = function(prompt_bufnr, _)
-                        actions.select_default:replace(function()
-                            local selection = action_state.get_selected_entry()
-                            handle_selection(prompt_bufnr, selection)
-                        end)
-                        return true
-                    end,
-                })
-                :find()
+            picker.custom({
+                items = repos,
+                title = 'Select a repository',
+                entry_maker = entry_maker,
+                preview_generator = format_repo_info,
+                selection_handler = handle_selection,
+            })
         end)
     end)
 end
