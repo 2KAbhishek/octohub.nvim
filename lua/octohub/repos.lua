@@ -1,4 +1,3 @@
-local devicons = require('nvim-web-devicons')
 local Path = require('plenary.path')
 
 local languages = require('octohub.languages')
@@ -9,6 +8,7 @@ local time = require('utils.time')
 local noti = require('utils.notification')
 local shell = require('utils.shell')
 local picker = require('utils.picker')
+local lang = require('utils.language')
 
 ---@class octohub.repos
 local M = {}
@@ -16,9 +16,7 @@ local M = {}
 ---@param repo table
 ---@return table
 local function entry_maker(repo)
-    local icon, _ = devicons.get_icon(repo.file_type, { default = true })
-    icon = icon or ''
-
+    local icon = lang.get_language_icon(repo.language)
     local display = icon and ('%s %s [%s]'):format(icon, repo.name, repo.language)
 
     return {
@@ -232,11 +230,9 @@ function M.get_repos(args, callback)
             cache.get_data_from_cache(cache_prefix .. user_to_process .. '_page_' .. page, command, function(repos)
                 if repos and #repos > 0 then
                     for _, repo in ipairs(repos) do
-                        local file_type = languages.language_to_filetype(repo.language)
-                        if file_type == 'md' then
+                        if repo.language == vim.NIL then
                             repo.language = 'Markdown'
                         end
-                        repo.file_type = file_type
                         table.insert(all_repos, repo)
                     end
                     fetch_page(page + 1)
