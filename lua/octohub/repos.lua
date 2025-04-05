@@ -31,13 +31,13 @@ end
 ---@return string
 local function format_repo_info(repo)
     local repo_info = {
-        string.format(' Repo Info\n\n Name: %s\n Language: %s\n', repo.name, repo.language),
+        string.format('# %s\n\n%s Language: %s\n', repo.name, repo.icon, repo.language),
     }
 
     table.insert(
         repo_info,
         string.format(
-            ' Link: %s\n\n'
+            ' [Link](%s)\n\n'
                 .. ' Stars: %d\n Forks: %d\n Watchers: %d\n Open Issues: %d\n\n'
                 .. ' Owner: %s\n Created At: %s\n Last Updated: %s\n Disk Usage: %d\n',
             repo.html_url,
@@ -55,14 +55,14 @@ local function format_repo_info(repo)
     local conditional_additions = {
         {
             repo.description ~= vim.NIL and #repo.description > 0,
-            string.format(' Description: %s\n', repo.description),
+            string.format(' %s\n', repo.description),
             2,
         },
-        { repo.homepage ~= vim.NIL and #repo.homepage > 0, string.format(' Homepage: %s\n', repo.homepage), 3 },
-        { repo.fork, '\n Forked\n' },
-        { repo.archived, '\n Archived\n' },
-        { repo.private, '\n Private\n' },
-        { repo.is_template, '\n Template\n' },
+        { repo.homepage ~= vim.NIL and #repo.homepage > 0, string.format(' [Homepage](%s)\n', repo.homepage), 3 },
+        { repo.fork, '\n>  Forked\n' },
+        { repo.archived, '\n>  Archived\n' },
+        { repo.private, '\n>  Private\n' },
+        { repo.is_template, '\n>  Template\n' },
         { #repo.topics > 0, string.format('\n Topics: %s\n', table.concat(repo.topics, ', ')) },
     }
 
@@ -72,11 +72,7 @@ local function format_repo_info(repo)
         local content_position = conditional_addition[3]
 
         if condition then
-            if content_position == nil then
-                table.insert(repo_info, content)
-            else
-                table.insert(repo_info, content_position, content)
-            end
+            table.insert(repo_info, content_position or #repo_info + 1, content)
         end
     end
 
@@ -233,6 +229,7 @@ function M.get_repos(args, callback)
                         if repo.language == vim.NIL then
                             repo.language = 'Markdown'
                         end
+                        repo.icon = lang.get_language_icon(repo.language)
                         table.insert(all_repos, repo)
                     end
                     fetch_page(page + 1)
