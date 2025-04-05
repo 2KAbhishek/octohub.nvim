@@ -114,6 +114,10 @@
     },
     dependencies = {
         '2kabhishek/utils.nvim',
+        opts = {
+            -- Decide picker is used by default
+            picker_provider = "snacks", -- 'telescope', 'fzf_lua', or 'snacks' (default)
+        },
     },
     -- Add your custom configs here, keep it blank for default configs (required)
     opts = {},
@@ -234,7 +238,7 @@ You can also add the following to your `which-key` configuration: `{ '<leader>go
 
 `octohub.nvim` adds a Telescope extension for easy searching and browsing of repositories.
 
-> Make sure that you define the picker provider as `telescope` in your utils.nvim configuration.
+> Make sure that you define the `picker_provider` as `telescope` in your utils.nvim configuration.
 
 To use this extension, add the following code to your configuration:
 
