@@ -1,14 +1,14 @@
 local Path = require('plenary.path')
 
-local languages = require('octohub.languages')
 local config = require('octohub.config').config
 
 local cache = require('utils.cache')
 local time = require('utils.time')
 local noti = require('utils.notification')
 local shell = require('utils.shell')
-local picker = require('utils.picker')
 local lang = require('utils.language')
+
+local pickme = require('pickme')
 
 ---@class octohub.repos
 local M = {}
@@ -259,7 +259,7 @@ function M.show_repos(username, sort_by, repo_type)
 
     M.get_repos({ username = username, sort_by = sort_by, repo_type = repo_type }, function(repos)
         vim.schedule(function()
-            picker.custom({
+            pickme.custom_picker({
                 items = repos,
                 title = 'Select a repository',
                 entry_maker = entry_maker,
