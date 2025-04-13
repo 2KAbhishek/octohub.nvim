@@ -54,10 +54,12 @@
 
 ### ⚙️ Requirements
 
-- Latest version of `neovim`
-- Authenticated `gh` CLI
-- [tmux-tea](https://github.com/2kabhishek/tmux-tea) (optional, recommended) if you want to use individual sessions for each repository
-  - I also recommend enabling the default command to be nvim with `set -g @tea-default-command 'nvim'` for a better experience
+- [utils.nvim](https://github.com/2kabhishek/utls.nvim) for helper functions
+- [pickme.nvim](https://github.com/2kabhishek/pickme.nvim) for picker support
+- The GitHub CLI tool (`gh`)
+
+- [tmux-tea](https://github.com/2kabhishek/tmux-tea) (optional) if you want to use individual sessions for each repository
+  - Using `set -g @tea-default-command 'nvim'` is recommended
 
 ### 💻 Installation
 
@@ -114,10 +116,7 @@
     },
     dependencies = {
         '2kabhishek/utils.nvim',
-        opts = {
-            -- Decide picker is used by default
-            picker_provider = "snacks", -- 'telescope', 'fzf_lua', or 'snacks' (default)
-        },
+        '2kabhishek/pickme.nvim',
     },
     -- Add your custom configs here, keep it blank for default configs (required)
     opts = {},
@@ -238,7 +237,7 @@ You can also add the following to your `which-key` configuration: `{ '<leader>go
 
 `octohub.nvim` adds a Telescope extension for easy searching and browsing of repositories.
 
-> Make sure that you define the `picker_provider` as `telescope` in your utils.nvim configuration.
+> Make sure that you define the `picker_provider` as `telescope` in your pickme.nvim configuration.
 
 To use this extension, add the following code to your configuration:
 
