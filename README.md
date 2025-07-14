@@ -67,53 +67,8 @@
 -- Lazy nvim
 {
     '2kabhishek/octohub.nvim',
-    cmd = {
-        'OctoRepos',
-        'OctoReposByCreated',
-        'OctoReposByForks',
-        'OctoReposByIssues',
-        'OctoReposByLanguages',
-        'OctoReposByNames',
-        'OctoReposByPushed',
-        'OctoReposBySize',
-        'OctoReposByStars',
-        'OctoReposByUpdated',
-        'OctoReposTypeArchived',
-        'OctoReposTypeForked',
-        'OctoReposTypePrivate',
-        'OctoReposTypeStarred',
-        'OctoReposTypeTemplate',
-        'OctoRepo',
-        'OctoStats',
-        'OctoActivityStats',
-        'OctoContributionStats',
-        'OctoRepoStats',
-        'OctoProfile',
-        'OctoRepoWeb',
-    },
-    -- Change these if you do not want to use default keybindings
-    keys = {
-        '<leader>goa',
-        '<leader>goA',
-        '<leader>gob',
-        '<leader>goc',
-        '<leader>gof',
-        '<leader>goF',
-        '<leader>gog',
-        '<leader>goi',
-        '<leader>gol',
-        '<leader>goo',
-        '<leader>gop',
-        '<leader>goP',
-        '<leader>gor',
-        '<leader>gos',
-        '<leader>goS',
-        '<leader>got',
-        '<leader>goT',
-        '<leader>gou',
-        '<leader>goU',
-        '<leader>gow',
-    },
+    cmd = { 'Octohub' },
+    keys = { '<leader>goo' }, -- Add more bindings as needed
     dependencies = {
         '2kabhishek/utils.nvim',
         '2kabhishek/pickme.nvim',
@@ -152,82 +107,118 @@ octohub.setup({
     username_cache_timeout = 3600 * 24 * 7, -- Time in seconds to cache username
     user_cache_timeout = 3600 * 24 * 7,     -- Time in seconds to cache user data
     add_default_keybindings = true,         -- Add default keybindings for the plugin
+    use_new_command = true,                 -- Use the new `Octohub` command
 })
 ```
 
 Available `sort_repos_by` options:
 
-- `create` - Sort by creation date, `OctoReposByCreated`
-- `fork` - Sort by forks, `OctoReposByForks`
-- `issue` - Sort by open issues, `OctoReposByIssues`
-- `language` - Sort by language, `OctoReposByLanguage`
-- `name` - Sort by name, `OctoReposByNames`
-- `push` - Sort by last push, `OctoReposByPushed`
-- `size` - Sort by size, `OctoReposBySize`
-- `star` - Sort by stars, `OctoReposByStars`
-- `update` - Sort by last update, `OctoReposByUpdated`
+- `created` - Sort by creation date, `:Octohub repos sort:created`
+- `forks` - Sort by forks, `:Octohub repos sort:forks`
+- `issues` - Sort by open issues, `:Octohub repos sort:issues`
+- `language` - Sort by language, `:Octohub repos sort:language`
+- `name` - Sort by name, `:Octohub repos sort:name`
+- `pushed` - Sort by last push, `:Octohub repos sort:pushed`
+- `size` - Sort by size, `:Octohub repos sort:size`
+- `stars` - Sort by stars, `:Octohub repos sort:stars`
+- `updated` - Sort by last update, `:Octohub repos sort:updated`
 
 Available `repo_type` options:
 
-- `archive` - Archived repositories, `OctoReposTypeArchived`
-- `fork` - Forked repositories, `OctoReposTypeForked`
-- `private` - Private repositories, `OctoReposTypePrivate`
-- `star` - Starred repositories, `OctoReposTypeStarred`
-- `template` - Template repositories, `OctoReposTypeTemplate`
+- `archived` - Archived repositories, `:Octohub repos type:archived`
+- `forked` - Forked repositories, `:Octohub repos type:forked`
+- `private` - Private repositories, `:Octohub repos type:private`
+- `starred` - Starred repositories, `:Octohub repos type:starred`
+- `template` - Template repositories, `:Octohub repos type:template`
 
 > Note: The `sort_repos_by` and `repo_type` options match the start of keywords, you can expand them for readability, `sort:updated` is same as `sort:update`.
 
 ### Commands
 
-`octohub.nvim` adds the following commands:
+`octohub.nvim` provides a unified command interface with tab completion support:
 
-- `:OctoRepos [user] [sort:<sort_repos_by>] [type:<repo_type>]`: Displays the repositories for a given user, sorted by the specified criteria.
-  - Ex: `:OctoRepos 2kabhishek sort:updated type:fork` - Display all forked repositories for the user `2kabhishek`, sorted by the last update.
-  - Ex: `:OctoRepos type:stars` - Display all repositories starred by the current user.
-- `:OctoRepo <repo_name> [user]`: Opens a specified repository, optionally by a user.
-  - Ex: `:OctoRepo octohub.nvim` - Clone the repository `octohub.nvim` from the current user.
-  - Ex: `:OctoRepo 2kabhishek octohub.nvim` - Clone the repository `octohub.nvim` from the user `2kabhishek`.
-- `:OctoRepoStats [user]`: Displays statistics for the repositories of a given user.
-  - Ex: `:OctoRepoStats 2kabhishek` - Display statistics for the repositories of the user `2kabhishek`.
-- `:OctoRepoWeb` - Opens the current repository in the browser.
-- `OctoStats`: Displays all stats (activity, contributions, repository data).
-  - Ex: `:OctoStats theprimeagen` shows stats for `theprimeagen`.
-- `OctoActivityStats [username] [count:N]`: Displays recent activity for a user, with an optional count.
-  - Ex: `:OctoActivityStats count:20` shows the last 20 activity events for the current user.
-- `OctoContributionStats [username]`: Displays contribution stats for a user.
-- `OctoProfile [username]`: Opens the GitHub profile of a user in your browser.
+#### Main Commands
+
+- `:Octohub repos [user] [sort:<option>] [type:<option>]`: Displays repositories for a given user, sorted by specified criteria.
+  - Ex: `:Octohub repos 2kabhishek sort:updated type:forked` - Display all forked repositories for `2kabhishek`, sorted by last update.
+  - Ex: `:Octohub repos type:starred` - Display all repositories starred by the current user.
+- `:Octohub repo <name> [user]`: Opens a specified repository, optionally by a user.
+  - Ex: `:Octohub repo octohub.nvim` - Clone the repository `octohub.nvim` from the current user.
+  - Ex: `:Octohub repo octohub.nvim 2kabhishek` - Clone the repository `octohub.nvim` from the user `2kabhishek`.
+- `:Octohub stats [user]`: Displays all stats (activity, contributions, repository data).
+  - Ex: `:Octohub stats theprimeagen` shows stats for `theprimeagen`.
+- `:Octohub stats activity [user] [count:N]`: Displays recent activity for a user, with an optional count.
+  - Ex: `:Octohub stats activity count:20` shows the last 20 activity events for the current user.
+- `:Octohub stats contributions [user]`: Displays contribution stats for a user.
+- `:Octohub stats repo [user]`: Displays statistics for the repositories of a given user.
+  - Ex: `:Octohub stats repo 2kabhishek` - Display statistics for the repositories of the user `2kabhishek`.
+- `:Octohub web profile [user]`: Opens the GitHub profile of a user in your browser.
+- `:Octohub web repo`: Opens the current repository in the browser.
+
+#### Command Completion
+
+All new `Octohub` commands support tab completion:
+
+- Subcommands: `repos`, `repo`, `stats`, `web`
+- Parameters: `sort:created`, `sort:forks`, `type:archived`, `type:private`, etc.
+- Context-aware completion based on the current command
+
+#### Utility Commands
 
 - `UtilsClearCache[prefix]`: Clears all the cache for a given prefix. Provided by [utils.nvim](https://github.com/2kabhishek/utils.nvim).
   - Ex: `:UtilsClearCache username` - Clears the cache for `username`
 
 If the `user` parameter is not provided, the plugin will use the current authenticated username from `gh`
 
+#### Deprecated Commands (Backward Compatibility)
+
+> **⚠️ DEPRECATION NOTICE**: The following commands are deprecated and will be removed in a future version. Please migrate to the new `Octohub` commands above.
+> More information: https://github.com/2kabhishek/octohub.nvim/issues/13
+
+The original commands are still available for backward compatibility:
+
+- `:OctoRepos`, `:OctoRepo`, `:OctoStats`, `:OctoActivityStats`, `:OctoContributionStats`, `:OctoRepoStats`, `:OctoProfile`, `:OctoRepoWeb`
+- All the `OctoReposBy*` and `OctoReposType*` commands
+
+**Migration Guide:**
+
+- `:OctoRepos` → `:Octohub repos`
+- `:OctoReposBySize` → `:Octohub repos sort:size`
+- `:OctoReposTypePrivate` → `:Octohub repos type:private`
+- `:OctoRepo` → `:Octohub repo`
+- `:OctoStats` → `:Octohub stats`
+- `:OctoActivityStats` → `:Octohub stats activity`
+- `:OctoContributionStats` → `:Octohub stats contributions`
+- `:OctoRepoStats` → `:Octohub stats repo`
+- `:OctoProfile` → `:Octohub web profile`
+- `:OctoRepoWeb` → `:Octohub web repo`
+
 ### Keybindings
 
 By default, these are the configured keybindings.
 
-| Keybinding    | Command                      | Description          |
-| ------------- | ---------------------------- | -------------------- |
-| `<leader>goo` | `:OctoRepos<CR>`             | All Repos            |
-| `<leader>gob` | `:OctoReposBySize<CR>`       | Repos by Size        |
-| `<leader>goc` | `:OctoReposByCreated<CR>`    | Repos by Created     |
-| `<leader>gof` | `:OctoReposByForks<CR>`      | Repos by Forks       |
-| `<leader>goi` | `:OctoReposByIssues<CR>`     | Repos by Issues      |
-| `<leader>gol` | `:OctoReposByLanguage<CR>`   | Repos by Language    |
-| `<leader>gos` | `:OctoReposByStars<CR>`      | Repos by Stars       |
-| `<leader>gou` | `:OctoReposByUpdated<CR>`    | Repos by Updated     |
-| `<leader>goU` | `:OctoReposByPushed<CR>`     | Repos by Pushed      |
-| `<leader>goA` | `:OctoReposTypeArchived<CR>` | Archived Repos       |
-| `<leader>goF` | `:OctoReposTypeForked<CR>`   | Forked Repos         |
-| `<leader>goP` | `:OctoReposTypePrivate<CR>`  | Private Repos        |
-| `<leader>goS` | `:OctoReposTypeStarred<CR>`  | Starred Repos        |
-| `<leader>goT` | `:OctoReposTypeTemplate<CR>` | Template Repos       |
-| `<leader>goa` | `:OctoActivityStats<CR>`     | Activity Stats       |
-| `<leader>gog` | `:OctoContributionStats<CR>` | Contribution Graph   |
-| `<leader>gor` | `:OctoRepoStats<CR>`         | Repo Stats           |
-| `<leader>got` | `:OctoStats<CR>`             | All Stats            |
-| `<leader>gop` | `:OctoProfile<CR>`           | Open GitHub Profile  |
-| `<leader>gow` | `:OctoRepoWeb<CR>`           | Open Repo in Browser |
+| Keybinding    | Command                            | Description          |
+| ------------- | ---------------------------------- | -------------------- |
+| `<leader>goo` | `:Octohub repos<CR>`               | All Repos            |
+| `<leader>gob` | `:Octohub repos sort:size<CR>`     | Repos by Size        |
+| `<leader>goc` | `:Octohub repos sort:created<CR>`  | Repos by Created     |
+| `<leader>gof` | `:Octohub repos sort:forks<CR>`    | Repos by Forks       |
+| `<leader>goi` | `:Octohub repos sort:issues<CR>`   | Repos by Issues      |
+| `<leader>gol` | `:Octohub repos sort:language<CR>` | Repos by Language    |
+| `<leader>gos` | `:Octohub repos sort:stars<CR>`    | Repos by Stars       |
+| `<leader>gou` | `:Octohub repos sort:updated<CR>`  | Repos by Updated     |
+| `<leader>goU` | `:Octohub repos sort:pushed<CR>`   | Repos by Pushed      |
+| `<leader>goA` | `:Octohub repos type:archived<CR>` | Archived Repos       |
+| `<leader>goF` | `:Octohub repos type:forked<CR>`   | Forked Repos         |
+| `<leader>goP` | `:Octohub repos type:private<CR>`  | Private Repos        |
+| `<leader>goS` | `:Octohub repos type:starred<CR>`  | Starred Repos        |
+| `<leader>goT` | `:Octohub repos type:template<CR>` | Template Repos       |
+| `<leader>goa` | `:Octohub stats activity<CR>`      | Activity Stats       |
+| `<leader>gog` | `:Octohub stats contributions<CR>` | Contribution Graph   |
+| `<leader>gor` | `:Octohub stats repo<CR>`          | Repo Stats           |
+| `<leader>got` | `:Octohub stats<CR>`               | All Stats            |
+| `<leader>gop` | `:Octohub web profile<CR>`         | Open GitHub Profile  |
+| `<leader>gow` | `:Octohub web repo<CR>`            | Open Repo in Browser |
 
 I recommend customizing these keybindings based on your preferences.
 

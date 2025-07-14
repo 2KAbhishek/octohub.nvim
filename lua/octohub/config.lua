@@ -21,6 +21,7 @@ local M = {}
 ---@field contributions_cache_timeout number : Time in seconds to contributions data
 ---@field user_cache_timeout number : Time in seconds to cache user data
 ---@field add_default_keybindings boolean : Whether to add default keybindings
+---@field use_new_command boolean : Whether to use new Octohub command
 local config = {
     contribution_icons = { '', '', '', '', '', '', '' },
     per_user_dir = true,
@@ -41,6 +42,7 @@ local config = {
     username_cache_timeout = 3600 * 24 * 7,
     user_cache_timeout = 3600 * 24 * 7,
     add_default_keybindings = true,
+    use_new_command = false,
 }
 
 ---@type octohub.config
