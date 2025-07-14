@@ -136,6 +136,7 @@ local function add_octohub_command()
 
         if #args == 0 then
             repos.show_repos('', config.sort_repos_by, config.repo_type)
+            return
         end
 
         local subcommand = args[1]

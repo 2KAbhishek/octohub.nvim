@@ -142,6 +142,7 @@ Available `repo_type` options:
 - `:Octohub repos [user] [sort:<option>] [type:<option>]`: Displays repositories for a given user, sorted by specified criteria.
   - Ex: `:Octohub repos 2kabhishek sort:updated type:forked` - Display all forked repositories for `2kabhishek`, sorted by last update.
   - Ex: `:Octohub repos type:starred` - Display all repositories starred by the current user.
+  - Ex: `:Octohub` - Same as `:Octohub repos` for the current user.
 - `:Octohub repo <name> [user]`: Opens a specified repository, optionally by a user.
   - Ex: `:Octohub repo octohub.nvim` - Clone the repository `octohub.nvim` from the current user.
   - Ex: `:Octohub repo octohub.nvim 2kabhishek` - Clone the repository `octohub.nvim` from the user `2kabhishek`.
