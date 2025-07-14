@@ -31,7 +31,6 @@ local M = {}
 ---@field stats OctohubStatsConfig Stats and UI related config (icons, window size, stats toggles)
 ---@field cache OctohubCacheConfig Cache timeouts
 ---@field add_default_keybindings boolean Feature toggle for keybindings
----@field use_new_command boolean Whether to use new Octohub command
 local config = {
     repos = {
         per_user_dir = true,
@@ -59,7 +58,6 @@ local config = {
         user = 3600 * 24 * 7,
     },
     add_default_keybindings = true,
-    use_new_command = false,
 }
 
 ---@type OctohubConfigOptions
