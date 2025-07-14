@@ -2,7 +2,6 @@ local repos = require('octohub.repos')
 local stats = require('octohub.stats')
 local web = require('octohub.web')
 local config = require('octohub.config').config
-local legacy = require('octohub.legacy')
 
 local lang_completion_cache = {}
 local repo_completion_cache = {}
@@ -308,25 +307,9 @@ end
 
 ---Setup Octohub commands and keymaps
 function M.setup()
-    if config.use_new_command then
-        add_octohub_command()
-        if config.add_default_keybindings then
-            add_default_keymaps()
-        end
-    else
-        vim.notify(
-            'Legacy Octohub commands are deprecated and will be removed on 15th August 2025.\n'
-                .. 'Please switch the new `:Octohub` command by adding `use_new_command` in your config.\n'
-                .. 'More info: https://github.com/2kabhishek/octohub.nvim/issues/13',
-            vim.log.levels.WARN
-        )
-        legacy.add_repo_commands()
-        legacy.add_stat_commands()
-        legacy.add_web_commands()
-
-        if config.add_default_keybindings then
-            legacy.add_legacy_keymaps()
-        end
+    add_octohub_command()
+    if config.add_default_keybindings then
+        add_default_keymaps()
     end
 end
 
