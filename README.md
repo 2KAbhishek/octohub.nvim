@@ -186,29 +186,6 @@ All new `Octohub` commands support tab completion:
 
 If the `user` parameter is not provided, the plugin will use the current authenticated username from `gh`
 
-#### Deprecated Commands (Backward Compatibility)
-
-> **⚠️ DEPRECATION NOTICE**: The following commands are deprecated and will be removed in a future version. Please migrate to the new `Octohub` commands above.
-> More information: https://github.com/2kabhishek/octohub.nvim/issues/13
-
-The original commands are still available for backward compatibility:
-
-- `:OctoRepos`, `:OctoRepo`, `:OctoStats`, `:OctoActivityStats`, `:OctoContributionStats`, `:OctoRepoStats`, `:OctoProfile`, `:OctoRepoWeb`
-- All the `OctoReposBy*` and `OctoReposType*` commands
-
-**Migration Guide:**
-
-- `:OctoRepos` → `:Octohub repos`
-- `:OctoReposBySize` → `:Octohub repos sort:size`
-- `:OctoReposTypePrivate` → `:Octohub repos type:private`
-- `:OctoRepo` → `:Octohub repo`
-- `:OctoStats` → `:Octohub stats`
-- `:OctoActivityStats` → `:Octohub stats activity`
-- `:OctoContributionStats` → `:Octohub stats contributions`
-- `:OctoRepoStats` → `:Octohub stats repo`
-- `:OctoProfile` → `:Octohub web profile`
-- `:OctoRepoWeb` → `:Octohub web repo`
-
 ### Keybindings
 
 By default, these are the configured keybindings.
