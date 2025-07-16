@@ -13,14 +13,6 @@ local function add_keymap(keys, cmd, desc)
     vim.api.nvim_set_keymap('n', keys, cmd, { noremap = true, silent = true, desc = desc })
 end
 
----Helper to add a Neovim user command
----@param name string
----@param func fun(opts: table)
----@param opts? table
-local function add_command(name, func, opts)
-    vim.api.nvim_create_user_command(name, func, opts or {})
-end
-
 ---Add all default keymaps for Octohub commands
 local function add_default_keymaps()
     add_keymap('<leader>goo', ':Octohub repos<CR>', 'All Repos')
@@ -127,7 +119,7 @@ end
 
 ---Add the main Octohub command
 local function add_octohub_command()
-    add_command('Octohub', function(opts)
+    vim.api.nvim_create_user_command('Octohub', function(opts)
         local args = vim.split(opts.args, ' ')
         args = vim.tbl_filter(function(arg)
             return arg ~= ''
