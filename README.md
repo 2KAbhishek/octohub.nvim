@@ -114,7 +114,6 @@ octohub.setup({
         user = 3600 * 24 * 7,         -- Time in seconds to cache user data
     },
     add_default_keybindings = true,   -- Add default keybindings for the plugin
-    use_new_command = false,          -- Use the new `Octohub` command
 })
 ```
 
