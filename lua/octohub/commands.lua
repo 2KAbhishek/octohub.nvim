@@ -2,7 +2,6 @@ local repos = require('octohub.repos')
 local stats = require('octohub.stats')
 local web = require('octohub.web')
 local config = require('octohub.config').config
-local legacy = require('octohub.legacy')
 
 local M = {}
 
@@ -12,14 +11,6 @@ local M = {}
 ---@param desc string
 local function add_keymap(keys, cmd, desc)
     vim.api.nvim_set_keymap('n', keys, cmd, { noremap = true, silent = true, desc = desc })
-end
-
----Helper to add a Neovim user command
----@param name string
----@param func fun(opts: table)
----@param opts? table
-local function add_command(name, func, opts)
-    vim.api.nvim_create_user_command(name, func, opts or {})
 end
 
 ---Add all default keymaps for Octohub commands
@@ -128,7 +119,7 @@ end
 
 ---Add the main Octohub command
 local function add_octohub_command()
-    add_command('Octohub', function(opts)
+    vim.api.nvim_create_user_command('Octohub', function(opts)
         local args = vim.split(opts.args, ' ')
         args = vim.tbl_filter(function(arg)
             return arg ~= ''
@@ -217,25 +208,9 @@ end
 
 ---Setup Octohub commands and keymaps
 function M.setup()
-    if config.use_new_command then
-        add_octohub_command()
-        if config.add_default_keybindings then
-            add_default_keymaps()
-        end
-    else
-        vim.notify(
-            'Legacy Octohub commands are deprecated and will be removed on 15th August 2025.\n'
-                .. 'Please switch the new `:Octohub` command by adding `use_new_command` in your config.\n'
-                .. 'More info: https://github.com/2kabhishek/octohub.nvim/issues/13',
-            vim.log.levels.WARN
-        )
-        legacy.add_repo_commands()
-        legacy.add_stat_commands()
-        legacy.add_web_commands()
-
-        if config.add_default_keybindings then
-            legacy.add_legacy_keymaps()
-        end
+    add_octohub_command()
+    if config.add_default_keybindings then
+        add_default_keymaps()
     end
 end
 
