@@ -39,10 +39,10 @@ local config = {
         repo_type = '',
     },
     stats = {
+        contribution_icons = { '', '', '', '', '', '', '' },
         max_contributions = 50,
         top_lang_count = 5,
         event_count = 5,
-        contribution_icons = { '', '', '', '', '', '', '' },
         window_width = 90,
         window_height = 60,
         show_recent_activity = true,
