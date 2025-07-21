@@ -11,7 +11,7 @@ local M = {}
 ---@field max_contributions number Max number of contributions per day to use for icon selection
 ---@field top_lang_count number Number of top languages to display
 ---@field event_count number Number of activity events to show
----@field contribution_icons table Table of icons to use for contributions
+---@field contribution_icons table Icons for different contribution levels
 ---@field window_width number Width in percentage of the window to display stats
 ---@field window_height number Height in percentage of the window to display stats
 ---@field show_recent_activity boolean Whether to show recent activity
