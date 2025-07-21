@@ -77,7 +77,7 @@ octohub.nvim can be configured using the following options:
             repo_type = '',               -- Type of repositories to display
         },
         stats = {
-            contribution_icons = { '', '', '', '', '', '', '' }, -- Table of icons to use for contributions
+            contribution_icons = { '', '', '', '', '', '', '' }, -- Icons for different contribution levels
             max_contributions = 50,       -- Max number of contributions per day to use for icon selection
             top_lang_count = 5,           -- Number of top languages to display in stats
             event_count = 5,              -- Number of activity events to show
