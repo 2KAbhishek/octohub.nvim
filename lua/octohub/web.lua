@@ -1,7 +1,7 @@
 local octorepos = require('octohub.repos')
 local shell = require('utils.shell')
 
----@class octohub.web
+---@class OctohubWeb
 local M = {}
 
 M.open_repo_web = function()

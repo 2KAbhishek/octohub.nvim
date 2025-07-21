@@ -10,7 +10,7 @@ local lang = require('utils.language')
 
 local pickme = require('pickme')
 
----@class octohub.repos
+---@class OctohubRepos
 local M = {}
 
 ---@param repo table
@@ -95,18 +95,18 @@ function M.get_default_username(callback)
         if data then
             callback(data.login)
         end
-    end, config.username_cache_timeout)
+    end, config.cache.username)
 end
 
 ---@param repo_name string
 ---@param owner string?
 ---@return string
 local function get_repo_dir(repo_name, owner)
-    local projects_dir = Path:new(vim.fn.expand(config.projects_dir))
+    local projects_dir = Path:new(vim.fn.expand(config.repos.projects_dir))
     projects_dir:mkdir({ parents = true, exists_ok = true })
 
     local repo_dir
-    if config.per_user_dir then
+    if config.repos.per_user_dir then
         local owner_dir = projects_dir:joinpath(owner)
         owner_dir:mkdir({ parents = true, exists_ok = true })
         repo_dir = owner_dir:joinpath(repo_name)
@@ -203,8 +203,8 @@ end
 ---@param callback fun(data: any)
 function M.get_repos(args, callback)
     local username = args and args.username or ''
-    local sort_by = args and args.sort_by or config.sort_repos_by
-    local repo_type = args and args.repo_type or config.repo_type
+    local sort_by = args and args.sort_by or config.repos.sort_by
+    local repo_type = args and args.repo_type or config.repos.repo_type
 
     local function get_user_repos(user_to_process, is_auth_user)
         local all_repos = {}
@@ -238,7 +238,7 @@ function M.get_repos(args, callback)
                     all_repos = filter_repos(all_repos, repo_type)
                     callback(all_repos)
                 end
-            end, config.repo_cache_timeout)
+            end, config.cache.repos)
         end
         fetch_page(1)
     end
@@ -254,8 +254,8 @@ end
 ---@param sort_by string?
 ---@param repo_type string?
 function M.show_repos(username, sort_by, repo_type)
-    sort_by = #sort_by > 0 and sort_by or config.sort_repos_by
-    repo_type = #repo_type > 0 and repo_type or config.repo_type
+    sort_by = #sort_by > 0 and sort_by or config.repos.sort_by
+    repo_type = #repo_type > 0 and repo_type or config.repos.repo_type
 
     M.get_repos({ username = username, sort_by = sort_by, repo_type = repo_type }, function(repos)
         vim.schedule(function()
