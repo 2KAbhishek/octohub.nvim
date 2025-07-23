@@ -1,4 +1,4 @@
----@class Octohub
+---@class OctohubConfig
 local M = {}
 
 ---@class OctohubReposConfig
@@ -25,7 +25,7 @@ local M = {}
 ---@field username number Time in seconds to cache username
 ---@field user number Time in seconds to cache user data
 
----@class OctohubConfig
+---@class OctohubConfigOptions
 ---@field repos OctohubReposConfig Repository related config (sorting, filtering, directory structure)
 ---@field stats OctohubStatsConfig Stats and UI related config (icons, window size, stats toggles)
 ---@field cache OctohubCacheConfig Cache timeouts
@@ -60,10 +60,11 @@ local config = {
     use_new_command = false,
 }
 
----@type OctohubConfig
+---@type OctohubConfigOptions
 M.config = config
 
----@param args table
+---Setup configuration with user options
+---@param args OctohubConfigOptions
 M.setup = function(args)
     M.config = vim.tbl_deep_extend('force', M.config, args or {})
 end
