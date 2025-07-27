@@ -150,6 +150,9 @@ local function complete_octohub(arglead, cmdline, cursorpos)
         local subcommand = args[2]
 
         if subcommand == 'repos' then
+            if arg_count >= 3 and args[3] == 'languages' then
+                return {}
+            end
             populate_lang_cache()
             return filter_by_prefix(get_completion_options('repos_params'), arglead)
         elseif subcommand == 'stats' and (arg_count == 2 or (arg_count == 3 and arglead ~= '')) then
