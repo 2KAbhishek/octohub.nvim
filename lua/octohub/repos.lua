@@ -146,11 +146,14 @@ end
 
 ---@param repos table
 ---@param repo_type string
+---@param language string?
 ---@return table
-local function filter_repos(repos, repo_type)
+local function filter_repos(repos, repo_type, language)
+    local filtered = repos
+
     if #repo_type > 0 then
-        local filtered = {}
-        for _, repo in ipairs(repos) do
+        local type_filtered = {}
+        for _, repo in ipairs(filtered) do
             local should_include = false
             if repo_type:match('^private') then
                 should_include = repo.private
@@ -165,12 +168,25 @@ local function filter_repos(repos, repo_type)
             end
 
             if should_include then
-                table.insert(filtered, repo)
+                table.insert(type_filtered, repo)
             end
         end
-        return filtered
+        filtered = type_filtered
     end
-    return repos
+
+    if language and #language > 0 then
+        local lang_filtered = {}
+        local target_lang = language:lower()
+        for _, repo in ipairs(filtered) do
+            local repo_lang = repo.language and repo.language:lower() or ''
+            if repo_lang == target_lang then
+                table.insert(lang_filtered, repo)
+            end
+        end
+        filtered = lang_filtered
+    end
+
+    return filtered
 end
 
 ---@param repo_name string
@@ -205,6 +221,7 @@ function M.get_repos(args, callback)
     local username = args and args.username or ''
     local sort_by = args and args.sort_by or config.repos.sort_by
     local repo_type = args and args.repo_type or config.repos.repo_type
+    local language = args and args.language or config.repos.language
 
     local function get_user_repos(user_to_process, is_auth_user)
         local all_repos = {}
@@ -235,7 +252,7 @@ function M.get_repos(args, callback)
                     fetch_page(page + 1)
                 else
                     sort_repos(all_repos, sort_by)
-                    all_repos = filter_repos(all_repos, repo_type)
+                    all_repos = filter_repos(all_repos, repo_type, language)
                     callback(all_repos)
                 end
             end, config.cache.repos)
@@ -253,11 +270,12 @@ end
 ---@param username string?
 ---@param sort_by string?
 ---@param repo_type string?
-function M.show_repos(username, sort_by, repo_type)
+---@param language string?
+function M.show_repos(username, sort_by, repo_type, language)
     sort_by = #sort_by > 0 and sort_by or config.repos.sort_by
     repo_type = #repo_type > 0 and repo_type or config.repos.repo_type
 
-    M.get_repos({ username = username, sort_by = sort_by, repo_type = repo_type }, function(repos)
+    M.get_repos({ username = username, sort_by = sort_by, repo_type = repo_type, language = language }, function(repos)
         vim.schedule(function()
             pickme.custom_picker({
                 items = repos,
