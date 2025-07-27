@@ -4,8 +4,8 @@ local web = require('octohub.web')
 local config = require('octohub.config').config
 local legacy = require('octohub.legacy')
 
--- Language completion cache
 local lang_completion_cache = {}
+local repo_completion_cache = {}
 
 ---@class OctohubCommands
 local M = {}
@@ -74,6 +74,16 @@ local function populate_lang_cache()
             end
             lang_completion_cache.populated = true
         end, false)
+    end
+end
+
+---Populate repository completion cache
+local function populate_repo_cache()
+    if not repo_completion_cache.populated then
+        repos.get_repo_list('', function(repo_names)
+            repo_completion_cache.options = repo_names
+            repo_completion_cache.populated = true
+        end)
     end
 end
 
@@ -155,6 +165,14 @@ local function complete_octohub(arglead, cmdline, cursorpos)
             end
             populate_lang_cache()
             return filter_by_prefix(get_completion_options('repos_params'), arglead)
+        elseif subcommand == 'repo' then
+            if arg_count == 2 or (arg_count == 3 and arglead ~= '') then
+                populate_repo_cache()
+                if repo_completion_cache.options then
+                    return filter_by_prefix(repo_completion_cache.options, arglead)
+                end
+            end
+            return {}
         elseif subcommand == 'stats' and (arg_count == 2 or (arg_count == 3 and arglead ~= '')) then
             return filter_by_prefix(get_completion_options('stats_subcommands'), arglead)
         elseif subcommand == 'web' and (arg_count == 2 or (arg_count == 3 and arglead ~= '')) then
@@ -168,7 +186,6 @@ end
 ---Handle repos subcommand
 ---@param args string[]
 local function handle_repos_command(args)
-    -- Check if first argument after 'repos' is 'languages'
     if #args >= 2 and args[2] == 'languages' then
         local username = #args >= 3 and args[3] or ''
         repos.show_language_picker(username)
