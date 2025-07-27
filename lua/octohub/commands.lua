@@ -4,6 +4,9 @@ local web = require('octohub.web')
 local config = require('octohub.config').config
 local legacy = require('octohub.legacy')
 
+-- Language completion cache
+local lang_completion_cache = {}
+
 ---@class OctohubCommands
 local M = {}
 
@@ -30,7 +33,7 @@ local function add_default_keymaps()
     add_keymap('<leader>goS', ':Octohub repos type:starred<CR>', 'Starred Repos')
     add_keymap('<leader>goT', ':Octohub repos type:template<CR>', 'Template Repos')
 
-    add_keymap('<leader>goL', '<cmd>lua require("octohub.repos").show_language_picker("")<CR>', 'Filter by Language')
+    add_keymap('<leader>goL', ':Octohub repos languages<CR>', 'Filter by Language')
 
     add_keymap('<leader>goa', ':Octohub stats activity<CR>', 'Activity Stats')
     add_keymap('<leader>gog', ':Octohub stats contributions<CR>', 'Contribution Graph')
@@ -61,15 +64,27 @@ local function filter_by_prefix(items, prefix)
     end, items)
 end
 
+---Populate language completion cache
+local function populate_lang_cache()
+    if not lang_completion_cache.populated then
+        repos.get_language_list('', function(languages)
+            lang_completion_cache.options = {}
+            for _, lang in ipairs(languages) do
+                table.insert(lang_completion_cache.options, 'lang:' .. lang:lower())
+            end
+            lang_completion_cache.populated = true
+        end, false)
+    end
+end
+
 ---Get completion options for different contexts
 ---@param context string
----@param arglead string?
----@param callback fun(options: string[])?
 ---@return string[]
-local function get_completion_options(context, arglead, callback)
-    local static_options = {
+local function get_completion_options(context)
+    local options = {
         subcommands = { 'repos', 'repo', 'stats', 'web' },
         repos_params = {
+            'languages',
             'sort:created',
             'sort:forks',
             'sort:issues',
@@ -89,20 +104,12 @@ local function get_completion_options(context, arglead, callback)
         web_subcommands = { 'profile', 'repo' },
     }
 
-    if context == 'repos_params' and arglead and arglead:match('^lang:') and callback then
-        -- Dynamic language completion for lang: prefix
-        repos.get_language_list('', function(languages)
-            local lang_options = {}
-            for _, lang in ipairs(languages) do
-                table.insert(lang_options, 'lang:' .. lang:lower())
-            end
-            local all_options = vim.list_extend(vim.deepcopy(static_options.repos_params), lang_options)
-            callback(all_options)
-        end)
-        return static_options.repos_params -- Return base params immediately
+    if context == 'repos_params' and lang_completion_cache.options then
+        local all_options = vim.list_extend(vim.deepcopy(options.repos_params), lang_completion_cache.options)
+        return all_options
     end
 
-    return static_options[context] or {}
+    return options[context] or {}
 end
 
 ---Parse parameters with prefixes (e.g., "sort:", "type:", "count:")
@@ -143,6 +150,7 @@ local function complete_octohub(arglead, cmdline, cursorpos)
         local subcommand = args[2]
 
         if subcommand == 'repos' then
+            populate_lang_cache()
             return filter_by_prefix(get_completion_options('repos_params'), arglead)
         elseif subcommand == 'stats' and (arg_count == 2 or (arg_count == 3 and arglead ~= '')) then
             return filter_by_prefix(get_completion_options('stats_subcommands'), arglead)
@@ -157,6 +165,13 @@ end
 ---Handle repos subcommand
 ---@param args string[]
 local function handle_repos_command(args)
+    -- Check if first argument after 'repos' is 'languages'
+    if #args >= 2 and args[2] == 'languages' then
+        local username = #args >= 3 and args[3] or ''
+        repos.show_language_picker(username)
+        return
+    end
+
     local params = parse_prefixed_params(args, 2)
     repos.show_repos(
         params.user or '',
@@ -221,7 +236,6 @@ local function handle_web_command(args)
         print('Usage: Octohub web <profile|repo> [user]')
     end
 end
-
 
 ---Main command handler
 ---@param opts table
