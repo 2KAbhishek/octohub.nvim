@@ -282,6 +282,29 @@ function M.show_language_picker(username)
     end, with_counts)
 end
 
+---Get list of repository names for a user
+---@param username string?
+---@param callback fun(repo_names: string[])
+function M.get_repo_list(username, callback)
+    M.get_default_username(function(default_username)
+        M.get_repos({ username = username }, function(repos)
+            local repo_names = {}
+            for _, repo in ipairs(repos) do
+                if username and #username > 0 then
+                    table.insert(repo_names, repo.name)
+                else
+                    if repo.owner and repo.owner.login == default_username then
+                        table.insert(repo_names, repo.name)
+                    end
+                end
+            end
+
+            table.sort(repo_names)
+            callback(repo_names)
+        end)
+    end)
+end
+
 ---@param args? table
 ---@param callback fun(data: any)
 function M.get_repos(args, callback)
