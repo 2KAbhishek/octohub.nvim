@@ -42,7 +42,7 @@
 
 [Video walkthrough of features](https://youtu.be/Sebh2aFfFPg)
 
-- Quickly list and open any GitHub repositories, yours or others, directly from Neovim.
+- Quickly list and open any GitHub repositories, yours, or others, directly from Neovim.
 - Sort repositories by stars, forks, and other criteria, with support for filtering by type (forks, private repos, etc.) and languages.
 - View all sorts of repository details at a glance, including issues, stars, forks, and more.
 - Seamless integration with pickers for fuzzy searching and quick access to repositories.
@@ -148,10 +148,14 @@ Available `repos.repo_type` options:
 
 #### Main Commands
 
-- `:Octohub repos [user] [sort:<option>] [type:<option>]`: Displays repositories for a given user, sorted by specified criteria.
+- `:Octohub repos [user] [sort:<option>] [type:<option>] [lang:<language>]`: Displays repositories for a given user, sorted by specified criteria.
   - Ex: `:Octohub repos 2kabhishek sort:updated type:forked` - Display all forked repositories for `2kabhishek`, sorted by last update.
   - Ex: `:Octohub repos type:starred` - Display all repositories starred by the current user.
+  - Ex: `:Octohub repos lang:javascript` - Display all JavaScript repositories for the current user.
   - Ex: `:Octohub` - Same as `:Octohub repos` for the current user.
+- `:Octohub repos languages [user]`: Opens an interactive language picker to filter repositories by programming language.
+  - Ex: `:Octohub repos languages` - Show language picker for the current user.
+  - Ex: `:Octohub repos languages 2kabhishek` - Show language picker for user `2kabhishek`.
 - `:Octohub repo <name> [user]`: Opens a specified repository, optionally by a user.
   - Ex: `:Octohub repo octohub.nvim` - Clone the repository `octohub.nvim` from the current user.
   - Ex: `:Octohub repo octohub.nvim 2kabhishek` - Clone the repository `octohub.nvim` from the user `2kabhishek`.
@@ -170,7 +174,8 @@ Available `repos.repo_type` options:
 All new `Octohub` commands support tab completion:
 
 - Subcommands: `repos`, `repo`, `stats`, `web`
-- Parameters: `sort:created`, `sort:forks`, `type:archived`, `type:private`, etc.
+- Parameters: `sort:created`, `sort:forks`, `type:archived`, `type:private`, `lang:javascript`, etc.
+- Dynamic language completion: `lang:` options are automatically populated based on your actual repository languages
 - Context-aware completion based on the current command
 
 #### Utility Commands
@@ -223,6 +228,7 @@ By default, these are the configured keybindings.
 | `<leader>goP` | `:Octohub repos type:private<CR>`  | Private Repos        |
 | `<leader>goS` | `:Octohub repos type:starred<CR>`  | Starred Repos        |
 | `<leader>goT` | `:Octohub repos type:template<CR>` | Template Repos       |
+| `<leader>goL` | `:Octohub repos languages<CR>`     | Filter by Language   |
 | `<leader>goa` | `:Octohub stats activity<CR>`      | Activity Stats       |
 | `<leader>gog` | `:Octohub stats contributions<CR>` | Contribution Graph   |
 | `<leader>gor` | `:Octohub stats repo<CR>`          | Repo Stats           |
