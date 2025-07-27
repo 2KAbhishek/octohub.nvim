@@ -43,7 +43,7 @@
 [Video walkthrough of features](https://youtu.be/Sebh2aFfFPg)
 
 - Quickly list and open any GitHub repositories, yours or others, directly from Neovim.
-- Sort repositories by stars, forks, and other criteria, with support for filtering by type (forks, private repos, etc.).
+- Sort repositories by stars, forks, and other criteria, with support for filtering by type (forks, private repos, etc.) and languages.
 - View all sorts of repository details at a glance, including issues, stars, forks, and more.
 - Seamless integration with pickers for fuzzy searching and quick access to repositories.
 - Display GitHub profile stats including recent activity and contributions for any user.
@@ -93,6 +93,7 @@ octohub.setup({
         projects_dir = '~/Projects/', -- Directory where repositories are cloned
         sort_by = '',                 -- Sort repositories by various parameters
         repo_type = '',               -- Type of repositories to display
+        language = '',                -- Repositories language filter
     },
     stats = {
         contribution_icons = { '', '', '', '', '', '', '' }, -- Icons for different contribution levels
@@ -136,6 +137,8 @@ Available `repos.repo_type` options:
 - `private` - Private repositories, `:Octohub repos type:private`
 - `starred` - Starred repositories, `:Octohub repos type:starred`
 - `template` - Template repositories, `:Octohub repos type:template`
+
+`repos.language` can be set to any programming language, such as `python`, `javascript`, etc. This will filter repositories by the specified language.
 
 > Note: The `repos.sort_by` and `repos.repo_type` options match the start of keywords, you can expand them for readability, `sort:updated` is same as `sort:update`.
 
