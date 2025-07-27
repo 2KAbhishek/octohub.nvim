@@ -153,12 +153,12 @@ Available `repos.repo_type` options:
   - Ex: `:Octohub repos type:starred` - Display all repositories starred by the current user.
   - Ex: `:Octohub repos lang:javascript` - Display all JavaScript repositories for the current user.
   - Ex: `:Octohub` - Same as `:Octohub repos` for the current user.
-- `:Octohub repos languages [user]`: Opens an interactive language picker to filter repositories by programming language.
-  - Ex: `:Octohub repos languages` - Show language picker for the current user.
-  - Ex: `:Octohub repos languages 2kabhishek` - Show language picker for user `2kabhishek`.
-- `:Octohub repo <name> [user]`: Opens a specified repository, optionally by a user.
+  - `:Octohub repos languages [user]`: Opens an interactive language picker to filter repositories by programming language.
+    - Ex: `:Octohub repos languages` - Show language picker for the current user.
+    - Ex: `:Octohub repos languages 2kabhishek` - Show language picker for user `2kabhishek`.
+- `:Octohub repo <name>` or `:Octohub repo <owner/name>`: Opens a specified repository.
   - Ex: `:Octohub repo octohub.nvim` - Clone the repository `octohub.nvim` from the current user.
-  - Ex: `:Octohub repo octohub.nvim 2kabhishek` - Clone the repository `octohub.nvim` from the user `2kabhishek`.
+  - Ex: `:Octohub repo 2kabhishek/octohub.nvim` - Clone the repository `octohub.nvim` from the user `2kabhishek`.
 - `:Octohub stats [user]`: Displays all stats (activity, contributions, repository data).
   - Ex: `:Octohub stats theprimeagen` shows stats for `theprimeagen`.
 - `:Octohub stats activity [user] [count:N]`: Displays recent activity for a user, with an optional count.
@@ -174,9 +174,10 @@ Available `repos.repo_type` options:
 All new `Octohub` commands support tab completion:
 
 - Subcommands: `repos`, `repo`, `stats`, `web`
-- Parameters: `sort:created`, `sort:forks`, `type:archived`, `type:private`, `lang:javascript`, etc.
-- Dynamic language completion: `lang:` options are automatically populated based on your actual repository languages
-- Context-aware completion based on the current command
+- `repos`: `sort:created`, `sort:forks`, `type:archived`, `type:private`, `lang:javascript`, etc. `lang` completions are powered by your repos' languages.
+- `repo`: provides completion for your own repo names
+- `stats`: `activity`, `contributions`, `repo`
+- `web`: `profile`, `repo`
 
 #### Utility Commands
 
