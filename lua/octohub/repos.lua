@@ -215,6 +215,48 @@ function M.open_repo(repo_name, owner)
     end
 end
 
+---Get list of languages used in user's repositories
+---@param username string?
+---@param callback fun(languages: string[]|table[])
+---@param with_counts boolean? Include counts in the language list
+function M.get_language_list(username, callback, with_counts)
+    local function process_repos_for_languages(repos)
+        local lang_count = {}
+        for _, repo in ipairs(repos) do
+            if repo.language and repo.language ~= vim.NIL and repo.language ~= '' then
+                lang_count[repo.language] = (lang_count[repo.language] or 0) + 1
+            end
+        end
+
+        local languages = {}
+        for lang, count in pairs(lang_count) do
+            table.insert(languages, { name = lang, count = count })
+        end
+
+        table.sort(languages, function(a, b)
+            return a.name < b.name
+        end)
+
+        if with_counts then
+            callback(languages)
+        else
+            local language_names = {}
+            for _, lang_info in ipairs(languages) do
+                table.insert(language_names, lang_info.name)
+            end
+            callback(language_names)
+        end
+    end
+
+    M.get_default_username(function(default_username)
+        local user_to_process = username and #username > 0 and username or default_username
+
+        M.get_repos({ username = username }, function(repos)
+            process_repos_for_languages(repos)
+        end)
+    end)
+end
+
 ---@param args? table
 ---@param callback fun(data: any)
 function M.get_repos(args, callback)

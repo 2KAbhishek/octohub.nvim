@@ -30,6 +30,8 @@ local function add_default_keymaps()
     add_keymap('<leader>goS', ':Octohub repos type:starred<CR>', 'Starred Repos')
     add_keymap('<leader>goT', ':Octohub repos type:template<CR>', 'Template Repos')
 
+    add_keymap('<leader>goL', '<cmd>lua require("octohub.repos").show_language_picker("")<CR>', 'Filter by Language')
+
     add_keymap('<leader>goa', ':Octohub stats activity<CR>', 'Activity Stats')
     add_keymap('<leader>gog', ':Octohub stats contributions<CR>', 'Contribution Graph')
     add_keymap('<leader>gor', ':Octohub stats repo<CR>', 'Repo Stats')
@@ -61,9 +63,11 @@ end
 
 ---Get completion options for different contexts
 ---@param context string
+---@param arglead string?
+---@param callback fun(options: string[])?
 ---@return string[]
-local function get_completion_options(context)
-    local options = {
+local function get_completion_options(context, arglead, callback)
+    local static_options = {
         subcommands = { 'repos', 'repo', 'stats', 'web' },
         repos_params = {
             'sort:created',
@@ -85,7 +89,20 @@ local function get_completion_options(context)
         web_subcommands = { 'profile', 'repo' },
     }
 
-    return options[context] or {}
+    if context == 'repos_params' and arglead and arglead:match('^lang:') and callback then
+        -- Dynamic language completion for lang: prefix
+        repos.get_language_list('', function(languages)
+            local lang_options = {}
+            for _, lang in ipairs(languages) do
+                table.insert(lang_options, 'lang:' .. lang:lower())
+            end
+            local all_options = vim.list_extend(vim.deepcopy(static_options.repos_params), lang_options)
+            callback(all_options)
+        end)
+        return static_options.repos_params -- Return base params immediately
+    end
+
+    return static_options[context] or {}
 end
 
 ---Parse parameters with prefixes (e.g., "sort:", "type:", "count:")
@@ -204,6 +221,7 @@ local function handle_web_command(args)
         print('Usage: Octohub web <profile|repo> [user]')
     end
 end
+
 
 ---Main command handler
 ---@param opts table
