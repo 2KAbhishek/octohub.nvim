@@ -120,16 +120,16 @@ local function complete_octohub(arglead, cmdline, cursorpos)
     local args = parse_args(cmdline)
     local arg_count = #args
 
-    if arg_count == 2 then
+    if arg_count == 1 or (arg_count == 2 and arglead ~= '') then
         return filter_by_prefix(get_completion_options('subcommands'), arglead)
-    elseif arg_count > 2 then
+    elseif arg_count >= 2 then
         local subcommand = args[2]
 
         if subcommand == 'repos' then
             return filter_by_prefix(get_completion_options('repos_params'), arglead)
-        elseif subcommand == 'stats' and arg_count == 3 then
+        elseif subcommand == 'stats' and (arg_count == 2 or (arg_count == 3 and arglead ~= '')) then
             return filter_by_prefix(get_completion_options('stats_subcommands'), arglead)
-        elseif subcommand == 'web' and arg_count == 3 then
+        elseif subcommand == 'web' and (arg_count == 2 or (arg_count == 3 and arglead ~= '')) then
             return filter_by_prefix(get_completion_options('web_subcommands'), arglead)
         end
     end
