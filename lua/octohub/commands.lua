@@ -141,7 +141,12 @@ end
 ---@param args string[]
 local function handle_repos_command(args)
     local params = parse_prefixed_params(args, 2)
-    repos.show_repos(params.user or '', params.sort or config.repos.sort_by, params.type or config.repos.repo_type)
+    repos.show_repos(
+        params.user or '',
+        params.sort or config.repos.sort_by,
+        params.type or config.repos.repo_type,
+        params.lang or config.repos.language
+    )
 end
 
 ---Handle repo subcommand
