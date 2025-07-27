@@ -257,6 +257,31 @@ function M.get_language_list(username, callback, with_counts)
     end)
 end
 
+---Show interactive language picker and filter repos by selected language
+---@param username string?
+function M.show_language_picker(username)
+    local with_counts = true
+    M.get_language_list(username, function(languages)
+        vim.schedule(function()
+            if #languages == 0 then
+                noti.show_notification('No languages found in repositories', vim.log.levels.WARN, 'Octohub')
+                return
+            end
+
+            vim.ui.select(languages, {
+                prompt = 'Select language to filter repos:',
+                format_item = function(item)
+                    return string.format('%s (%d)', item.name, item.count)
+                end,
+            }, function(selected)
+                if selected then
+                    M.show_repos(username or '', '', '', selected.name)
+                end
+            end)
+        end)
+    end, with_counts)
+end
+
 ---@param args? table
 ---@param callback fun(data: any)
 function M.get_repos(args, callback)
