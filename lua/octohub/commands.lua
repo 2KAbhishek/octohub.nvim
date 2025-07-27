@@ -80,7 +80,7 @@ end
 ---Populate repository completion cache
 local function populate_repo_cache()
     if not repo_completion_cache.populated then
-        repos.get_repo_list('', function(repo_names)
+        repos.get_default_user_repo_list(function(repo_names)
             repo_completion_cache.options = repo_names
             repo_completion_cache.populated = true
         end)
@@ -204,13 +204,25 @@ end
 ---Handle repo subcommand
 ---@param args string[]
 local function handle_repo_command(args)
-    if #args == 2 then
-        repos.open_repo(args[2])
-    elseif #args == 3 then
-        repos.open_repo(args[3], args[2])
-    else
-        print('Usage: Octohub repo <name> [user]')
+    if #args ~= 2 then
+        print('Usage: Octohub repo <name> or Octohub repo <owner/name>')
+        return
     end
+
+    local repo_arg = args[2]
+    local owner, repo_name
+
+    if repo_arg:find('/') then
+        owner, repo_name = repo_arg:match('^([^/]+)/(.+)$')
+        if not owner or not repo_name then
+            print('Invalid format. Use: owner/repo')
+            return
+        end
+    else
+        repo_name = repo_arg
+    end
+
+    repos.open_repo(repo_name, owner)
 end
 
 ---Handle stats subcommand
