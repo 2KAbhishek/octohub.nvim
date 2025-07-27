@@ -6,6 +6,7 @@ local M = {}
 ---@field projects_dir string Directory where repositories are cloned
 ---@field sort_by string Sort repositories by various params
 ---@field repo_type string Type of repositories to display
+---@field language string Repositories language filter
 
 ---@class OctohubStatsConfig
 ---@field max_contributions number Max number of contributions per day to use for icon selection
@@ -37,6 +38,7 @@ local config = {
         projects_dir = '~/Projects/',
         sort_by = '',
         repo_type = '',
+        language = '',
     },
     stats = {
         contribution_icons = { '', '', '', '', '', '', '' },
