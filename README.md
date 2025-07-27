@@ -129,7 +129,7 @@ Available `repos.sort_by` options:
 - `stars` - Sort by stars, `:Octohub repos sort:stars`
 - `updated` - Sort by last update, `:Octohub repos sort:updated`
 
-Available `repo_type` options:
+Available `repos.repo_type` options:
 
 - `archived` - Archived repositories, `:Octohub repos type:archived`
 - `forked` - Forked repositories, `:Octohub repos type:forked`
