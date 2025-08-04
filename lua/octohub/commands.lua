@@ -11,36 +11,42 @@ local M = {}
 
 ---Add all default keymaps for Octohub commands
 local function add_default_keymaps()
-    local function add_keymap(keys, cmd, desc)
-        vim.api.nvim_set_keymap('n', keys, cmd, { noremap = true, silent = true, desc = desc })
+    local mappings = {
+        { '<leader>goo', ':Octohub repos<CR>', 'All Repos' },
+
+        { '<leader>gob', ':Octohub repos sort:size<CR>', 'Repos by Size' },
+        { '<leader>goc', ':Octohub repos sort:created<CR>', 'Repos by Created' },
+        { '<leader>gof', ':Octohub repos sort:forks<CR>', 'Repos by Forks' },
+        { '<leader>goi', ':Octohub repos sort:issues<CR>', 'Repos by Issues' },
+        { '<leader>gol', ':Octohub repos sort:language<CR>', 'Repos by Language' },
+        { '<leader>gos', ':Octohub repos sort:stars<CR>', 'Repos by Stars' },
+        { '<leader>gou', ':Octohub repos sort:updated<CR>', 'Repos by Updated' },
+        { '<leader>goU', ':Octohub repos sort:pushed<CR>', 'Repos by Pushed' },
+
+        { '<leader>goA', ':Octohub repos type:archived<CR>', 'Archived Repos' },
+        { '<leader>goF', ':Octohub repos type:forked<CR>', 'Forked Repos' },
+        { '<leader>goP', ':Octohub repos type:private<CR>', 'Private Repos' },
+        { '<leader>goS', ':Octohub repos type:starred<CR>', 'Starred Repos' },
+        { '<leader>goT', ':Octohub repos type:template<CR>', 'Template Repos' },
+
+        { '<leader>goL', ':Octohub repos languages<CR>', 'Filter by Language' },
+
+        { '<leader>goa', ':Octohub stats activity<CR>', 'Activity Stats' },
+        { '<leader>gog', ':Octohub stats contributions<CR>', 'Contribution Graph' },
+        { '<leader>gor', ':Octohub stats repo<CR>', 'Repo Stats' },
+        { '<leader>got', ':Octohub stats<CR>', 'All Stats' },
+
+        { '<leader>gop', ':Octohub web profile<CR>', 'Open GitHub Profile' },
+        { '<leader>gow', ':Octohub web repo<CR>', 'Open Repo in Browser' },
+    }
+
+    for _, mapping in ipairs(mappings) do
+        vim.api.nvim_set_keymap('n', mapping[1], mapping[2], {
+            desc = mapping[3],
+            noremap = true,
+            silent = true,
+        })
     end
-
-    add_keymap('<leader>goo', ':Octohub repos<CR>', 'All Repos')
-
-    add_keymap('<leader>gob', ':Octohub repos sort:size<CR>', 'Repos by Size')
-    add_keymap('<leader>goc', ':Octohub repos sort:created<CR>', 'Repos by Created')
-    add_keymap('<leader>gof', ':Octohub repos sort:forks<CR>', 'Repos by Forks')
-    add_keymap('<leader>goi', ':Octohub repos sort:issues<CR>', 'Repos by Issues')
-    add_keymap('<leader>gol', ':Octohub repos sort:language<CR>', 'Repos by Language')
-    add_keymap('<leader>gos', ':Octohub repos sort:stars<CR>', 'Repos by Stars')
-    add_keymap('<leader>gou', ':Octohub repos sort:updated<CR>', 'Repos by Updated')
-    add_keymap('<leader>goU', ':Octohub repos sort:pushed<CR>', 'Repos by Pushed')
-
-    add_keymap('<leader>goA', ':Octohub repos type:archived<CR>', 'Archived Repos')
-    add_keymap('<leader>goF', ':Octohub repos type:forked<CR>', 'Forked Repos')
-    add_keymap('<leader>goP', ':Octohub repos type:private<CR>', 'Private Repos')
-    add_keymap('<leader>goS', ':Octohub repos type:starred<CR>', 'Starred Repos')
-    add_keymap('<leader>goT', ':Octohub repos type:template<CR>', 'Template Repos')
-
-    add_keymap('<leader>goL', ':Octohub repos languages<CR>', 'Filter by Language')
-
-    add_keymap('<leader>goa', ':Octohub stats activity<CR>', 'Activity Stats')
-    add_keymap('<leader>gog', ':Octohub stats contributions<CR>', 'Contribution Graph')
-    add_keymap('<leader>gor', ':Octohub stats repo<CR>', 'Repo Stats')
-    add_keymap('<leader>got', ':Octohub stats<CR>', 'All Stats')
-
-    add_keymap('<leader>gop', ':Octohub web profile<CR>', 'Open GitHub Profile')
-    add_keymap('<leader>gow', ':Octohub web repo<CR>', 'Open Repo in Browser')
 end
 
 ---Parse command line arguments, removing empty strings
