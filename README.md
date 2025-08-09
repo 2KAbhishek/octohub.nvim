@@ -88,6 +88,11 @@ octohub.nvim can be configured using the following options:
 local octohub = require('octohub')
 
 octohub.setup({
+    icons = { -- List of icons used by Octohub
+        user = ' ',
+        star = ' ', -- for more, check out config.lua
+        contribution_icons = { '', '', '', '', '', '', '' }, -- Icons for different contribution levels
+    }
     repos = {
         per_user_dir = true,          -- Create a directory for each user
         projects_dir = '~/Projects/', -- Directory where repositories are cloned
@@ -96,7 +101,6 @@ octohub.setup({
         language = '',                -- Repositories language filter
     },
     stats = {
-        contribution_icons = { '', '', '', '', '', '', '' }, -- Icons for different contribution levels
         max_contributions = 50,       -- Max number of contributions per day to use for icon selection
         top_lang_count = 5,           -- Number of top languages to display in stats
         event_count = 5,              -- Number of activity events to show
