@@ -1,5 +1,6 @@
 local octorepos = require('octohub.repos')
 local config = require('octohub.config').config
+local icons = config.icons
 
 local cache = require('utils.cache')
 local time = require('utils.time')
@@ -35,10 +36,10 @@ end
 ---@return string icon
 local function get_icon(contribution_count)
     local index = math.min(
-        math.floor(contribution_count / (config.stats.max_contributions / #config.stats.contribution_icons)) + 1,
-        #config.stats.contribution_icons
+        math.floor(contribution_count / (config.stats.max_contributions / #icons.contribution_icons)) + 1,
+        #icons.contribution_icons
     )
-    return config.stats.contribution_icons[index]
+    return icons.contribution_icons[index]
 end
 
 ---@param contribution_data table
@@ -143,11 +144,15 @@ local function get_repo_stats(repos)
     end
 
     return string.format(
-        ' Public Repos: %d\n Total Stars: %d\n Most Starred Repo: %s (%d stars)\n♥ Top Languages: %s',
+        '%s Public Repos: %d\n%s Total Stars: %d\n%s Most Starred Repo: %s (%d stars)\n%s Top Languages: %s',
+        icons.repo,
         #repos,
+        icons.star,
         total_stars,
+        icons.star_alt,
         most_starred_repo.name,
         most_starred_repo.stars,
+        icons.language,
         top_langs
     )
 end
@@ -160,24 +165,34 @@ end
 local function format_message(stats, repos, events, contribution_data)
     local messageParts = {
         string.format(
-            ' User Info\n'
-                .. ' Username: %s\n'
-                .. ' Name: %s\n'
-                .. ' Followers: %d\n'
-                .. ' Following: %d\n'
-                .. ' Location: %s\n'
-                .. ' Company: %s\n'
-                .. ' Bio: %s\n'
-                .. ' Website: %s\n'
-                .. ' Created At: %s\n',
+            '%s User Info\n'
+                .. '%s Username: %s\n'
+                .. '%s Name: %s\n'
+                .. '%s Followers: %d\n'
+                .. '%s Following: %d\n'
+                .. '%s Location: %s\n'
+                .. '%s Company: %s\n'
+                .. '%s Bio: %s\n'
+                .. '%s Website: %s\n'
+                .. '%s Created At: %s\n',
+            icons.github,
+            icons.user,
             stats.login,
+            icons.user_alt,
             stats.name,
+            icons.group,
             stats.followers,
+            icons.watch,
             stats.following,
+            icons.location,
             stats.location,
+            icons.company,
             stats.company,
+            icons.info,
             stats.bio,
+            icons.link,
             stats.blog,
+            icons.calendar,
             time.human_time(stats.created_at)
         ),
     }
