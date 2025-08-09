@@ -2,20 +2,30 @@
 local M = {}
 
 ---@class OctohubIcons
----@field user string
----@field user_alt string
+---@field archive string
+---@field calendar string
+---@field clock string
+---@field company string
+---@field disk string
+---@field fork string
+---@field fork_alt string
 ---@field github string
 ---@field group string
----@field watch string
----@field location string
----@field company string
+---@field home string
 ---@field info string
+---@field issue string
+---@field language string
 ---@field link string
----@field calendar string
+---@field location string
+---@field lock string
 ---@field repo string
 ---@field star string
 ---@field star_alt string
----@field language string
+---@field tag string
+---@field template string
+---@field user string
+---@field user_alt string
+---@field watch string
 ---@field contribution_icons table Icons for different contribution levels
 
 ---@class OctohubReposConfig
@@ -50,20 +60,30 @@ local M = {}
 ---@field add_default_keybindings boolean Feature toggle for keybindings
 local config = {
     icons = {
-        user = ' ',
-        user_alt = ' ',
+        archive = ' ',
+        calendar = ' ',
+        clock = ' ',
+        company = ' ',
+        disk = ' ',
+        fork = ' ',
+        fork_alt = ' ',
         github = ' ',
         group = ' ',
-        watch = ' ',
-        location = ' ',
-        company = ' ',
+        home = ' ',
         info = ' ',
+        issue = ' ',
+        language = ' ',
         link = ' ',
-        calendar = ' ',
+        location = ' ',
+        lock = ' ',
         repo = ' ',
         star = ' ',
         star_alt = ' ',
-        language = ' ',
+        tag = ' ',
+        template = ' ',
+        user = ' ',
+        user_alt = ' ',
+        watch = ' ',
         contribution_icons = { '', '', '', '', '', '', '' },
     },
     repos = {

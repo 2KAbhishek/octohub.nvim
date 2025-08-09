@@ -1,6 +1,7 @@
 local Path = require('plenary.path')
 
 local config = require('octohub.config').config
+local icons = config.icons
 
 local cache = require('utils.cache')
 local time = require('utils.time')
@@ -31,23 +32,32 @@ end
 ---@return string
 local function format_repo_info(repo)
     local repo_info = {
-        string.format('# %s\n\n%s Language: %s\n', repo.name, repo.icon, repo.language),
+        string.format('# %s\n\n%s  Language: %s\n', repo.name, repo.icon, repo.language),
     }
 
     table.insert(
         repo_info,
         string.format(
-            ' [Link](%s)\n\n'
-                .. ' Stars: %d\n Forks: %d\n Watchers: %d\n Open Issues: %d\n\n'
-                .. ' Owner: %s\n Created At: %s\n Last Updated: %s\n Disk Usage: %d\n',
+            '%s [Link](%s)\n\n'
+                .. '%s Stars: %d\n%s Forks: %d\n%s Watchers: %d\n%s Open Issues: %d\n\n'
+                .. '%s Owner: %s\n%s Created At: %s\n%s Last Updated: %s\n%s Disk Usage: %d\n',
+            icons.link,
             repo.html_url,
+            icons.star,
             repo.stargazers_count,
+            icons.fork,
             repo.forks_count,
+            icons.watch,
             repo.watchers_count,
+            icons.issue,
             repo.open_issues_count,
+            icons.user,
             repo.owner.login,
+            icons.calendar,
             time.human_time(repo.created_at),
+            icons.clock,
             time.human_time(repo.updated_at),
+            icons.disk,
             repo.size
         )
     )
@@ -55,15 +65,19 @@ local function format_repo_info(repo)
     local conditional_additions = {
         {
             repo.description ~= vim.NIL and #repo.description > 0,
-            string.format(' %s\n', repo.description),
+            string.format('%s %s\n', icons.info, repo.description),
             2,
         },
-        { repo.homepage ~= vim.NIL and #repo.homepage > 0, string.format(' [Homepage](%s)\n', repo.homepage), 3 },
-        { repo.fork, '\n>  Forked\n' },
-        { repo.archived, '\n>  Archived\n' },
-        { repo.private, '\n>  Private\n' },
-        { repo.is_template, '\n>  Template\n' },
-        { #repo.topics > 0, string.format('\n Topics: %s\n', table.concat(repo.topics, ', ')) },
+        {
+            repo.homepage ~= vim.NIL and #repo.homepage > 0,
+            string.format('%s [Homepage](%s)\n', icons.home, repo.homepage),
+            3,
+        },
+        { repo.fork, string.format('\n> %s Forked\n', icons.fork_alt) },
+        { repo.archived, string.format('\n> %s Archived\n', icons.archive) },
+        { repo.private, string.format('\n> %s Private\n', icons.lock) },
+        { repo.is_template, string.format('\n> %s Template\n', icons.template) },
+        { #repo.topics > 0, string.format('\n%s Topics: %s\n', icons.tag, table.concat(repo.topics, ', ')) },
     }
 
     for _, conditional_addition in ipairs(conditional_additions) do
