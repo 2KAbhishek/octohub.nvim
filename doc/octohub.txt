@@ -1,4 +1,5 @@
-*octohub.txt*          For Neovim >= 0.8.0         Last change: 2025 August 09
+*octohub.txt*
+                              For Neovim >= 0.8.0    Last change: 2026 July 16
 
 ==============================================================================
 Table of Contents                                  *octohub-table-of-contents*
@@ -139,26 +140,26 @@ support:
 
 MAIN COMMANDS
 
-- `:Octohub repos [user] [sort:<option>] [type:<option>] [lang:<language>]`Displays repositories for a given user, sorted by specified criteria.
+- `:Octohub repos [user] [sort:<option>] [type:<option>] [lang:<language>]`: Displays repositories for a given user, sorted by specified criteria.
     - Ex: `:Octohub repos 2kabhishek sort:updated type:forked` - Display all forked repositories for `2kabhishek`, sorted by last update.
     - Ex: `:Octohub repos type:starred` - Display all repositories starred by the current user.
     - Ex: `:Octohub repos lang:javascript` - Display all JavaScript repositories for the current user.
     - Ex: `:Octohub` - Same as `:Octohub repos` for the current user.
-    - `:Octohub repos languages [user]`Opens an interactive language picker to filter repositories by programming language.
+    - `:Octohub repos languages [user]`: Opens an interactive language picker to filter repositories by programming language.
         - Ex: `:Octohub repos languages` - Show language picker for the current user.
         - Ex: `:Octohub repos languages 2kabhishek` - Show language picker for user `2kabhishek`.
-- `:Octohub repo <name>` or `:Octohub repo <owner/name>`Opens a specified repository.
+- `:Octohub repo <name>` or `:Octohub repo <owner/name>`: Opens a specified repository.
     - Ex: `:Octohub repo octohub.nvim` - Clone the repository `octohub.nvim` from the current user.
     - Ex: `:Octohub repo 2kabhishek/octohub.nvim` - Clone the repository `octohub.nvim` from the user `2kabhishek`.
-- `:Octohub stats [user]`Displays all stats (activity, contributions, repository data).
+- `:Octohub stats [user]`: Displays all stats (activity, contributions, repository data).
     - Ex: `:Octohub stats theprimeagen` shows stats for `theprimeagen`.
-- `:Octohub stats activity [user] [count:N]`Displays recent activity for a user, with an optional count.
+- `:Octohub stats activity [user] [count:N]`: Displays recent activity for a user, with an optional count.
     - Ex: `:Octohub stats activity count:20` shows the last 20 activity events for the current user.
-- `:Octohub stats contributions [user]`Displays contribution stats for a user.
-- `:Octohub stats repo [user]`Displays statistics for the repositories of a given user.
+- `:Octohub stats contributions [user]`: Displays contribution stats for a user.
+- `:Octohub stats repo [user]`: Displays statistics for the repositories of a given user.
     - Ex: `:Octohub stats repo 2kabhishek` - Display statistics for the repositories of the user `2kabhishek`.
-- `:Octohub web profile [user]`Opens the GitHub profile of a user in your browser.
-- `:Octohub web repo`Opens the current repository in the browser.
+- `:Octohub web profile [user]`: Opens the GitHub profile of a user in your browser.
+- `:Octohub web repo`: Opens the current repository in the browser.
 
 
 COMMAND COMPLETION
@@ -166,15 +167,15 @@ COMMAND COMPLETION
 All new `Octohub` commands support tab completion:
 
 - Subcommands: `repos`, `repo`, `stats`, `web`
-- `repos``sort:created`, `sort:forks`, `type:archived`, `type:private`, `lang:javascript`, etc. `lang` completions are powered by your repos’ languages.
-- `repo`provides completion for your own repo names
-- `stats``activity`, `contributions`, `repo`
-- `web``profile`, `repo`
+- `repos`: `sort:created`, `sort:forks`, `type:archived`, `type:private`, `lang:javascript`, etc. `lang` completions are powered by your repos’ languages.
+- `repo`: provides completion for your own repo names
+- `stats`: `activity`, `contributions`, `repo`
+- `web`: `profile`, `repo`
 
 
 UTILITY COMMANDS
 
-- `UtilsClearCache[prefix]`Clears all the cache for a given prefix. Provided by utils.nvim <https://github.com/2kabhishek/utils.nvim>.
+- `UtilsClearCache[prefix]`: Clears all the cache for a given prefix. Provided by utils.nvim <https://github.com/2kabhishek/utils.nvim>.
     - Ex: `:UtilsClearCache username` - Clears the cache for `username`
 
 If the `user` parameter is not provided, the plugin will use the current
