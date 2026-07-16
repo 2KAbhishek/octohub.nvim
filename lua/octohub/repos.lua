@@ -1,5 +1,3 @@
-local Path = require('plenary.path')
-
 local config = require('octohub.config').config
 local icons = config.icons
 
@@ -116,18 +114,30 @@ end
 ---@param owner string?
 ---@return string
 local function get_repo_dir(repo_name, owner)
-    local projects_dir = Path:new(vim.fn.expand(config.repos.projects_dir))
-    projects_dir:mkdir({ parents = true, exists_ok = true })
+    local projects_dir = vim.fn.expand(config.repos.projects_dir)
+
+    local function join_path(...)
+        local parts = { ... }
+        local result = table.concat(parts, '/')
+        if vim.fs and vim.fs.normalize then
+            return vim.fs.normalize(result)
+        else
+            result = result:gsub('\\', '/'):gsub('//+', '/')
+            return result
+        end
+    end
 
     local repo_dir
     if config.repos.per_user_dir then
-        local owner_dir = projects_dir:joinpath(owner)
-        owner_dir:mkdir({ parents = true, exists_ok = true })
-        repo_dir = owner_dir:joinpath(repo_name)
+        local owner_dir = join_path(projects_dir, owner)
+        vim.fn.mkdir(owner_dir, 'p')
+        repo_dir = join_path(owner_dir, repo_name)
     else
-        repo_dir = projects_dir:joinpath(repo_name)
+        vim.fn.mkdir(projects_dir, 'p')
+        repo_dir = join_path(projects_dir, repo_name)
     end
-    return repo_dir:absolute()
+
+    return vim.fn.resolve(repo_dir)
 end
 
 ---@param repos table
@@ -214,7 +224,7 @@ function M.open_repo(repo_name, owner)
     end
     repo_dir = get_repo_dir(repo_name, owner)
 
-    if not Path:new(repo_dir):exists() then
+    if vim.fn.isdirectory(repo_dir) == 0 then
         local clone_cmd = string.format('gh repo clone %s/%s %s', owner, repo_name, repo_dir)
 
         noti.show_notification('Cloning repository: ' .. owner .. '/' .. repo_name, vim.log.levels.INFO, 'Octohub')
